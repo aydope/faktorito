@@ -1,7 +1,7 @@
 {
   "name": "faktorito",
   "version": "1.0.0",
-  "description": "",
+  "description": "Professional invoice management system for sports clubs, cafes and restaurants with auto-numbering, discounts, PNG export, and shareable links.",
   "homepage": "https://github.com/aydope/faktorito#readme",
   "bugs": {
     "url": "https://github.com/aydope/faktorito/issues"
