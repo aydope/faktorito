@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" class="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title><%= typeof title !== 'undefined' && title ? title : 'خطا' %> | فاکتوریتو</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/sahel-font@v3.4.0/dist/font-face.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sahel': ['Sahel', 'Vazirmatn', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        ink: {
+                            950: '#050508', 900: '#0c0c14', 800: '#14141f', 700: '#1c1c2a',
+                            600: '#28283a', 500: '#36364c', 400: '#4a4a63',
+                        },
+                        accent: {
+                            400: '#a78bfa', 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9', 800: '#5b21b6', 900: '#4c1d95',
+                        },
+                        gold: { 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309' },
+                        success: { 300: '#6ee7b7', 400: '#34d399', 500: '#10b981', 600: '#059669' },
+                    },
+                    boxShadow: {
+                        'glow': '0 0 32px rgba(124, 58, 237, 0.35)',
+                        'glow-lg': '0 8px 40px rgba(124, 58, 237, 0.45)',
+                        'card': '0 10px 40px -10px rgba(0, 0, 0, 0.4)',
+                    },
+                    borderRadius: { 'xl': '12px', '2xl': '16px', '3xl': '24px' },
+                    keyframes: {
+                        shimmer: { '0%': { backgroundPosition: '200% 0' }, '100%': { backgroundPosition: '-200% 0' } },
+                        toastIn: { '0%': { opacity: '0', transform: 'translateX(-50%) translateY(8px)' }, '100%': { opacity: '1', transform: 'translateX(-50%) translateY(0)' } },
+                        spin: { '0%': { transform: 'rotate(0deg)' }, '100%': { transform: 'rotate(360deg)' } },
+                        float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-6px)' } },
+                    },
+                    animation: {
+                        shimmer: 'shimmer 1.8s infinite',
+                        toastIn: 'toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+                        spin: 'spin 0.6s linear infinite',
+                        float: 'float 4s ease-in-out infinite',
+                    },
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * {
+            font-family: 'Sahel', 'Vazirmatn', system-ui, sans-serif !important;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #050508;
+            color: #d1d5db;
+            line-height: 1.8;
+            font-weight: 400;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #050508; }
+        ::-webkit-scrollbar-thumb { background: #1c1c2a; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #28283a; }
+
+        .grid-bg {
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+
+        .btn-primary {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            background: #7c3aed;
+            box-shadow: 0 8px 30px -8px rgba(124, 58, 237, 0.4);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            border-radius: 16px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 14px;
+            text-decoration: none;
+            cursor: pointer;
+            min-width: 180px;
+            justify-content: center;
+        }
+        .btn-primary:hover {
+            background: #8b5cf6;
+            box-shadow: 0 12px 40px -8px rgba(139, 92, 246, 0.5);
+            transform: translateY(-2px);
+        }
+        .btn-primary:active { transform: scale(0.97); }
+
+        .btn-outline {
+            padding: 14px 28px;
+            border-radius: 16px;
+            color: #9ca3af;
+            font-weight: 600;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            min-width: 160px;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(167, 139, 250, 0.3);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .error-card {
+            background: #0c0c14;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 24px;
+            padding: 48px 40px 40px;
+            max-width: 480px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            box-shadow: 0 25px 60px -20px rgba(0, 0, 0, 0.6);
+        }
+        .error-card:hover {
+            border-color: rgba(139, 92, 246, 0.15);
+        }
+
+        .status-code-number {
+            font-size: 80px;
+            font-weight: 900;
+            line-height: 1;
+            letter-spacing: -2px;
+            margin-bottom: 8px;
+            display: block;
+            animation: float 4s ease-in-out infinite;
+        }
+        .status-code-number.code-400 { background: linear-gradient(135deg, #fbbf24, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .status-code-number.code-401 { background: linear-gradient(135deg, #fbbf24, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .status-code-number.code-403 { background: linear-gradient(135deg, #f87171, #ef4444); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .status-code-number.code-404 { background: linear-gradient(135deg, #a78bfa, #7c3aed); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .status-code-number.code-409 { background: linear-gradient(135deg, #fbbf24, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .status-code-number.code-422 { background: linear-gradient(135deg, #fbbf24, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .status-code-number.code-429 { background: linear-gradient(135deg, #fbbf24, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .status-code-number.code-500 { background: linear-gradient(135deg, #f87171, #ef4444); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .status-code-number.code-503 { background: linear-gradient(135deg, #f87171, #ef4444); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .status-code-number.code-default { background: linear-gradient(135deg, #f87171, #ef4444); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+        .status-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #6b7280;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .error-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .error-message {
+            font-size: 14px;
+            color: #9ca3af;
+            margin-bottom: 28px;
+            line-height: 1.9;
+        }
+
+        .divider {
+            width: 40px;
+            height: 2px;
+            background: rgba(139, 92, 246, 0.3);
+            margin: 0 auto 20px;
+            border-radius: 2px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 900;
+            color: #fff;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 28px;
+            transition: opacity 0.3s ease;
+            letter-spacing: -1px;
+        }
+        .logo span {
+            background: linear-gradient(135deg, #a78bfa, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .logo:hover { opacity: 0.85; }
+
+        @media (max-width: 480px) {
+            .error-card { padding: 32px 20px 28px; border-radius: 20px; }
+            .status-code-number { font-size: 56px; }
+            .error-title { font-size: 20px; }
+            .btn-primary, .btn-outline { min-width: 140px; padding: 12px 20px; font-size: 13px; }
+            .logo { font-size: 24px; }
+        }
+    </style>
+</head>
+<body class="antialiased bg-[#050508] grid-bg">
+
+    <%
+        const isAuthError = [401, 403].includes(statusCode);
+        const isNotFound = statusCode === 404;
+        const isValidation = [400, 422].includes(statusCode);
+        const isServerError = statusCode >= 500;
+        const isConflict = statusCode === 409;
+
+        let glowColor = '#7c3aed';
+        let codeClass = 'default';
+
+        if (isAuthError) {
+            glowColor = '#f59e0b';
+            codeClass = statusCode === 401 ? '401' : '403';
+        } else if (isNotFound) {
+            glowColor = '#7c3aed';
+            codeClass = '404';
+        } else if (isValidation) {
+            glowColor = '#f59e0b';
+            codeClass = statusCode === 400 ? '400' : '422';
+        } else if (isConflict) {
+            glowColor = '#f59e0b';
+            codeClass = '409';
+        } else if (isServerError) {
+            glowColor = '#ef4444';
+            codeClass = statusCode === 500 ? '500' : '503';
+        }
+
+        let pageTitle = 'خطایی رخ داد';
+        if (isAuthError && statusCode === 401) pageTitle = 'دسترسی غیرمجاز';
+        else if (isAuthError && statusCode === 403) pageTitle = 'دسترسی ممنوع';
+        else if (isNotFound) pageTitle = 'صفحه پیدا نشد';
+        else if (isValidation) pageTitle = 'داده‌های نامعتبر';
+        else if (isConflict) pageTitle = 'اطلاعات تکراری';
+        else if (isServerError && statusCode === 500) pageTitle = 'خطای داخلی سرور';
+        else if (isServerError) pageTitle = 'سرویس در دسترس نیست';
+    %>
+
+    <!-- Glow Orbs -->
+    <div style="position: fixed; top: 20%; right: 20%; width: 400px; height: 400px; background: <%= glowColor %>; border-radius: 50%; filter: blur(150px); opacity: 0.06; pointer-events: none;"></div>
+    <div style="position: fixed; bottom: 15%; left: 25%; width: 300px; height: 300px; background: <%= glowColor %>; border-radius: 50%; filter: blur(120px); opacity: 0.04; pointer-events: none;"></div>
+
+    <!-- Content -->
+    <div class="relative z-10 text-center px-4">
+
+        <!-- Logo -->
+        <a href="/" class="logo">فاکتور<span>یتو</span></a>
+
+        <!-- Error Card -->
+        <div class="error-card">
+
+            <!-- Status Code -->
+            <span class="status-label">خطا</span>
+            <span class="status-code-number code-<%= codeClass %>"><%= statusCode %></span>
+
+            <!-- Divider -->
+            <div class="divider"></div>
+
+            <!-- Title -->
+            <h1 class="error-title"><%= pageTitle %></h1>
+
+            <!-- Message -->
+            <p class="error-message"><%= message %></p>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row gap-3 justify-center items-center">
+                <% if (isLoggedIn) { %>
+                    <a href="/dashboard" class="btn-primary">
+                        <i class="bi bi-speedometer2"></i>
+                        رفتن به داشبورد
+                    </a>
+                <% } else if (isAuthError) { %>
+                    <a href="/auth/login" class="btn-primary">
+                        <i class="bi bi-box-arrow-in-right"></i>
+                        ورود مجدد
+                    </a>
+                <% } else { %>
+                    <a href="/" class="btn-primary">
+                        <i class="bi bi-house"></i>
+                        صفحه اصلی
+                    </a>
+                <% } %>
+
+                <% if (isLoggedIn) { %>
+                    <a href="/" class="btn-outline">
+                        <i class="bi bi-house"></i>
+                        صفحه اصلی
+                    </a>
+                <% } %>
+            </div>
+
+        </div>
+
+    </div>
+</body>
+</html>

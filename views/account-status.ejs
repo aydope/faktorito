@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" class="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title><%= title %> | فاکتوریتو</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/sahel-font@v3.4.0/dist/font-face.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sahel': ['Sahel', 'Vazirmatn', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        ink: {
+                            950: '#050508', 900: '#0c0c14', 800: '#14141f', 700: '#1c1c2a',
+                            600: '#28283a', 500: '#36364c', 400: '#4a4a63',
+                        },
+                        accent: {
+                            400: '#a78bfa', 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9', 800: '#5b21b6', 900: '#4c1d95',
+                        },
+                        gold: { 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309' },
+                        success: { 300: '#6ee7b7', 400: '#34d399', 500: '#10b981', 600: '#059669' },
+                    },
+                    boxShadow: {
+                        'glow': '0 0 32px rgba(124, 58, 237, 0.35)',
+                        'glow-lg': '0 8px 40px rgba(124, 58, 237, 0.45)',
+                        'card': '0 10px 40px -10px rgba(0, 0, 0, 0.4)',
+                    },
+                    borderRadius: { 'xl': '12px', '2xl': '16px', '3xl': '24px' },
+                    keyframes: {
+                        shimmer: { '0%': { backgroundPosition: '200% 0' }, '100%': { backgroundPosition: '-200% 0' } },
+                        pulseGlow: { '0%, 100%': { filter: 'drop-shadow(0 0 30px rgba(245, 158, 11, 0.3))' }, '50%': { filter: 'drop-shadow(0 0 60px rgba(245, 158, 11, 0.6))' } },
+                        floatOrb: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-8px)' } },
+                    },
+                    animation: {
+                        shimmer: 'shimmer 1.8s infinite',
+                        pulseGlow: 'pulseGlow 3s ease-in-out infinite',
+                        floatOrb: 'floatOrb 4s ease-in-out infinite',
+                    },
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * {
+            font-family: 'Sahel', 'Vazirmatn', system-ui, sans-serif !important;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #050508;
+            color: #d1d5db;
+            line-height: 1.8;
+            font-weight: 400;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #050508; }
+        ::-webkit-scrollbar-thumb { background: #1c1c2a; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #28283a; }
+
+        .grid-bg {
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+
+        .status-card {
+            background: #0c0c14;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 24px;
+            padding: 48px 32px 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 60px -20px rgba(0, 0, 0, 0.6);
+        }
+        .status-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.03) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 14px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        .status-badge.suspended {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            color: #fcd34d;
+        }
+        .status-badge.disabled {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            color: #fca5a5;
+        }
+
+        .badge-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulseDot 2s ease-in-out infinite;
+        }
+        .badge-dot.warning { background: #fcd34d; }
+        .badge-dot.danger { background: #fca5a5; }
+
+        @keyframes pulseDot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .status-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 28px;
+            animation: floatOrb 4s ease-in-out infinite;
+        }
+        .status-icon.warning {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            color: #fcd34d;
+        }
+        .status-icon.danger {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            color: #fca5a5;
+        }
+
+        .status-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        .status-desc {
+            font-size: 14px;
+            color: #9ca3af;
+            margin-bottom: 12px;
+        }
+
+        .status-reason {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            padding: 6px 16px;
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 28px;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 28px;
+            background: #7c3aed;
+            border-radius: 16px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 14px;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            box-shadow: 0 8px 30px -8px rgba(124, 58, 237, 0.4);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            text-decoration: none;
+            width: 100%;
+        }
+        .btn-primary:hover {
+            background: #8b5cf6;
+            box-shadow: 0 12px 40px -8px rgba(139, 92, 246, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 900;
+            color: #fff;
+            text-decoration: none;
+            display: inline-block;
+            margin: 0 auto 24px;
+            transition: opacity 0.3s ease;
+            letter-spacing: -1px;
+        }
+        .logo span {
+            background: linear-gradient(135deg, #a78bfa, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .logo:hover { opacity: 0.85; }
+
+        .divider {
+            width: 40px;
+            height: 2px;
+            background: rgba(139, 92, 246, 0.2);
+            margin: 14px auto;
+            border-radius: 2px;
+        }
+
+        @media (max-width: 480px) {
+            .status-card { padding: 32px 20px 28px; border-radius: 20px; }
+            .status-title { font-size: 20px; }
+            .logo { font-size: 24px; }
+            .status-icon { width: 52px; height: 52px; font-size: 24px; }
+        }
+    </style>
+</head>
+<body class="antialiased bg-[#050508] grid-bg">
+
+    <!-- Glow effects -->
+    <div style="position: fixed; top: 25%; right: 15%; width: 350px; height: 350px; background: <%= isSuspended ? '#f59e0b' : '#ef4444' %>; border-radius: 50%; filter: blur(140px); opacity: 0.06; pointer-events: none;"></div>
+    <div style="position: fixed; bottom: 20%; left: 20%; width: 300px; height: 300px; background: #7c3aed; border-radius: 50%; filter: blur(120px); opacity: 0.04; pointer-events: none;"></div>
+
+    <!-- Content -->
+    <div class="relative z-10 text-center px-4 max-w-lg w-full">
+
+        <!-- Logo -->
+        <a href="/" class="logo">فاکتور<span>یتو</span></a>
+
+        <!-- Status Card -->
+        <div class="status-card">
+
+            <!-- Icon -->
+            <div class="status-icon <%= isSuspended ? 'warning' : 'danger' %>">
+                <i class="bi <%= isSuspended ? 'bi-pause-circle' : 'bi-x-circle' %>"></i>
+            </div>
+
+            <!-- Badge -->
+            <div class="status-badge <%= isSuspended ? 'suspended' : 'disabled' %>">
+                <span class="badge-dot <%= isSuspended ? 'warning' : 'danger' %>"></span>
+                <%= isSuspended ? 'تعلیق موقت' : 'غیرفعال' %>
+            </div>
+
+            <!-- Title -->
+            <h1 class="status-title">
+                <%= title %>
+            </h1>
+
+            <!-- Description -->
+            <p class="status-desc">
+                حساب کاربری شما
+                <%= isSuspended ? 'به طور موقت تعلیق شده است' : 'غیرفعال شده است' %>
+            </p>
+
+            <!-- Divider -->
+            <div class="divider"></div>
+
+            <!-- Reason -->
+            <span class="status-reason">
+                <i class="bi bi-shield-check ml-1"></i>
+                اقدام امنیتی توسط سیستم
+            </span>
+
+            <!-- Buttons -->
+            <div class="flex flex-col gap-3">
+                <a href="/" class="btn-primary">
+                    <i class="bi bi-house"></i>
+                    صفحه اصلی
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

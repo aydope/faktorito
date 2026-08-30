@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" class="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>تعداد درخواست‌ها بیش از حد مجاز | فاکتوریتو</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/sahel-font@v3.4.0/dist/font-face.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sahel': ['Sahel', 'Vazirmatn', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        ink: {
+                            950: '#050508', 900: '#0c0c14', 800: '#14141f', 700: '#1c1c2a',
+                            600: '#28283a', 500: '#36364c', 400: '#4a4a63',
+                        },
+                        accent: {
+                            400: '#a78bfa', 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9', 800: '#5b21b6', 900: '#4c1d95',
+                        },
+                        gold: { 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309' },
+                        success: { 300: '#6ee7b7', 400: '#34d399', 500: '#10b981', 600: '#059669' },
+                    },
+                    boxShadow: {
+                        'glow': '0 0 32px rgba(124, 58, 237, 0.35)',
+                        'glow-lg': '0 8px 40px rgba(124, 58, 237, 0.45)',
+                        'card': '0 10px 40px -10px rgba(0, 0, 0, 0.4)',
+                    },
+                    borderRadius: { 'xl': '12px', '2xl': '16px', '3xl': '24px' },
+                    keyframes: {
+                        shimmer: { '0%': { backgroundPosition: '200% 0' }, '100%': { backgroundPosition: '-200% 0' } },
+                        toastIn: { '0%': { opacity: '0', transform: 'translateX(-50%) translateY(8px)' }, '100%': { opacity: '1', transform: 'translateX(-50%) translateY(0)' } },
+                        spin: { '0%': { transform: 'rotate(0deg)' }, '100%': { transform: 'rotate(360deg)' } },
+                        pulse: { '0%, 100%': { opacity: '1' }, '50%': { opacity: '0.5' } },
+                    },
+                    animation: {
+                        shimmer: 'shimmer 1.8s infinite',
+                        toastIn: 'toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+                        spin: 'spin 0.6s linear infinite',
+                        pulse: 'pulse 2s ease-in-out infinite',
+                    },
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * { font-family: 'Sahel', 'Vazirmatn', system-ui, sans-serif !important; margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #050508; color: #d1d5db; line-height: 1.8; overflow-y: auto; min-height: 100vh; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #050508; }
+        ::-webkit-scrollbar-thumb { background: #1c1c2a; border-radius: 10px; }
+        .grid-bg { background-image: linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px); background-size: 60px 60px; }
+
+        .error-card {
+            background: #0c0c14;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 20px;
+            padding: 32px 28px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.5);
+        }
+        .error-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ef4444, #fca5a5, #ef4444, transparent);
+        }
+
+        .error-icon-wrapper {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            background: rgba(239, 68, 68, 0.06);
+            border: 1px solid rgba(239, 68, 68, 0.15);
+            color: #fca5a5;
+            font-size: 28px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .error-title { font-size: 18px; font-weight: 800; color: #fff; text-align: center; margin-bottom: 4px; }
+        .error-desc { font-size: 12px; color: #6b7280; text-align: center; margin-bottom: 16px; }
+
+        .time-message {
+            font-size: 13px;
+            font-weight: 700;
+            color: #fca5a5;
+            text-align: center;
+            background: rgba(239, 68, 68, 0.04);
+            border: 1px solid rgba(239, 68, 68, 0.1);
+            border-radius: 10px;
+            padding: 10px 14px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .time-message i { font-size: 14px; }
+
+        .btn-action {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 12px 20px;
+            background: #7c3aed;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 12px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 13px;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: 0 8px 30px -8px rgba(124, 58, 237, 0.4);
+        }
+        .btn-action:hover:not(:disabled) { background: #8b5cf6; box-shadow: 0 12px 40px -8px rgba(139, 92, 246, 0.5); transform: translateY(-2px); }
+        .btn-action:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+        .btn-action i { font-size: 16px; }
+
+        @media (max-width: 480px) {
+            .error-card { padding: 24px 18px; }
+            .error-icon-wrapper { width: 52px; height: 52px; font-size: 22px; border-radius: 14px; }
+            .error-title { font-size: 16px; }
+            .time-message { font-size: 12px; padding: 8px 12px; }
+            .btn-action { padding: 10px 16px; font-size: 12px; }
+        }
+    </style>
+</head>
+<body class="antialiased bg-[#050508] grid-bg">
+
+    <main class="max-w-md mx-auto px-5 relative z-10 flex items-center justify-center" style="min-height: 100vh; padding: 30px 0;">
+        <div class="w-full">
+            <div class="error-card">
+                <div class="error-icon-wrapper">
+                    <i class="bi bi-hourglass-split"></i>
+                </div>
+
+                <h1 class="error-title">درخواست‌های زیادی ارسال کردید</h1>
+                <p class="error-desc">برای جلوگیری از فشار روی سرور، کمی صبر کنید و دوباره تلاش کنید.</p>
+
+                <div class="time-message" id="timeMessage">
+                    <i class="bi bi-clock"></i>
+                    <span id="timeText">در حال محاسبه...</span>
+                </div>
+
+                <button class="btn-action" id="actionBtn" disabled>
+                    <i class="bi bi-hourglass-top"></i>
+                    <span id="btnText">لطفاً صبر کنید...</span>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        (function () {
+            var resetTime = new Date("<%= resetTime %>").getTime();
+            var redirectTo = '<%= redirectTo || "/dashboard" %>';
+
+            var timeText = document.getElementById("timeText");
+            var actionBtn = document.getElementById("actionBtn");
+            var btnText = document.getElementById("btnText");
+
+            function getTimeMessage(seconds) {
+                if (seconds <= 0) return "همین حالا می‌توانید تلاش کنید";
+                var minutes = Math.floor(seconds / 60);
+                var hours = Math.floor(minutes / 60);
+                var days = Math.floor(hours / 24);
+                if (days > 0) return "حدود " + days + " روز دیگر";
+                if (hours > 0) {
+                    var remainingMinutes = minutes - hours * 60;
+                    if (remainingMinutes > 0) return "حدود " + hours + " ساعت و " + remainingMinutes + " دقیقه دیگر";
+                    return "حدود " + hours + " ساعت دیگر";
+                }
+                if (minutes > 0) {
+                    var remainingSeconds = seconds - minutes * 60;
+                    if (remainingSeconds > 30) return "حدود " + minutes + " دقیقه و " + remainingSeconds + " ثانیه دیگر";
+                    return "حدود " + minutes + " دقیقه دیگر";
+                }
+                if (seconds > 30) return "کمتر از یک دقیقه دیگر";
+                return "چند ثانیه دیگر";
+            }
+
+            function updateTimer() {
+                var now = Date.now();
+                var remaining = Math.max(0, Math.floor((resetTime - now) / 1000));
+                timeText.textContent = getTimeMessage(remaining);
+                if (remaining <= 0) {
+                    timeText.textContent = "همین حالا می‌توانید تلاش کنید";
+                    actionBtn.disabled = false;
+                    btnText.textContent = "رفتن به صفحه اصلی";
+                    actionBtn.innerHTML = '<i class="bi bi-house-door"></i> <span>رفتن به صفحه اصلی</span>';
+                    clearInterval(interval);
+                    return;
+                }
+                actionBtn.disabled = true;
+                btnText.textContent = "لطفاً صبر کنید...";
+                actionBtn.innerHTML = '<i class="bi bi-hourglass-top"></i> <span>لطفاً صبر کنید...</span>';
+            }
+
+            var interval = setInterval(updateTimer, 1000);
+            updateTimer();
+
+            actionBtn.addEventListener("click", function () {
+                if (!actionBtn.disabled) window.location.href = redirectTo;
+            });
+
+            window.addEventListener("beforeunload", function () { clearInterval(interval); });
+        })();
+    </script>
+</body>
+</html>

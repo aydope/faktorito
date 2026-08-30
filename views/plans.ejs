@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" class="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>مدیریت پلن‌ها | فاکتوریتو</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/sahel-font@v3.4.0/dist/font-face.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sahel': ['Sahel', 'Vazirmatn', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        ink: {
+                            950: '#050508', 900: '#0c0c14', 800: '#14141f', 700: '#1c1c2a',
+                            600: '#28283a', 500: '#36364c', 400: '#4a4a63',
+                        },
+                        accent: {
+                            400: '#a78bfa', 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9', 800: '#5b21b6', 900: '#4c1d95',
+                        },
+                        gold: { 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309' },
+                        success: { 300: '#6ee7b7', 400: '#34d399', 500: '#10b981', 600: '#059669' },
+                    },
+                    boxShadow: {
+                        'glow': '0 0 32px rgba(124, 58, 237, 0.35)',
+                        'glow-lg': '0 8px 40px rgba(124, 58, 237, 0.45)',
+                        'card': '0 10px 40px -10px rgba(0, 0, 0, 0.4)',
+                    },
+                    borderRadius: { 'xl': '12px', '2xl': '16px', '3xl': '24px' },
+                    keyframes: {
+                        shimmer: { '0%': { backgroundPosition: '200% 0' }, '100%': { backgroundPosition: '-200% 0' } },
+                        toastIn: { '0%': { opacity: '0', transform: 'translateX(-50%) translateY(8px)' }, '100%': { opacity: '1', transform: 'translateX(-50%) translateY(0)' } },
+                        spin: { '0%': { transform: 'rotate(0deg)' }, '100%': { transform: 'rotate(360deg)' } },
+                        slideIn: { '0%': { transform: 'translateX(110%)' }, '100%': { transform: 'translateX(0)' } },
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                    },
+                    animation: {
+                        shimmer: 'shimmer 1.8s infinite',
+                        toastIn: 'toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+                        spin: 'spin 0.6s linear infinite',
+                        slideIn: 'slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                        fadeIn: 'fadeIn 0.3s ease',
+                    },
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * {
+            font-family: 'Sahel', 'Vazirmatn', system-ui, sans-serif !important;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #050508;
+            color: #d1d5db;
+            line-height: 1.8;
+            font-weight: 400;
+            letter-spacing: -0.1px;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            min-height: 100vh;
+        }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: #050508; }
+        ::-webkit-scrollbar-thumb { background: #1c1c2a; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #28283a; }
+
+        .grid-bg {
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+
+        .glass-header {
+            background: rgba(12, 12, 20, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.4);
+        }
+
+        .card {
+            background: #0c0c14;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .plan-row {
+            background: #0c0c14;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .plan-row::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(180deg, #7c3aed, #a78bfa);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .plan-row:hover {
+            border-color: rgba(139, 92, 246, 0.2);
+            background: #10101a;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px -12px rgba(0,0,0,0.5);
+        }
+        .plan-row:hover::before {
+            opacity: 1;
+        }
+
+        .btn-primary {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            background: #7c3aed;
+            box-shadow: 0 8px 30px -8px rgba(124, 58, 237, 0.4);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+        .btn-primary:hover {
+            background: #8b5cf6;
+            box-shadow: 0 12px 40px -8px rgba(139, 92, 246, 0.5);
+            transform: translateY(-2px);
+        }
+        .btn-primary:active {
+            transform: scale(0.97);
+        }
+
+        .nav-link {
+            color: #9ca3af;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 10px;
+            transition: all 0.25s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid transparent;
+            background: transparent;
+        }
+        .nav-link:hover { color: #fff; background: rgba(255,255,255,0.04); }
+        .nav-link.active { color: #c4b5fd; background: rgba(139,92,246,0.08); border-color: rgba(139,92,246,0.2); }
+        .nav-link i { font-size: 16px; }
+
+        .dropdown-trigger {
+            display: flex; align-items: center; gap: 10px; padding: 4px 12px 4px 6px;
+            background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 50px; cursor: pointer; transition: all 0.3s ease; color: #d1d5db;
+            font-weight: 500; font-size: 14px;
+        }
+        .dropdown-trigger:hover { background: rgba(255, 255, 255, 0.05); border-color: rgba(139, 92, 246, 0.4); }
+        .avatar {
+            width: 34px; height: 34px; border-radius: 50%;
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 14px; color: #fff; flex-shrink: 0;
+        }
+        .dropdown-menu {
+            position: absolute; top: calc(100% + 10px); left: 0; min-width: 260px;
+            background: #14141f; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px;
+            padding: 10px; box-shadow: 0 25px 50px -15px rgba(0, 0, 0, 0.6);
+            opacity: 0; visibility: hidden; transform: translateY(-8px) scale(0.97);
+            transition: all 0.25s cubic-bezier(0.23, 1, 0.32, 1); z-index: 100;
+        }
+        .dropdown-menu.active { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
+        .dropdown-item {
+            display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 10px;
+            color: #9ca3af; font-size: 14px; font-weight: 500; transition: all 0.2s ease;
+            cursor: pointer; text-decoration: none; background: none; border: none; width: 100%; text-align: right;
+        }
+        .dropdown-item:hover { background: rgba(139, 92, 246, 0.08); color: #c4b5fd; }
+        .dropdown-item i { font-size: 17px; width: 20px; text-align: center; }
+        .dropdown-item.danger:hover { background: rgba(220, 38, 38, 0.12); color: #f87171; }
+        .dropdown-divider { height: 1px; background: rgba(255, 255, 255, 0.05); margin: 6px 8px; }
+
+        .mega-menu {
+            position: fixed; top: 80px; right: 50%; transform: translateX(50%) translateY(-8px);
+            width: min(90%, 500px); background: #14141f; border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px; padding: 16px; box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+            opacity: 0; visibility: hidden; transition: all 0.3s cubic-bezier(0.23,1,0.32,1); z-index: 200;
+        }
+        .mega-menu.active { opacity: 1; visibility: visible; transform: translateX(50%) translateY(0); }
+        .mega-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+        .mega-item {
+            display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 12px;
+            transition: all 0.2s ease; text-decoration: none; color: #9ca3af;
+        }
+        .mega-item:hover { background: rgba(139,92,246,0.06); color: #fff; }
+        .mega-item i { font-size: 20px; width: 24px; text-align: center; color: #a78bfa; }
+        .mega-item .mega-title { font-size: 14px; font-weight: 700; color: #e5e7eb; }
+        .mega-item .mega-desc { font-size: 11px; color: #6b7280; }
+
+        .sidebar {
+            position: fixed; top: 0; right: 0; bottom: 0; width: 85%; max-width: 320px;
+            background: #0c0c14; border-left: 1px solid rgba(255,255,255,0.06); z-index: 300;
+            padding: 20px; overflow-y: auto; transform: translateX(110%);
+            transition: transform 0.4s cubic-bezier(0.23,1,0.32,1);
+        }
+        .sidebar.open { transform: translateX(0); }
+        .sidebar-overlay {
+            position: fixed; inset: 0; background: rgba(5,5,8,0.7); backdrop-filter: blur(4px);
+            z-index: 290; opacity: 0; visibility: hidden; transition: all 0.3s ease;
+        }
+        .sidebar-overlay.active { opacity: 1; visibility: visible; }
+
+        .sidebar-link {
+            display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 12px;
+            color: #9ca3af; font-size: 14px; font-weight: 500; transition: all 0.2s ease;
+            text-decoration: none; margin-bottom: 2px; border: 1px solid transparent;
+        }
+        .sidebar-link i { font-size: 18px; width: 22px; text-align: center; }
+        .sidebar-link:hover { background: rgba(255,255,255,0.04); color: #fff; }
+        .sidebar-link.active { background: rgba(139,92,246,0.08); color: #c4b5fd; border-color: rgba(139,92,246,0.2); }
+        .sidebar-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 12px 0; }
+
+        .status-badge {
+            display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px;
+            border-radius: 20px; font-size: 11px; font-weight: 600;
+        }
+        .status-active { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); color: #6ee7b7; }
+        .status-inactive { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: #fca5a5; }
+
+        .action-btn {
+            width: 36px; height: 36px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s ease; cursor: pointer;
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+            color: #6b7280; font-size: 14px; outline: none;
+        }
+        .action-btn:hover { background: rgba(139,92,246,0.08); border-color: rgba(139,92,246,0.3); color: #a78bfa; }
+        .action-btn.toggle-active:hover { background: rgba(239,68,68,0.08); border-color: rgba(239,68,68,0.3); color: #fca5a5; }
+        .action-btn.toggle-inactive:hover { background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.3); color: #6ee7b7; }
+        .action-btn.delete:hover { background: rgba(239,68,68,0.08); border-color: rgba(239,68,68,0.3); color: #fca5a5; }
+
+        .input-field {
+            width: 100%; padding: 12px 14px;
+            background: #0c0c14; border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px; color: #fff; font-size: 14px;
+            transition: all 0.3s ease; outline: none;
+        }
+        .input-field:focus { border-color: rgba(139,92,246,0.4); box-shadow: 0 0 0 3px rgba(139,92,246,0.05); }
+        .input-field::placeholder { color: #4a4a63; }
+        .input-field.error { border-color: rgba(239,68,68,0.4); box-shadow: 0 0 0 3px rgba(239,68,68,0.05); }
+
+        .error-text { font-size: 11px; color: #fca5a5; margin-top: 4px; display: none; }
+        .error-text.show { display: block; }
+
+        .field-hint {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            color: #6b7280;
+            margin-bottom: 4px;
+        }
+        .field-hint i {
+            font-size: 11px;
+            color: #a78bfa;
+        }
+
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(5, 5, 8, 0.85);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 400; opacity: 0; visibility: hidden; transition: all 0.3s ease;
+        }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-dialog {
+            background: #14141f; border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px; padding: 28px; max-width: 440px; width: 90%;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
+            transform: scale(0.92) translateY(16px); transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-height: 90vh; overflow-y: auto;
+        }
+        .modal-overlay.active .modal-dialog { transform: scale(1) translateY(0); }
+
+        .plan-limit-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 6px 16px; border-radius: 50px;
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+            font-size: 13px; font-weight: 600; color: #9ca3af;
+        }
+        .plan-limit-badge.warning { border-color: rgba(245,158,11,0.2); color: #fcd34d; }
+        .plan-limit-badge.danger { border-color: rgba(239,68,68,0.2); color: #fca5a5; }
+
+        .toast {
+            position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+            background: rgba(20,20,31,0.95); backdrop-filter: blur(12px);
+            color: #fff; padding: 12px 24px; border-radius: 50px;
+            font-size: 13px; font-weight: 600; z-index: 500;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            border: 1px solid rgba(139,92,246,0.3);
+            display: none; animation: toastIn 0.3s ease;
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, rgba(124, 58, 237, 0.1) 0%, rgba(139, 92, 246, 0.2) 50%, rgba(124, 58, 237, 0.1) 100%);
+            background-size: 200% 100%; animation: shimmer 1.8s infinite; border-radius: 6px;
+        }
+
+        .counter {
+            font-size: 10px;
+            color: #6b7280;
+            transition: color 0.3s ease;
+        }
+        .counter.warning { color: #fcd34d; }
+        .counter.danger { color: #fca5a5; }
+
+        @media (min-width: 769px) {
+            .mobile-only { display: none !important; }
+        }
+        @media (max-width: 768px) {
+            .desktop-only { display: none !important; }
+        }
+    </style>
+</head>
+<body class="antialiased bg-[#050508] grid-bg">
+
+    <!-- ========== SIDEBAR (Mobile) ========== -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+    <div class="sidebar" id="sidebar">
+        <div class="flex items-center justify-between mb-6 pb-4 border-b border-white/5">
+            <a href="/dashboard" class="flex items-center gap-2.5 no-underline">
+                <div class="w-9 h-9 bg-gradient-to-br from-accent-700 to-accent-500 rounded-xl flex items-center justify-center text-white font-extrabold text-lg">ف</div>
+                <span class="font-extrabold text-xl text-white">فاکتوریتو</span>
+            </a>
+            <button onclick="closeSidebar()" class="action-btn"><i class="bi bi-x-lg"></i></button>
+        </div>
+
+        <div class="space-y-1">
+            <div class="text-xs font-bold text-gray-500 px-3 mb-2">منوی اصلی</div>
+            <a href="/dashboard" class="sidebar-link"><i class="bi bi-speedometer2"></i> داشبورد</a>
+            <a href="/invoices" class="sidebar-link"><i class="bi bi-receipt"></i> فاکتورها</a>
+            <a href="/plans" class="sidebar-link active"><i class="bi bi-collection"></i> پلن‌ها</a>
+            <a href="/profile" class="sidebar-link"><i class="bi bi-person"></i> پروفایل</a>
+            <a href="/settings" class="sidebar-link"><i class="bi bi-gear"></i> تنظیمات</a>
+            <% if (user.role && ["admin", "moderator"].includes(user.role)) { %>
+            <a href="/admin/dashboard" class="sidebar-link"><i class="bi bi-shield"></i> مدیریت سیستم</a>
+            <% } %>
+        </div>
+
+        <div class="sidebar-divider"></div>
+        <button onclick="openLogoutModal(); closeSidebar();" class="sidebar-link w-full text-red-400 hover:text-red-300 hover:bg-red-500/5"><i class="bi bi-box-arrow-right"></i> خروج از حساب</button>
+    </div>
+
+    <!-- ========== HEADER ========== -->
+    <header class="fixed top-0 right-0 left-0 z-50 px-4 md:px-6 py-4">
+        <div class="max-w-5xl mx-auto glass-header rounded-2xl px-4 md:px-5 py-2.5 flex items-center justify-between">
+            <a href="/dashboard" class="flex items-center gap-2.5 no-underline shrink-0 group">
+                <div class="w-9 h-9 bg-gradient-to-br from-accent-700 to-accent-500 rounded-xl flex items-center justify-center text-white font-extrabold text-lg shadow-glow group-hover:shadow-glow-lg transition-all">ف</div>
+                <span class="font-extrabold text-xl md:text-2xl text-white tracking-tight group-hover:text-accent-400 transition-colors">فاکتوریتو</span>
+            </a>
+
+            <div class="hidden md:flex items-center gap-1 desktop-only">
+                <a href="/dashboard" class="nav-link"><i class="bi bi-speedometer2"></i> داشبورد</a>
+                <a href="/plans" class="nav-link active"><i class="bi bi-collection"></i> پلن‌ها</a>
+                <button onclick="toggleMegaMenu()" class="nav-link" id="megaMenuBtn">
+                    <i class="bi bi-grid-1x2"></i> بیشتر
+                    <i class="bi bi-chevron-down text-[10px]" id="megaCaret"></i>
+                </button>
+            </div>
+
+            <div class="flex items-center gap-2.5">
+                <% if (typeof plans !== 'undefined' && plans.length < 7) { %>
+                <button onclick="openAddModal()" class="btn-primary hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-xl text-white font-semibold text-sm">
+                    <i class="bi bi-plus-lg"></i> پلن جدید
+                </button>
+                <% } %>
+
+                <div class="relative" id="userDropdown">
+                    <button class="dropdown-trigger" onclick="toggleDropdown(event)" aria-label="منوی کاربری">
+                        <div class="avatar">
+                            <%= user ? user.username.charAt(0).toUpperCase() : 'U' %>
+                        </div>
+                        <span class="hidden sm:block max-w-[90px] truncate text-sm">
+                            <%= user ? user.username : 'کاربر' %>
+                        </span>
+                        <span class="hidden sm:inline-flex items-center justify-center transition-transform duration-300 text-[10px] text-gray-500" id="dropdownCaret">
+                            <i class="bi bi-chevron-down"></i>
+                        </span>
+                    </button>
+
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <div class="px-4 py-3">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="avatar w-11 h-11 text-base">
+                                    <%= user ? user.username.charAt(0).toUpperCase() : 'U' %>
+                                </div>
+                                <div>
+                                    <div class="text-sm font-bold text-white"><%= user ? user.username : 'کاربر' %></div>
+                                    <div class="text-xs text-gray-500"><%= user ? user.email : '' %></div>
+                                </div>
+                            </div>
+                            <% if (user && user.clubName) { %>
+                            <div class="bg-accent-700/10 border border-accent-700/20 rounded-lg px-3 py-2 text-xs text-accent-400 flex items-center gap-2">
+                                <i class="bi bi-building"></i> <%= user.clubName %>
+                            </div>
+                            <% } %>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <a href="/dashboard" class="dropdown-item"><i class="bi bi-speedometer2"></i> داشبورد</a>
+                        <a href="/profile" class="dropdown-item"><i class="bi bi-person"></i> پروفایل</a>
+                        <a href="/invoices" class="dropdown-item"><i class="bi bi-receipt"></i> فاکتورهای من</a>
+                        <a href="/settings" class="dropdown-item"><i class="bi bi-gear"></i> تنظیمات</a>
+                        <div class="dropdown-divider"></div>
+                        <button onclick="openLogoutModal(); closeDropdown();" class="dropdown-item w-full danger">
+                            <i class="bi bi-box-arrow-right"></i> خروج از حساب
+                        </button>
+                    </div>
+                </div>
+
+                <button onclick="openSidebar()" class="action-btn mobile-only md:hidden" aria-label="منو"><i class="bi bi-list"></i></button>
+            </div>
+        </div>
+
+        <!-- MEGA MENU -->
+        <div class="max-w-5xl mx-auto relative">
+            <div class="mega-menu" id="megaMenu">
+                <div class="mega-grid">
+                    <a href="/invoices" class="mega-item">
+                        <i class="bi bi-receipt"></i>
+                        <div>
+                            <div class="mega-title">فاکتورها</div>
+                            <div class="mega-desc">مدیریت فاکتورهای صادر شده</div>
+                        </div>
+                    </a>
+                    <a href="/profile" class="mega-item">
+                        <i class="bi bi-person"></i>
+                        <div>
+                            <div class="mega-title">پروفایل</div>
+                            <div class="mega-desc">اطلاعات حساب کاربری</div>
+                        </div>
+                    </a>
+                    <a href="/settings" class="mega-item">
+                        <i class="bi bi-gear"></i>
+                        <div>
+                            <div class="mega-title">تنظیمات</div>
+                            <div class="mega-desc">ترجیحات و امنیت</div>
+                        </div>
+                    </a>
+                    <% if (user.role && ["admin", "moderator"].includes(user.role)) { %>
+                    <a href="/admin/dashboard" class="mega-item">
+                        <i class="bi bi-shield"></i>
+                        <div>
+                            <div class="mega-title">مدیریت سیستم</div>
+                            <div class="mega-desc">کنترل کامل</div>
+                        </div>
+                    </a>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ========== MAIN CONTENT ========== -->
+    <main class="max-w-5xl mx-auto px-4 pt-28 pb-16 relative z-10">
+
+        <%
+            const planCount = typeof plans !== 'undefined' ? plans.length : 0;
+            const maxPlans = 7;
+            let limitClass = '';
+            if (planCount >= maxPlans) limitClass = 'danger';
+            else if (planCount >= 5) limitClass = 'warning';
+        %>
+
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-8">
+            <div>
+                <h1 class="text-3xl md:text-4xl font-black text-white tracking-tight mb-1">مدیریت پلن‌ها</h1>
+                <p class="text-gray-500 text-sm">پلن‌های عضویت باشگاه خود را مدیریت کنید</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="plan-limit-badge <%= limitClass %>">
+                    <i class="bi bi-tags"></i>
+                    <span class="font-black text-white"><%= planCount %></span>
+                    <span class="text-gray-500">از <%= maxPlans %></span>
+                </div>
+                <% if (planCount < maxPlans) { %>
+                <button onclick="openAddModal()" class="btn-primary md:hidden inline-flex items-center gap-2 px-4 py-2 rounded-xl text-white font-semibold text-sm">
+                    <i class="bi bi-plus-lg"></i> پلن جدید
+                </button>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Success Message -->
+        <% if (typeof success !== 'undefined' && success) { %>
+        <div class="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-4 mb-6 text-emerald-400 text-sm flex items-center gap-2">
+            <i class="bi bi-check-circle"></i> <%= success %>
+        </div>
+        <% } %>
+
+        <!-- Skeleton Loading for Plans -->
+        <div id="plansSkeleton" class="space-y-3">
+            <% for (let i = 0; i < 3; i++) { %>
+            <div class="plan-row rounded-2xl p-5 md:p-6">
+                <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="skeleton h-6 w-32 rounded"></div>
+                            <div class="skeleton h-6 w-16 rounded-full"></div>
+                        </div>
+                        <div class="skeleton h-4 w-48 rounded mb-3"></div>
+                        <div class="flex items-baseline gap-2">
+                            <div class="skeleton h-8 w-28 rounded"></div>
+                            <div class="skeleton h-4 w-12 rounded"></div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        <div class="skeleton w-9 h-9 rounded-lg"></div>
+                        <div class="skeleton w-9 h-9 rounded-lg"></div>
+                        <div class="skeleton w-9 h-9 rounded-lg"></div>
+                    </div>
+                </div>
+            </div>
+            <% } %>
+        </div>
+
+        <!-- Plans List (Hidden) -->
+        <div id="plansContent" class="space-y-3" style="display: none;">
+            <% if (planCount > 0) { %>
+                <% plans.forEach(function(plan) { %>
+                <div class="plan-row rounded-2xl p-5 md:p-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-3 mb-2 flex-wrap">
+                                <h3 class="text-lg font-extrabold text-white truncate"><%= plan.name %></h3>
+                                <span class="status-badge <%= plan.isActive ? 'status-active' : 'status-inactive' %>">
+                                    <i class="bi <%= plan.isActive ? 'bi-check-circle-fill' : 'bi-x-circle-fill' %> text-[10px]"></i>
+                                    <%= plan.isActive ? 'فعال' : 'غیرفعال' %>
+                                </span>
+                            </div>
+                            <% if (plan.description) { %>
+                            <p class="text-xs text-gray-500 mb-3 truncate"><%= plan.description %></p>
+                            <% } %>
+                            <div class="flex items-baseline gap-1.5">
+                                <span class="text-2xl font-black text-accent-400">
+                                    <%= plan.price.toLocaleString("fa-IR-u-nu-latn") %>
+                                </span>
+                                <span class="text-xs text-gray-500">تومان</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-1.5 shrink-0">
+                            <button onclick="openEditModal('<%= plan._id %>', '<%- plan.name %>', +'<%= plan.price %>', '<%- plan.description || `` %>')" class="action-btn" title="ویرایش">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button onclick="togglePlan('<%= plan._id %>')" class="action-btn <%= plan.isActive ? 'toggle-active' : 'toggle-inactive' %>" title="<%= plan.isActive ? 'غیرفعال کردن' : 'فعال کردن' %>">
+                                <i class="bi <%= plan.isActive ? 'bi-toggle-on' : 'bi-toggle-off' %>"></i>
+                            </button>
+                            <button onclick="openDeleteModal('<%= plan._id %>', '<%- plan.name %>')" class="action-btn delete" title="حذف">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <% }); %>
+            <% } else { %>
+                <div class="card rounded-3xl py-20 text-center">
+                    <div class="w-16 h-16 bg-accent-700/10 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-accent-700/20">
+                        <i class="bi bi-tags text-3xl text-accent-400"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">هیچ پلنی تعریف نشده</h3>
+                    <p class="text-gray-500 text-sm mb-8">پلن‌های عضویت باشگاه خود را ایجاد کنید</p>
+                    <% if (planCount < maxPlans) { %>
+                    <button onclick="openAddModal()" class="btn-primary inline-flex items-center gap-2 px-8 py-3.5 rounded-2xl text-white font-bold text-sm">
+                        <i class="bi bi-plus-lg"></i> ایجاد اولین پلن
+                    </button>
+                    <% } %>
+                </div>
+            <% } %>
+        </div>
+    </main>
+
+    <!-- ========== ADD/EDIT MODAL ========== -->
+    <div class="modal-overlay" id="planModal">
+        <div class="modal-dialog">
+            <h3 class="text-lg font-bold text-white mb-5" id="planModalTitle">پلن جدید</h3>
+            <form id="planForm" class="space-y-4" novalidate>
+                <input type="hidden" id="planId">
+
+                <div>
+                    <div class="flex justify-between items-center mb-1.5">
+                        <label class="text-xs font-semibold text-gray-400">نام پلن</label>
+                        <span class="counter" id="planNameCounter">0 / 24</span>
+                    </div>
+                    <div class="field-hint">
+                        <i class="bi bi-info-circle"></i>
+                        <span>بین ۲ تا ۲۴ کاراکتر</span>
+                    </div>
+                    <input type="text" id="planName" class="input-field" placeholder="مثلاً: عضویت طلایی" maxlength="24" minlength="2" required>
+                    <p class="error-text" id="planNameError"></p>
+                </div>
+
+                <div>
+                    <div class="flex justify-between items-center mb-1.5">
+                        <label class="text-xs font-semibold text-gray-400">قیمت (تومان)</label>
+                    </div>
+                    <div class="field-hint">
+                        <i class="bi bi-info-circle"></i>
+                        <span>حداکثر ۱۰۰,۰۰۰,۰۰۰ تومان</span>
+                    </div>
+                    <input type="text" id="planPrice" style="direction: ltr;" class="input-field text-left" placeholder="0" oninput="formatPlanPrice(this)" required>
+                    <p class="error-text" id="planPriceError"></p>
+                </div>
+
+                <div>
+                    <div class="flex justify-between items-center mb-1.5">
+                        <label class="text-xs font-semibold text-gray-400">توضیحات</label>
+                        <span class="counter" id="planDescCounter">0 / 128</span>
+                    </div>
+                    <div class="field-hint">
+                        <i class="bi bi-info-circle"></i>
+                        <span>حداکثر ۱۲۸ کاراکتر</span>
+                    </div>
+                    <textarea id="planDesc" rows="3" class="input-field resize-none" placeholder="توضیحات اختیاری..." maxlength="128"></textarea>
+                    <p class="error-text" id="planDescError"></p>
+                </div>
+
+                <div class="flex gap-3 justify-end pt-2">
+                    <button type="button" onclick="closeModal('planModal')" class="px-5 py-2.5 rounded-xl text-gray-300 font-semibold text-sm bg-white/5 border border-white/10 hover:bg-white/10 transition">انصراف</button>
+                    <button type="submit" class="btn-primary px-5 py-2.5 rounded-xl text-white font-semibold text-sm flex items-center gap-2" id="planSubmitBtn">
+                        <span>ذخیره</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========== DELETE MODAL ========== -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal-dialog text-center">
+            <div class="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5">
+                <i class="bi bi-trash text-red-400 text-3xl"></i>
+            </div>
+            <h3 class="text-xl font-extrabold text-white mb-2">حذف پلن</h3>
+            <p class="text-gray-400 text-sm mb-8" id="deleteMsg">آیا از حذف این پلن اطمینان دارید؟</p>
+            <div class="flex gap-3 justify-center">
+                <button onclick="closeModal('deleteModal')" class="px-6 py-2.5 rounded-xl text-gray-300 font-semibold text-sm bg-white/5 border border-white/10 hover:bg-white/10 transition">انصراف</button>
+                <button id="deleteConfirmBtn" class="px-6 py-2.5 rounded-xl text-white font-semibold text-sm bg-red-600 hover:bg-red-500 transition shadow-lg shadow-red-900/30">حذف</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== LOGOUT MODAL ========== -->
+    <div class="modal-overlay" id="logoutModal">
+        <div class="modal-dialog text-center">
+            <div class="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5">
+                <i class="bi bi-box-arrow-right text-red-400 text-3xl"></i>
+            </div>
+            <h3 class="text-xl font-extrabold text-white mb-2">خروج از حساب</h3>
+            <p class="text-gray-400 text-sm mb-8">آیا مطمئن هستید که می‌خواهید خارج شوید؟</p>
+            <div class="flex gap-3 justify-center">
+                <button onclick="closeModal('logoutModal')" class="px-6 py-2.5 rounded-xl text-gray-300 font-semibold text-sm bg-white/5 border border-white/10 hover:bg-white/10 transition">انصراف</button>
+                <a href="/auth/logout" class="px-6 py-2.5 rounded-xl text-white font-semibold text-sm bg-red-600 hover:bg-red-500 transition shadow-lg shadow-red-900/30 no-underline">خروج</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast"></div>
+
+    <script>
+        // ====== Skeleton Loading ======
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('plansSkeleton').style.display = 'none';
+                document.getElementById('plansContent').style.display = 'block';
+            }, 500);
+        });
+
+        // ====== Counters ======
+        function updateCounter(inputId, counterId, maxLength) {
+            const input = document.getElementById(inputId);
+            const counter = document.getElementById(counterId);
+            if (!input || !counter) return;
+            const len = input.value.length;
+            counter.textContent = `${len} / ${maxLength}`;
+            counter.classList.remove('warning', 'danger');
+            if (len >= maxLength) counter.classList.add('danger');
+            else if (len >= maxLength - 10) counter.classList.add('warning');
+        }
+
+        // ====== Dropdown ======
+        function toggleDropdown(e) {
+            e.stopPropagation();
+            const menu = document.getElementById('dropdownMenu');
+            const caret = document.getElementById('dropdownCaret');
+            menu?.classList.toggle('active');
+            if (caret) {
+                const icon = caret.querySelector('i');
+                if (icon) icon.style.transform = menu?.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
+            }
+        }
+        function closeDropdown() {
+            const menu = document.getElementById('dropdownMenu');
+            const caret = document.getElementById('dropdownCaret');
+            if (menu) {
+                menu.classList.remove('active');
+                if (caret) {
+                    const icon = caret.querySelector('i');
+                    if (icon) icon.style.transform = 'rotate(0deg)';
+                }
+            }
+        }
+
+        // ====== Mega Menu ======
+        function toggleMegaMenu() {
+            const menu = document.getElementById('megaMenu');
+            const caret = document.getElementById('megaCaret');
+            menu?.classList.toggle('active');
+            if (caret) caret.style.transform = menu?.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
+        }
+        function closeMegaMenu() {
+            const menu = document.getElementById('megaMenu');
+            const caret = document.getElementById('megaCaret');
+            if (menu) {
+                menu.classList.remove('active');
+                if (caret) caret.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // ====== Sidebar ======
+        function openSidebar() {
+            document.getElementById('sidebar').classList.add('open');
+            document.getElementById('sidebarOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // ====== Modals ======
+        window.openModal = (id) => document.getElementById(id)?.classList.add('active');
+        window.closeModal = (id) => document.getElementById(id)?.classList.remove('active');
+        function openLogoutModal() {
+            closeDropdown();
+            closeMegaMenu();
+            closeSidebar();
+            openModal('logoutModal');
+        }
+
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === this) this.classList.remove('active');
+            });
+        });
+
+        // ====== Global click handlers ======
+        document.addEventListener('click', (e) => {
+            const userDropdown = document.getElementById('userDropdown');
+            if (userDropdown && !userDropdown.contains(e.target)) closeDropdown();
+
+            const megaMenu = document.getElementById('megaMenu');
+            const megaBtn = document.getElementById('megaMenuBtn');
+            if (megaMenu && megaBtn && !megaMenu.contains(e.target) && !megaBtn.contains(e.target)) {
+                closeMegaMenu();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeDropdown();
+                closeMegaMenu();
+                closeSidebar();
+                document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+            }
+        });
+
+        // ====== Toast ======
+        function toast(msg, type) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.style.display = 'block';
+            if (type === 'error') {
+                t.style.background = 'rgba(127,29,29,0.95)';
+                t.style.borderColor = 'rgba(239,68,68,0.4)';
+                t.style.color = '#fca5a5';
+            } else if (type === 'success') {
+                t.style.background = 'rgba(6,78,59,0.95)';
+                t.style.borderColor = 'rgba(16,185,129,0.4)';
+                t.style.color = '#6ee7b7';
+            } else {
+                t.style.background = 'rgba(20,20,31,0.95)';
+                t.style.borderColor = 'rgba(139,92,246,0.4)';
+                t.style.color = '#fff';
+            }
+            clearTimeout(t._t);
+            t._t = setTimeout(() => t.style.display = 'none', 3000);
+        }
+
+        // ====== Format ======
+        function fmt(n) { return parseInt(n).toLocaleString("fa-IR-u-nu-latn"); }
+        function unfmt(s) { return parseInt(s.replace(/,/g, '')) || 0; }
+        function formatPlanPrice(el) {
+            let v = el.value.replace(/,/g, '');
+            if (v === '' || isNaN(v)) { el.value = ''; return; }
+            const num = parseInt(v);
+            if (num > 100000000) {
+                el.value = fmt(100000000);
+            } else {
+                el.value = fmt(num);
+            }
+        }
+
+        // ====== Clear Errors ======
+        function clearErrors() {
+            document.querySelectorAll('.error-text').forEach(el => {
+                el.textContent = '';
+                el.classList.remove('show');
+            });
+            document.querySelectorAll('.input-field.error').forEach(el => el.classList.remove('error'));
+        }
+        function showError(fieldId, message) {
+            const field = document.getElementById(fieldId);
+            const errorEl = document.getElementById(fieldId + 'Error');
+            if (field) field.classList.add('error');
+            if (errorEl) { errorEl.textContent = message; errorEl.classList.add('show'); }
+        }
+
+        // ====== Add/Edit ======
+        function openAddModal() {
+            const planCount = document.querySelectorAll('.plan-row').length;
+            if (planCount >= 7) { toast('حداکثر ۷ پلن می‌توانید ایجاد کنید', 'error'); return; }
+            clearErrors();
+            document.getElementById('planId').value = '';
+            document.getElementById('planName').value = '';
+            document.getElementById('planPrice').value = '';
+            document.getElementById('planDesc').value = '';
+            document.getElementById('planModalTitle').textContent = 'پلن جدید';
+            updateCounter('planName', 'planNameCounter', 24);
+            updateCounter('planDesc', 'planDescCounter', 128);
+            openModal('planModal');
+        }
+
+        function openEditModal(id, name, price, desc) {
+            clearErrors();
+            document.getElementById('planId').value = id;
+            document.getElementById('planName').value = name;
+            document.getElementById('planPrice').value = fmt(price);
+            document.getElementById('planDesc').value = desc || '';
+            document.getElementById('planModalTitle').textContent = 'ویرایش پلن';
+            updateCounter('planName', 'planNameCounter', 24);
+            updateCounter('planDesc', 'planDescCounter', 128);
+            openModal('planModal');
+        }
+
+        // ====== Form Submit ======
+        document.getElementById('planForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            clearErrors();
+            const id = document.getElementById('planId').value;
+            const name = document.getElementById('planName').value.trim();
+            const price = unfmt(document.getElementById('planPrice').value);
+            const description = document.getElementById('planDesc').value.trim();
+            let hasError = false;
+
+            // Name validation: 2 to 24 characters
+            if (!name) {
+                showError('planName', 'نام پلن الزامی است');
+                hasError = true;
+            } else if (name.length < 2) {
+                showError('planName', 'نام پلن باید حداقل ۲ کاراکتر باشد');
+                hasError = true;
+            } else if (name.length > 24) {
+                showError('planName', 'نام پلن باید حداکثر ۲۴ کاراکتر باشد');
+                hasError = true;
+            }
+
+            // Price validation: max 100,000,000
+            if (!price || price <= 0) {
+                showError('planPrice', 'قیمت معتبر وارد کنید');
+                hasError = true;
+            } else if (price > 100000000) {
+                showError('planPrice', 'قیمت نمی‌تواند بیشتر از ۱۰۰,۰۰۰,۰۰۰ تومان باشد');
+                hasError = true;
+            }
+
+            // Description validation: max 128 characters
+            if (description.length > 128) {
+                showError('planDesc', 'توضیحات باید حداکثر ۱۲۸ کاراکتر باشد');
+                hasError = true;
+            }
+
+            if (hasError) return;
+
+            const url = id ? `/plans/${id}` : '/plans';
+            const method = id ? 'PUT' : 'POST';
+            const btn = document.getElementById('planSubmitBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span style="width:20px;height:20px;border:2px solid rgba(255,255,255,0.2);border-top-color:#fff;border-radius:50%;animation:spin 0.6s linear infinite;display:inline-block;"></span> در حال ذخیره...';
+
+            try {
+                const res = await fetch(url, {
+                    method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, price, description })
+                });
+                const result = await res.json();
+                if (result.success) {
+                    toast(result.message, 'success');
+                    closeModal('planModal');
+                    setTimeout(() => location.reload(), 600);
+                } else {
+                    if (result.validationErrors) {
+                        const fieldMap = { 'name': 'planName', 'price': 'planPrice', 'description': 'planDesc' };
+                        for (const [field, message] of Object.entries(result.validationErrors)) {
+                            showError(fieldMap[field] || field, message);
+                        }
+                    }
+                    toast(result.message || 'خطا', 'error');
+                }
+            } catch (err) {
+                toast('خطا در ارتباط با سرور', 'error');
+            }
+            btn.disabled = false;
+            btn.innerHTML = '<span>ذخیره</span>';
+        });
+
+        // ====== Input listeners for counters ======
+        document.getElementById('planName')?.addEventListener('input', function() {
+            updateCounter('planName', 'planNameCounter', 24);
+        });
+        document.getElementById('planDesc')?.addEventListener('input', function() {
+            updateCounter('planDesc', 'planDescCounter', 128);
+        });
+
+        // ====== Toggle ======
+        async function togglePlan(id) {
+            try {
+                const res = await fetch(`/plans/${id}/toggle`, { method: 'PATCH' });
+                const result = await res.json();
+                if (result.success) {
+                    toast(result.message, 'success');
+                    setTimeout(() => location.reload(), 500);
+                } else {
+                    toast(result.message || 'خطا', 'error');
+                }
+            } catch (err) {
+                toast('خطا در ارتباط با سرور', 'error');
+            }
+        }
+
+        // ====== Delete ======
+        let deleteId = null;
+        function openDeleteModal(id, name) {
+            deleteId = id;
+            document.getElementById('deleteMsg').textContent = `آیا از حذف پلن "${name}" اطمینان دارید؟ این عمل قابل بازگشت نیست.`;
+            openModal('deleteModal');
+        }
+
+        document.getElementById('deleteConfirmBtn').addEventListener('click', async function() {
+            if (!deleteId) return;
+            const btn = this;
+            btn.disabled = true;
+            btn.textContent = '...';
+            try {
+                const res = await fetch(`/plans/${deleteId}`, { method: 'DELETE' });
+                const result = await res.json();
+                if (result.success) {
+                    toast(result.message, 'success');
+                    closeModal('deleteModal');
+                    setTimeout(() => location.reload(), 600);
+                } else {
+                    toast(result.message || 'خطا', 'error');
+                    closeModal('deleteModal');
+                }
+            } catch (err) {
+                toast('خطا در ارتباط با سرور', 'error');
+            }
+            btn.disabled = false;
+            btn.textContent = 'حذف';
+            deleteId = null;
+        });
+    </script>
+</body>
+</html>

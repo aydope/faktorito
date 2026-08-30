@@ -1,0 +1,2105 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" class="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>مدیریت کاربران | فاکتوریتو</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/sahel-font@v3.4.0/dist/font-face.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sahel': ['Sahel', 'Vazirmatn', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        'ink': {
+                            950: '#050508',
+                            900: '#0a0a12',
+                            800: '#0f0f1a',
+                            700: '#151522',
+                            600: '#1a1a2e',
+                            500: '#22223a',
+                            400: '#2a2a46',
+                        },
+                        'accent': {
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                        }
+                    },
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * {
+            font-family: 'Sahel', 'Vazirmatn', system-ui, sans-serif !important;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #050508;
+            color: #d1d5db;
+            line-height: 1.8;
+            font-weight: 400;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #050508; }
+        ::-webkit-scrollbar-thumb { background: #1a1a2e; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #2a2a46; }
+
+        .glass-nav {
+            background: rgba(10, 10, 18, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(167, 139, 250, 0.08);
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.6);
+        }
+
+        .nav-link {
+            color: #9ca3af;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+        }
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 2px;
+            height: 0;
+            background: #a78bfa;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            color: #e5e7eb;
+            background: rgba(167, 139, 250, 0.04);
+        }
+        .nav-link.active {
+            color: #a78bfa;
+            background: rgba(167, 139, 250, 0.06);
+        }
+        .nav-link.active::before {
+            height: 24px;
+        }
+
+        .btn-logout {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(239, 68, 68, 0.06);
+            border: 1px solid rgba(239, 68, 68, 0.1);
+            border-radius: 10px;
+            color: #f87171;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn-logout:hover {
+            background: rgba(239, 68, 68, 0.12);
+            border-color: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+        }
+
+        .badge-purple {
+            background: rgba(167, 139, 250, 0.08);
+            color: #a78bfa;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 5, 8, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 60;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 280px;
+            height: 100vh;
+            background: rgba(10, 10, 18, 0.95);
+            backdrop-filter: blur(20px);
+            border-left: 1px solid rgba(167, 139, 250, 0.06);
+            z-index: 70;
+            padding: 20px;
+            transition: right 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            overflow-y: auto;
+        }
+        .sidebar.open {
+            right: 0;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(167, 139, 250, 0.06);
+            margin-bottom: 20px;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+        .sidebar-logo .logo-box {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 800;
+            font-size: 16px;
+            box-shadow: 0 4px 16px rgba(124, 58, 237, 0.3);
+        }
+        .sidebar-logo span {
+            font-weight: 800;
+            font-size: 18px;
+            color: #fff;
+        }
+
+        .sidebar-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: #6b7280;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            font-size: 18px;
+        }
+        .sidebar-close:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            color: #9ca3af;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+        .sidebar-link:hover {
+            background: rgba(167, 139, 250, 0.06);
+            color: #c4b5fd;
+        }
+        .sidebar-link.active {
+            background: rgba(167, 139, 250, 0.08);
+            color: #a78bfa;
+        }
+        .sidebar-link i {
+            font-size: 18px;
+            width: 22px;
+            text-align: center;
+            color: #6b7280;
+        }
+        .sidebar-link.active i {
+            color: #a78bfa;
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            background: rgba(167, 139, 250, 0.06);
+            margin: 8px 12px;
+        }
+
+        .menu-btn {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            color: #d1d5db;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .menu-btn:hover {
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #14141f;
+            color: #d1d5db;
+            padding: 12px 24px;
+            border-radius: 16px;
+            font-size: 13px;
+            font-weight: 600;
+            z-index: 1000;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            animation: toastIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(-50%) translateY(12px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .status-active {
+            background: rgba(52, 211, 153, 0.08);
+            border: 1px solid rgba(52, 211, 153, 0.15);
+            color: #34d399;
+        }
+        .status-suspended {
+            background: rgba(251, 191, 36, 0.08);
+            border: 1px solid rgba(251, 191, 36, 0.15);
+            color: #fbbf24;
+        }
+        .status-disabled {
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.15);
+            color: #f87171;
+        }
+
+        .role-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .role-admin {
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.15);
+            color: #f87171;
+        }
+        .role-moderator {
+            background: rgba(168, 85, 247, 0.08);
+            border: 1px solid rgba(168, 85, 247, 0.15);
+            color: #c4b5fd;
+        }
+        .role-user {
+            background: rgba(167, 139, 250, 0.08);
+            border: 1px solid rgba(167, 139, 250, 0.15);
+            color: #a78bfa;
+        }
+
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .action-btn {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: #6b7280;
+            font-size: 14px;
+            text-decoration: none;
+            outline: none;
+        }
+        .action-btn:hover {
+            background: rgba(167, 139, 250, 0.1);
+            border-color: rgba(167, 139, 250, 0.2);
+            color: #a78bfa;
+        }
+        .action-btn.promote:hover {
+            background: rgba(168, 85, 247, 0.1);
+            border-color: rgba(168, 85, 247, 0.2);
+            color: #c4b5fd;
+        }
+        .action-btn.status-btn:hover {
+            background: rgba(251, 191, 36, 0.1);
+            border-color: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+        }
+        .action-btn.delete {
+            color: #6b7280;
+        }
+        .action-btn.delete:hover {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+        }
+
+        .table-row {
+            transition: all 0.2s ease;
+        }
+        .table-row:hover {
+            background: rgba(167, 139, 250, 0.02);
+        }
+
+        .search-input {
+            width: 100%;
+            background: rgba(15, 15, 26, 0.6);
+            border: 1px solid rgba(167, 139, 250, 0.06);
+            border-radius: 12px;
+            padding: 10px 40px 10px 14px;
+            color: #fff;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        .search-input::placeholder {
+            color: #4a4a63;
+        }
+        .search-input:focus {
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+        }
+
+        .search-wrapper {
+            position: relative;
+            flex: 1;
+        }
+        .search-wrapper .search-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #4a4a63;
+            font-size: 16px;
+        }
+
+        .filter-btn {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: rgba(15, 15, 26, 0.6);
+            border: 1px solid rgba(167, 139, 250, 0.06);
+            color: #9ca3af;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+        .filter-btn:hover {
+            background: rgba(167, 139, 250, 0.05);
+            border-color: rgba(167, 139, 250, 0.15);
+        }
+        .filter-btn.active {
+            border-color: rgba(167, 139, 250, 0.3);
+            color: #a78bfa;
+        }
+
+        .filter-dropdown {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            min-width: 180px;
+            background: rgba(15, 15, 26, 0.98);
+            border: 1px solid rgba(167, 139, 250, 0.08);
+            border-radius: 14px;
+            padding: 6px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-8px) scale(0.96);
+            transition: all 0.25s cubic-bezier(0.23, 1, 0.32, 1);
+            z-index: 30;
+            backdrop-filter: blur(16px);
+        }
+        .filter-dropdown.open {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
+        .filter-dropdown .filter-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            color: #9ca3af;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            border: none;
+            background: transparent;
+            width: 100%;
+            text-align: right;
+        }
+        .filter-dropdown .filter-item:hover {
+            background: rgba(167, 139, 250, 0.05);
+            color: #e5e7eb;
+        }
+        .filter-dropdown .filter-item.selected {
+            background: rgba(167, 139, 250, 0.08);
+            color: #a78bfa;
+        }
+        .filter-dropdown .filter-item .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .pagination-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            margin-top: 24px;
+            padding: 16px 20px;
+            background: rgba(15, 15, 26, 0.4);
+            border: 1px solid rgba(167, 139, 250, 0.06);
+            border-radius: 16px;
+        }
+
+        .pagination-info {
+            font-size: 13px;
+            color: #9ca3af;
+        }
+        .pagination-info span {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .pagination-btn {
+            min-width: 38px;
+            height: 38px;
+            padding: 0 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            background: transparent;
+            border: 1px solid transparent;
+            color: #9ca3af;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .pagination-btn:hover:not(:disabled):not(.active) {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.08);
+            color: #e5e7eb;
+        }
+        .pagination-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        .pagination-btn.active {
+            background: rgba(167, 139, 250, 0.15);
+            border-color: rgba(167, 139, 250, 0.3);
+            color: #a78bfa;
+            font-weight: 600;
+        }
+        .pagination-btn i {
+            font-size: 14px;
+        }
+        .pagination-dots {
+            color: #6b7280;
+            padding: 0 4px;
+            font-size: 14px;
+            user-select: none;
+        }
+
+        .card {
+            background: rgba(15, 15, 26, 0.6);
+            border: 1px solid rgba(167, 139, 250, 0.06);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            backdrop-filter: blur(4px);
+            border-radius: 16px;
+        }
+        .card:hover {
+            border-color: rgba(167, 139, 250, 0.1);
+        }
+
+        .empty-state {
+            padding: 60px 20px;
+            text-align: center;
+        }
+        .empty-state .empty-icon {
+            width: 72px;
+            height: 72px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 32px;
+            color: #4a4a63;
+        }
+
+        .user-card {
+            background: rgba(15, 15, 26, 0.6);
+            border: 1px solid rgba(167, 139, 250, 0.06);
+            border-radius: 16px;
+            padding: 16px;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .user-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(180deg, #7c3aed, #a78bfa);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .user-card:hover {
+            border-color: rgba(167, 139, 250, 0.15);
+            transform: translateY(-2px);
+        }
+        .user-card:hover::before {
+            opacity: 1;
+        }
+
+        .user-card .top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .user-card .user-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .user-card .user-info .name {
+            font-size: 15px;
+            font-weight: 800;
+            color: #fff;
+            margin-top: 4px;
+            line-height: 1.3;
+        }
+
+        .user-card .user-info .meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 10px;
+            margin-top: 4px;
+        }
+        .user-card .user-info .meta span {
+            font-size: 10px;
+            color: #9ca3af;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .user-card .user-info .meta span i {
+            font-size: 9px;
+            color: #6b7280;
+        }
+
+        .user-card .action-box {
+            display: flex;
+            gap: 6px;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .user-card .action-box .action-btn {
+            flex: 1;
+            height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: #6b7280;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            padding: 0 8px;
+        }
+        .user-card .action-box .action-btn:hover {
+            background: rgba(167, 139, 250, 0.08);
+            border-color: rgba(167, 139, 250, 0.2);
+            color: #a78bfa;
+        }
+        .user-card .action-box .action-btn i {
+            font-size: 13px;
+        }
+        .user-card .action-box .action-btn.delete {
+            color: #f87171;
+        }
+        .user-card .action-box .action-btn.delete:hover {
+            background: rgba(239, 68, 68, 0.08);
+            border-color: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+        }
+
+        .desktop-table {
+            display: block;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 5, 8, 0.7);
+            backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+            padding: 16px;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-dialog {
+            background: rgba(15, 15, 26, 0.95);
+            border: 1px solid rgba(167, 139, 250, 0.08);
+            border-radius: 24px;
+            padding: 32px 28px;
+            max-width: 440px;
+            width: 100%;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6), 0 0 60px rgba(124, 58, 237, 0.05);
+            transform: scale(0.92) translateY(20px);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        .modal-overlay.active .modal-dialog {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-icon-wrapper {
+            width: 72px;
+            height: 72px;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 32px;
+            position: relative;
+        }
+        .modal-icon-wrapper::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 28px;
+            background: inherit;
+            opacity: 0.3;
+            filter: blur(12px);
+            z-index: -1;
+        }
+        .modal-icon-wrapper.purple {
+            background: rgba(167, 139, 250, 0.12);
+            color: #a78bfa;
+        }
+        .modal-icon-wrapper.amber {
+            background: rgba(251, 191, 36, 0.12);
+            color: #fbbf24;
+        }
+        .modal-icon-wrapper.red {
+            background: rgba(239, 68, 68, 0.12);
+            color: #f87171;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 4px;
+        }
+
+        .modal-subtitle {
+            font-size: 13px;
+            color: #9ca3af;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: #6b7280;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            font-size: 18px;
+        }
+        .modal-close-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #d1d5db;
+        }
+
+        .role-option,
+        .status-option {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 2px solid rgba(255, 255, 255, 0.04);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            margin-bottom: 8px;
+            color: #9ca3af;
+            position: relative;
+        }
+        .role-option:hover,
+        .status-option:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(167, 139, 250, 0.2);
+        }
+        .role-option.selected,
+        .status-option.selected {
+            background: rgba(167, 139, 250, 0.06);
+            border-color: rgba(167, 139, 250, 0.4);
+            color: #c4b5fd;
+        }
+        .role-option.disabled-option,
+        .status-option.disabled-option {
+            opacity: 0.35;
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+        .role-option .role-dot,
+        .status-option .status-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            flex-shrink: 0;
+            transition: all 0.25s ease;
+        }
+        .role-option.selected .role-dot {
+            border-color: #a78bfa;
+            background: #a78bfa;
+            box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.15);
+        }
+        .status-option.selected .status-dot {
+            border-color: #a78bfa;
+            box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.15);
+        }
+        .role-option .option-label,
+        .status-option .option-label {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .role-option .option-desc,
+        .status-option .option-desc {
+            font-size: 11px;
+            color: #6b7280;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .modal-actions button {
+            flex: 1;
+            padding: 12px 20px;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.25s ease;
+            cursor: pointer;
+            border: none;
+            outline: none;
+        }
+        .modal-actions .btn-cancel {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: #9ca3af;
+        }
+        .modal-actions .btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #d1d5db;
+        }
+        .modal-actions .btn-confirm {
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            color: #fff;
+            box-shadow: 0 8px 24px rgba(124, 58, 237, 0.3);
+        }
+        .modal-actions .btn-confirm:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(124, 58, 237, 0.4);
+        }
+        .modal-actions .btn-confirm:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .modal-actions .btn-danger {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            color: #fff;
+            box-shadow: 0 8px 24px rgba(220, 38, 38, 0.3);
+        }
+        .modal-actions .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(220, 38, 38, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none !important;
+            }
+            .menu-btn {
+                display: flex !important;
+            }
+
+            .glass-nav {
+                padding: 8px 12px !important;
+                border-radius: 16px !important;
+            }
+            .glass-nav .font-extrabold.text-xl {
+                font-size: 16px !important;
+            }
+            .glass-nav .w-9.h-9 {
+                width: 32px !important;
+                height: 32px !important;
+                font-size: 14px !important;
+            }
+
+            main {
+                padding-top: 90px !important;
+                padding-left: 12px !important;
+                padding-right: 12px !important;
+            }
+
+            .desktop-table {
+                display: none !important;
+            }
+
+            .filter-btn {
+                display: flex !important;
+            }
+
+            .search-wrapper {
+                display: flex;
+                gap: 8px;
+                align-items: center;
+            }
+
+            .search-input {
+                padding: 10px 38px 10px 12px;
+                font-size: 13px;
+            }
+            .search-wrapper .search-icon {
+                right: 10px;
+                font-size: 14px;
+            }
+
+            .user-card {
+                padding: 14px !important;
+                border-radius: 14px !important;
+            }
+
+            .user-card .user-info .name {
+                font-size: 14px !important;
+            }
+            .user-card .user-info .meta span {
+                font-size: 9px !important;
+            }
+
+            .user-card .action-box .action-btn {
+                font-size: 10px !important;
+                height: 36px !important;
+            }
+            .user-card .action-box .action-btn i {
+                font-size: 12px !important;
+            }
+
+            .status-badge {
+                font-size: 9px !important;
+                padding: 2px 8px !important;
+            }
+            .role-badge {
+                font-size: 9px !important;
+                padding: 2px 8px !important;
+            }
+
+            .pagination-btn {
+                min-width: 34px !important;
+                height: 34px !important;
+                font-size: 12px !important;
+            }
+            .pagination-wrapper {
+                padding: 12px 16px !important;
+            }
+
+            .modal-dialog {
+                padding: 24px 20px;
+                border-radius: 20px;
+            }
+
+            .filter-dropdown {
+                right: auto;
+                left: 0;
+                min-width: 160px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .glass-nav .font-extrabold.text-xl {
+                font-size: 14px !important;
+            }
+            .glass-nav .w-9.h-9 {
+                width: 28px !important;
+                height: 28px !important;
+                font-size: 12px !important;
+            }
+
+            main {
+                padding-top: 80px !important;
+                padding-left: 10px !important;
+                padding-right: 10px !important;
+            }
+
+            .user-card {
+                padding: 12px !important;
+                border-radius: 12px !important;
+            }
+
+            .user-card .user-info .name {
+                font-size: 13px !important;
+            }
+            .user-card .user-info .meta span {
+                font-size: 8px !important;
+            }
+
+            .user-card .action-box .action-btn {
+                font-size: 9px !important;
+                height: 32px !important;
+                border-radius: 8px !important;
+            }
+            .user-card .action-box .action-btn i {
+                font-size: 11px !important;
+            }
+
+            .status-badge {
+                font-size: 8px !important;
+                padding: 2px 6px !important;
+            }
+            .role-badge {
+                font-size: 8px !important;
+                padding: 2px 6px !important;
+            }
+
+            .empty-state .empty-icon {
+                width: 56px !important;
+                height: 56px !important;
+                font-size: 24px !important;
+            }
+            .empty-state h3 {
+                font-size: 15px !important;
+            }
+            .empty-state p {
+                font-size: 12px !important;
+            }
+
+            .modal-dialog {
+                padding: 20px 16px;
+                border-radius: 18px;
+            }
+            .modal-icon-wrapper {
+                width: 56px;
+                height: 56px;
+                font-size: 24px;
+                border-radius: 18px;
+            }
+            .modal-title {
+                font-size: 17px;
+            }
+            .modal-actions {
+                flex-direction: column-reverse;
+                gap: 8px;
+            }
+            .modal-actions button {
+                width: 100%;
+                padding: 14px;
+            }
+            .modal-close-btn {
+                top: 10px;
+                left: 10px;
+                width: 30px;
+                height: 30px;
+                font-size: 14px;
+            }
+
+            .search-input {
+                padding: 8px 34px 8px 10px;
+                font-size: 12px;
+                border-radius: 10px;
+            }
+            .search-wrapper .search-icon {
+                right: 8px;
+                font-size: 12px;
+            }
+            .filter-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 15px;
+                border-radius: 10px;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .sidebar-overlay,
+            .sidebar,
+            .menu-btn {
+                display: none !important;
+            }
+
+            .user-card {
+                display: none !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .desktop-table {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased bg-[#050508]">
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="/admin/dashboard" class="sidebar-logo">
+                <div class="logo-box">ا</div>
+                <span>پنل ادمین</span>
+            </a>
+            <button class="sidebar-close" onclick="closeSidebar()">&times;</button>
+        </div>
+
+        <div class="space-y-1">
+            <a href="/admin/dashboard" class="sidebar-link">
+                <i class="bi bi-speedometer2"></i> داشبورد
+            </a>
+            <a href="/admin/users" class="sidebar-link active">
+                <i class="bi bi-people"></i> کاربران
+            </a>
+            <a href="/admin/invoices" class="sidebar-link">
+                <i class="bi bi-receipt"></i> فاکتورها
+            </a>
+            <a href="/admin/plans" class="sidebar-link">
+                <i class="bi bi-collection"></i> پلن‌ها
+            </a>
+        </div>
+
+        <div class="sidebar-divider"></div>
+
+        <a href="/dashboard" class="sidebar-link">
+            <i class="bi bi-globe"></i> داشبورد کاربر
+        </a>
+        <button onclick="openLogoutModal()" class="sidebar-link" style="color: #f87171; width: 100%; text-align: right; border: none; background: transparent; cursor: pointer;">
+            <i class="bi bi-box-arrow-right" style="color: #f87171;"></i> خروج
+        </button>
+    </div>
+
+    <nav class="fixed top-0 right-0 left-0 z-50 px-3 md:px-6 py-3 md:py-5">
+        <div class="max-w-6xl mx-auto glass-nav rounded-2xl px-3 md:px-6 py-2 md:py-3 flex items-center justify-between">
+            <div class="flex items-center gap-2 md:gap-3">
+                <button class="menu-btn" onclick="openSidebar()">
+                    <i class="bi bi-list text-xl"></i>
+                </button>
+                <a href="/admin/dashboard" class="flex items-center gap-2 md:gap-2.5 no-underline shrink-0 group">
+                    <div class="w-8 h-8 md:w-9 md:h-9 bg-gradient-to-br from-accent-600 to-accent-400 rounded-lg flex items-center justify-center text-white font-extrabold text-sm md:text-lg transition-transform group-hover:scale-105 shadow-lg shadow-accent-600/30">
+                        ا
+                    </div>
+                    <span class="font-extrabold text-base md:text-xl lg:text-2xl text-white tracking-tight">پنل ادمین</span>
+                </a>
+            </div>
+
+            <div class="nav-links flex items-center gap-1 md:gap-1.5">
+                <a href="/admin/dashboard" class="nav-link">
+                    <i class="bi bi-speedometer2"></i> <span class="hidden sm:inline">داشبورد</span>
+                </a>
+                <a href="/admin/users" class="nav-link active">
+                    <i class="bi bi-people"></i> <span class="hidden sm:inline">کاربران</span>
+                </a>
+                <a href="/admin/invoices" class="nav-link">
+                    <i class="bi bi-receipt"></i> <span class="hidden sm:inline">فاکتورها</span>
+                </a>
+                <a href="/admin/plans" class="nav-link hidden lg:inline-flex">
+                    <i class="bi bi-collection"></i> پلن‌ها
+                </a>
+
+                <div class="w-px h-6 bg-white/5 mx-1 md:mx-2 hidden lg:block"></div>
+
+                <a href="/dashboard" class="nav-link hidden md:inline-flex">
+                    <i class="bi bi-globe"></i> <span class="hidden lg:inline">داشبورد کاربر</span>
+                </a>
+                <button onclick="openLogoutModal()" class="btn-logout">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span class="hidden sm:inline">خروج</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-3 md:px-4 pt-24 md:pt-28 pb-12 md:pb-16">
+
+        <div class="mb-6 md:mb-10">
+            <h1 class="text-2xl md:text-3xl lg:text-4xl font-black text-white mb-1 md:mb-2 flex items-center gap-3">
+                <span class="bg-gradient-to-r from-accent-400 to-accent-600 bg-clip-text text-transparent">مدیریت کاربران</span>
+                <span class="badge-purple text-xs" id="userCountBadge"><%= users.length %></span>
+            </h1>
+            <p class="text-gray-500 text-xs md:text-sm">مدیریت و نظارت بر کاربران سیستم</p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4 mb-6">
+            <div class="search-wrapper">
+                <i class="bi bi-search search-icon"></i>
+                <input type="text" id="searchInput" placeholder="جستجوی کاربر..." class="search-input" autocomplete="off" value="<%= filters.search %>" />
+
+                <!-- Mobile Filter Button -->
+                <button class="filter-btn" id="filterBtn" onclick="toggleFilterDropdown()" title="فیلتر وضعیت">
+                    <i class="bi bi-funnel"></i>
+                </button>
+
+                <!-- Filter Dropdown -->
+                <div class="filter-dropdown" id="filterDropdown">
+                    <button class="filter-item selected" data-value="" onclick="selectFilter(this, '')">
+                        <span class="dot" style="background: transparent; border: 2px solid #4a4a63;"></span>
+                        همه وضعیت‌ها
+                    </button>
+                    <button class="filter-item" data-value="active" onclick="selectFilter(this, 'active')">
+                        <span class="dot" style="background: #34d399;"></span>
+                        فعال
+                    </button>
+                    <button class="filter-item" data-value="suspended" onclick="selectFilter(this, 'suspended')">
+                        <span class="dot" style="background: #fbbf24;"></span>
+                        تعلیق
+                    </button>
+                    <button class="filter-item" data-value="disabled" onclick="selectFilter(this, 'disabled')">
+                        <span class="dot" style="background: #f87171;"></span>
+                        غیرفعال
+                    </button>
+                </div>
+            </div>
+
+            <!-- Desktop Status Filter -->
+            <select id="statusFilter" class="hidden sm:block bg-ink-800 border border-ink-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-accent-500 transition-all">
+                <option value="">همه وضعیت‌ها</option>
+                <option value="active" <%= filters.status === 'active' ? 'selected' : '' %>>فعال</option>
+                <option value="suspended" <%= filters.status === 'suspended' ? 'selected' : '' %>>تعلیق</option>
+                <option value="disabled" <%= filters.status === 'disabled' ? 'selected' : '' %>>غیرفعال</option>
+            </select>
+        </div>
+
+        <!-- Desktop Table -->
+        <div id="desktopTableWrapper" class="card rounded-2xl overflow-hidden desktop-table">
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-gray-500 text-xs border-b border-white/5">
+                            <th class="p-4 text-right font-medium">کاربر</th>
+                            <th class="p-4 text-right font-medium hidden md:table-cell">ایمیل</th>
+                            <th class="p-4 text-right font-medium hidden lg:table-cell">باشگاه</th>
+                            <th class="p-4 text-right font-medium">نقش</th>
+                            <th class="p-4 text-right font-medium">وضعیت</th>
+                            <th class="p-4 text-right font-medium hidden sm:table-cell">تاریخ ثبت‌نام</th>
+                            <th class="p-4 text-center font-medium">عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        <% users.forEach(function(u) { %>
+                        <tr class="table-row border-b border-white/5" data-user-id="<%= u._id %>">
+                            <td class="p-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-accent-700/20 flex items-center justify-center text-accent-400 font-extrabold text-xs">
+                                        <%= u.username ? u.username.charAt(0).toUpperCase() : '?' %>
+                                    </div>
+                                    <span class="font-semibold text-white text-sm"><%= u.username %></span>
+                                </div>
+                            </td>
+                            <td class="p-4 text-gray-400 hidden md:table-cell text-sm"><%= u.email %></td>
+                            <td class="p-4 text-gray-400 hidden lg:table-cell text-sm"><%= u.clubName || '—' %></td>
+                            <td class="p-4">
+                                <span class="role-badge <%= u.role === 'admin' ? 'role-admin' : u.role === 'moderator' ? 'role-moderator' : 'role-user' %>">
+                                    <i class="bi <%= u.role === 'admin' ? 'bi-shield-fill' : u.role === 'moderator' ? 'bi-star-fill' : 'bi-person-fill' %> text-[10px]"></i>
+                                    <%= u.role === 'admin' ? 'ادمین' : u.role === 'moderator' ? 'مدیر' : 'کاربر' %>
+                                </span>
+                            </td>
+                            <td class="p-4">
+                                <span class="status-badge <%= u.status === 'active' ? 'status-active' : u.status === 'suspended' ? 'status-suspended' : 'status-disabled' %>">
+                                    <span class="legend-dot" style="background: <%= u.status === 'active' ? '#34d399' : u.status === 'suspended' ? '#fbbf24' : '#f87171' %>;"></span>
+                                    <%= u.status === 'active' ? 'فعال' : u.status === 'suspended' ? 'تعلیق' : 'غیرفعال' %>
+                                </span>
+                            </td>
+                            <td class="p-4 text-gray-500 hidden sm:table-cell text-xs">
+                                <%= u.createdAt ? new Date(u.createdAt).toLocaleDateString("fa-IR-u-nu-latn") : '—' %>
+                            </td>
+                            <td class="p-4">
+                                <div class="flex items-center justify-center gap-1.5">
+                                    <a href="/admin/users/<%= u._id %>" class="action-btn" title="مشاهده">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <button class="action-btn promote" data-user-id="<%= u._id %>" data-username="<%= u.username %>" data-role="<%= u.role %>" title="تغییر نقش">
+                                        <i class="bi bi-arrow-repeat"></i>
+                                    </button>
+                                    <button class="action-btn status-btn" data-user-id="<%= u._id %>" data-username="<%= u.username %>" data-status="<%= u.status %>" title="تغییر وضعیت">
+                                        <i class="bi bi-sliders"></i>
+                                    </button>
+                                    <button class="action-btn delete" data-user-id="<%= u._id %>" data-username="<%= u.username %>" title="حذف">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Mobile Cards -->
+        <div id="mobileCardsWrapper" class="block md:hidden space-y-3">
+            <% users.forEach(function(u) { %>
+            <div class="user-card" data-user-id="<%= u._id %>">
+                <div class="top-row">
+                    <div class="user-info">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="role-badge <%= u.role === 'admin' ? 'role-admin' : u.role === 'moderator' ? 'role-moderator' : 'role-user' %>">
+                                <i class="bi <%= u.role === 'admin' ? 'bi-shield-fill' : u.role === 'moderator' ? 'bi-star-fill' : 'bi-person-fill' %> text-[9px]"></i>
+                                <%= u.role === 'admin' ? 'ادمین' : u.role === 'moderator' ? 'مدیر' : 'کاربر' %>
+                            </span>
+                            <span class="status-badge <%= u.status === 'active' ? 'status-active' : u.status === 'suspended' ? 'status-suspended' : 'status-disabled' %>">
+                                <span class="legend-dot" style="background: <%= u.status === 'active' ? '#34d399' : u.status === 'suspended' ? '#fbbf24' : '#f87171' %>;"></span>
+                                <%= u.status === 'active' ? 'فعال' : u.status === 'suspended' ? 'تعلیق' : 'غیرفعال' %>
+                            </span>
+                        </div>
+                        <div class="name"><%= u.username %></div>
+                        <div class="meta">
+                            <span><i class="bi bi-envelope"></i> <%= u.email %></span>
+                            <span><i class="bi bi-building"></i> <%= u.clubName || '—' %></span>
+                            <span><i class="bi bi-calendar3"></i> <%= u.createdAt ? new Date(u.createdAt).toLocaleDateString("fa-IR-u-nu-latn") : '—' %></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-box">
+                    <a href="/admin/users/<%= u._id %>" class="action-btn" title="مشاهده">
+                        <i class="bi bi-eye"></i> مشاهده
+                    </a>
+                    <button class="action-btn promote" data-user-id="<%= u._id %>" data-username="<%= u.username %>" data-role="<%= u.role %>" title="تغییر نقش">
+                        <i class="bi bi-arrow-repeat"></i> نقش
+                    </button>
+                    <button class="action-btn status-btn" data-user-id="<%= u._id %>" data-username="<%= u.username %>" data-status="<%= u.status %>" title="تغییر وضعیت">
+                        <i class="bi bi-sliders"></i> وضعیت
+                    </button>
+                    <button class="action-btn delete" data-user-id="<%= u._id %>" data-username="<%= u.username %>" title="حذف">
+                        <i class="bi bi-trash"></i> حذف
+                    </button>
+                </div>
+            </div>
+            <% }); %>
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="card rounded-2xl empty-state" style="display: none;">
+            <div class="empty-icon">
+                <i class="bi bi-search"></i>
+            </div>
+            <h3 class="text-lg font-extrabold text-white mb-2">نتیجه‌ای یافت نشد</h3>
+            <p class="text-gray-500 text-sm">هیچ کاربری با این فیلترها پیدا نشد. لطفاً جستجوی خود را تغییر دهید.</p>
+            <button onclick="resetFilters()" class="mt-4 px-5 py-2.5 rounded-xl bg-accent-600 hover:bg-accent-500 text-white font-semibold text-sm transition-all">
+                بازنشانی فیلترها
+            </button>
+        </div>
+
+        <!-- Pagination -->
+        <% if (pagination.totalPages > 1) { %>
+        <div class="pagination-wrapper">
+            <div class="pagination-info">
+                نمایش <span><%= (pagination.currentPage - 1) * 20 + 1 %></span> تا <span><%= Math.min(pagination.currentPage * 20, pagination.totalCount) %></span> از <span><%= pagination.totalCount %></span> کاربر
+            </div>
+
+            <div class="pagination-controls" id="paginationContainer">
+                <button class="pagination-btn" id="prevPageBtn" <%= pagination.currentPage === 1 ? 'disabled' : '' %> title="صفحه قبلی">
+                    <i class="bi bi-chevron-right"></i>
+                </button>
+
+                <div id="pageNumbers" class="flex items-center gap-1"></div>
+
+                <button class="pagination-btn" id="nextPageBtn" <%= pagination.currentPage === pagination.totalPages ? 'disabled' : '' %> title="صفحه بعدی">
+                    <i class="bi bi-chevron-left"></i>
+                </button>
+            </div>
+        </div>
+        <% } %>
+
+    </main>
+
+    <!-- ===== MODALS ===== -->
+
+    <!-- Role Modal -->
+    <div class="modal-overlay" id="roleModal">
+        <div class="modal-dialog">
+            <button class="modal-close-btn" onclick="closeModal('roleModal')">
+                <i class="bi bi-x-lg"></i>
+            </button>
+            <div class="modal-icon-wrapper purple">
+                <i class="bi bi-arrow-repeat"></i>
+            </div>
+            <h3 class="modal-title">تغییر نقش کاربر</h3>
+            <p class="modal-subtitle" id="roleModalMsg">انتخاب نقش جدید</p>
+
+            <div class="space-y-2">
+                <div class="role-option" data-role="user">
+                    <div class="role-dot"></div>
+                    <div>
+                        <div class="option-label">کاربر</div>
+                        <div class="option-desc">دسترسی پایه</div>
+                    </div>
+                </div>
+                <div class="role-option" data-role="admin">
+                    <div class="role-dot"></div>
+                    <div>
+                        <div class="option-label">ادمین</div>
+                        <div class="option-desc">مدیریت کاربران</div>
+                    </div>
+                </div>
+                <div class="role-option" data-role="moderator">
+                    <div class="role-dot"></div>
+                    <div>
+                        <div class="option-label">مدیر ارشد</div>
+                        <div class="option-desc">دسترسی کامل</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal('roleModal')">انصراف</button>
+                <button id="roleConfirmBtn" class="btn-confirm" disabled style="opacity: 0.5;">تأیید</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Modal -->
+    <div class="modal-overlay" id="statusModal">
+        <div class="modal-dialog">
+            <button class="modal-close-btn" onclick="closeModal('statusModal')">
+                <i class="bi bi-x-lg"></i>
+            </button>
+            <div class="modal-icon-wrapper amber">
+                <i class="bi bi-sliders"></i>
+            </div>
+            <h3 class="modal-title">تغییر وضعیت کاربر</h3>
+            <p class="modal-subtitle" id="statusModalMsg">انتخاب وضعیت جدید</p>
+
+            <div class="space-y-2">
+                <div class="status-option" data-status="active">
+                    <div class="status-dot" style="background: #34d399;"></div>
+                    <div>
+                        <div class="option-label">فعال</div>
+                        <div class="option-desc">دسترسی کامل به حساب</div>
+                    </div>
+                </div>
+                <div class="status-option" data-status="suspended">
+                    <div class="status-dot" style="background: #fbbf24;"></div>
+                    <div>
+                        <div class="option-label">تعلیق</div>
+                        <div class="option-desc">محدودیت موقت</div>
+                    </div>
+                </div>
+                <div class="status-option" data-status="disabled">
+                    <div class="status-dot" style="background: #f87171;"></div>
+                    <div>
+                        <div class="option-label">غیرفعال</div>
+                        <div class="option-desc">مسدود شدن کامل حساب</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal('statusModal')">انصراف</button>
+                <button id="statusConfirmBtn" class="btn-confirm" disabled style="opacity: 0.5;">تأیید</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal-dialog">
+            <button class="modal-close-btn" onclick="closeModal('deleteModal')">
+                <i class="bi bi-x-lg"></i>
+            </button>
+            <div class="modal-icon-wrapper red">
+                <i class="bi bi-trash"></i>
+            </div>
+            <h3 class="modal-title">حذف کاربر</h3>
+            <p class="modal-subtitle" id="deleteMsg">آیا از حذف این کاربر و تمام داده‌هایش اطمینان دارید؟ این عمل قابل بازگشت نیست.</p>
+
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal('deleteModal')">انصراف</button>
+                <button id="deleteConfirmBtn" class="btn-danger">حذف</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Modal -->
+    <div class="modal-overlay" id="logoutModal">
+        <div class="modal-dialog">
+            <button class="modal-close-btn" onclick="closeModal('logoutModal')">
+                <i class="bi bi-x-lg"></i>
+            </button>
+            <div class="modal-icon-wrapper red">
+                <i class="bi bi-box-arrow-right"></i>
+            </div>
+            <h3 class="modal-title">خروج از حساب</h3>
+            <p class="modal-subtitle">آیا مطمئن هستید که می‌خواهید خارج شوید؟</p>
+
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal('logoutModal')">انصراف</button>
+                <a href="/auth/logout" class="btn-danger" style="text-decoration: none; text-align: center;">خروج</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast" style="display: none;"></div>
+
+    <script>
+        function openSidebar() {
+            document.getElementById('sidebar').classList.add('open');
+            document.getElementById('sidebarOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeSidebar();
+                document.querySelectorAll('.modal-overlay.active').forEach(function(m) {
+                    m.classList.remove('active');
+                });
+            }
+        });
+
+        function openModal(id) {
+            var el = document.getElementById(id);
+            if (el) {
+                el.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeModal(id) {
+            var el = document.getElementById(id);
+            if (el) {
+                el.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }
+
+        function openLogoutModal() {
+            openModal('logoutModal');
+        }
+
+        document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+
+        function toast(msg, type) {
+            var t = document.getElementById('toast');
+            if (!t) return;
+            t.textContent = msg;
+            t.style.display = 'block';
+            t.style.background = type === 'error' ? '#3b1010' : type === 'success' ? '#0d2818' : '#14141f';
+            t.style.borderColor = type === 'error' ? 'rgba(239, 68, 68, 0.3)' : type === 'success' ? 'rgba(16, 185, 129, 0.3)' : 'rgba(255, 255, 255, 0.06)';
+            t.style.color = type === 'error' ? '#fca5a5' : type === 'success' ? '#6ee7b7' : '#d1d5db';
+            clearTimeout(t._t);
+            t._t = setTimeout(function() { t.style.display = 'none'; }, 3000);
+        }
+
+        var currentPage = <%= pagination.currentPage %>;
+        var totalPages = <%= pagination.totalPages %>;
+        var currentSearch = '<%= filters.search %>';
+        var currentStatus = '<%= filters.status %>';
+        var isLoading = false;
+
+        function toggleFilterDropdown() {
+            var dropdown = document.getElementById('filterDropdown');
+            var btn = document.getElementById('filterBtn');
+            if (!dropdown) return;
+            dropdown.classList.toggle('open');
+            btn.classList.toggle('active');
+        }
+
+        function selectFilter(el, value) {
+            document.querySelectorAll('.filter-item').forEach(function(item) {
+                item.classList.remove('selected');
+            });
+            el.classList.add('selected');
+
+            currentStatus = value;
+            var btn = document.getElementById('filterBtn');
+            var dropdown = document.getElementById('filterDropdown');
+            if (btn) btn.classList.remove('active');
+            if (dropdown) dropdown.classList.remove('open');
+
+            var statusFilter = document.getElementById('statusFilter');
+            if (statusFilter) statusFilter.value = value;
+
+            fetchUsers(1, currentSearch, currentStatus);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var statusFilter = document.getElementById('statusFilter');
+            if (statusFilter) {
+                statusFilter.addEventListener('change', function() {
+                    currentStatus = this.value;
+                    document.querySelectorAll('.filter-item').forEach(function(item) {
+                        item.classList.toggle('selected', item.dataset.value === currentStatus);
+                    });
+                    fetchUsers(1, currentSearch, currentStatus);
+                });
+            }
+        });
+
+        function resetFilters() {
+            var searchInput = document.getElementById('searchInput');
+            if (searchInput) searchInput.value = '';
+            currentSearch = '';
+            currentStatus = '';
+
+            var statusFilter = document.getElementById('statusFilter');
+            if (statusFilter) statusFilter.value = '';
+
+            document.querySelectorAll('.filter-item').forEach(function(item) {
+                item.classList.toggle('selected', item.dataset.value === '');
+            });
+
+            fetchUsers(1, '', '');
+        }
+
+        document.addEventListener('click', function(e) {
+            var wrapper = document.querySelector('.search-wrapper');
+            if (wrapper && !wrapper.contains(e.target)) {
+                var dropdown = document.getElementById('filterDropdown');
+                var btn = document.getElementById('filterBtn');
+                if (dropdown) dropdown.classList.remove('open');
+                if (btn) btn.classList.remove('active');
+            }
+        });
+
+        function renderUsers(users) {
+            var tbody = document.getElementById('usersTableBody');
+            var mobileWrapper = document.getElementById('mobileCardsWrapper');
+            var emptyState = document.getElementById('emptyState');
+            var badge = document.getElementById('userCountBadge');
+
+            if (badge) badge.textContent = users.length;
+
+            if (users.length === 0) {
+                if (tbody) tbody.innerHTML = '';
+                if (mobileWrapper) mobileWrapper.innerHTML = '';
+                if (emptyState) emptyState.style.display = 'block';
+                return;
+            }
+
+            if (emptyState) emptyState.style.display = 'none';
+
+            if (tbody) {
+                tbody.innerHTML = '';
+                users.forEach(function(u) {
+                    var roleLabel = u.role === 'admin' ? 'ادمین' : u.role === 'moderator' ? 'مدیر ارشد' : 'کاربر';
+                    var statusLabel = u.status === 'active' ? 'فعال' : u.status === 'suspended' ? 'تعلیق' : 'غیرفعال';
+                    var statusColor = u.status === 'active' ? '#34d399' : u.status === 'suspended' ? '#fbbf24' : '#f87171';
+
+                    var tr = document.createElement('tr');
+                    tr.className = 'table-row border-b border-white/5';
+                    tr.dataset.userId = u._id;
+                    tr.innerHTML =
+                        '<td class="p-4"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-accent-700/20 flex items-center justify-center text-accent-400 font-extrabold text-xs">' +
+                        (u.username ? u.username.charAt(0).toUpperCase() : '?') +
+                        '</div><span class="font-semibold text-white text-sm">' + u.username + '</span></div></td>' +
+                        '<td class="p-4 text-gray-400 hidden md:table-cell text-sm">' + u.email + '</td>' +
+                        '<td class="p-4 text-gray-400 hidden lg:table-cell text-sm">' + (u.clubName || '—') + '</td>' +
+                        '<td class="p-4"><span class="role-badge ' + (u.role === 'admin' ? 'role-admin' : u.role === 'moderator' ? 'role-moderator' : 'role-user') +
+                        '"><i class="bi ' + (u.role === 'admin' ? 'bi-shield-fill' : u.role === 'moderator' ? 'bi-star-fill' : 'bi-person-fill') +
+                        ' text-[10px]"></i>' + roleLabel + '</span></td>' +
+                        '<td class="p-4"><span class="status-badge ' + (u.status === 'active' ? 'status-active' : u.status === 'suspended' ? 'status-suspended' : 'status-disabled') +
+                        '"><span class="legend-dot" style="background: ' + statusColor +
+                        ';"></span>' + statusLabel + '</span></td>' +
+                        '<td class="p-4 text-gray-500 hidden sm:table-cell text-xs">' + (u.createdAt ? new Date(u.createdAt).toLocaleDateString("fa-IR-u-nu-latn") : '—') + '</td>' +
+                        '<td class="p-4"><div class="flex items-center justify-center gap-1.5">' +
+                        '<a href="/admin/users/' + u._id +
+                        '" class="action-btn" title="مشاهده"><i class="bi bi-eye"></i></a>' +
+                        '<button class="action-btn promote" data-user-id="' + u._id + '" data-username="' + u.username + '" data-role="' + u.role +
+                        '" title="تغییر نقش"><i class="bi bi-arrow-repeat"></i></button>' +
+                        '<button class="action-btn status-btn" data-user-id="' + u._id + '" data-username="' + u.username + '" data-status="' + u.status +
+                        '" title="تغییر وضعیت"><i class="bi bi-sliders"></i></button>' +
+                        '<button class="action-btn delete" data-user-id="' + u._id + '" data-username="' + u.username + '" title="حذف"><i class="bi bi-trash"></i></button>' +
+                        '</div></td>';
+                    tbody.appendChild(tr);
+                });
+            }
+
+            if (mobileWrapper) {
+                mobileWrapper.innerHTML = '';
+                users.forEach(function(u) {
+                    var roleLabel = u.role === 'admin' ? 'ادمین' : u.role === 'moderator' ? 'مدیر ارشد' : 'کاربر';
+                    var statusLabel = u.status === 'active' ? 'فعال' : u.status === 'suspended' ? 'تعلیق' : 'غیرفعال';
+                    var statusColor = u.status === 'active' ? '#34d399' : u.status === 'suspended' ? '#fbbf24' : '#f87171';
+
+                    var card = document.createElement('div');
+                    card.className = 'user-card';
+                    card.dataset.userId = u._id;
+                    card.innerHTML =
+                        '<div class="top-row"><div class="user-info"><div class="flex items-center gap-2 flex-wrap">' +
+                        '<span class="role-badge ' + (u.role === 'admin' ? 'role-admin' : u.role === 'moderator' ? 'role-moderator' : 'role-user') +
+                        '"><i class="bi ' + (u.role === 'admin' ? 'bi-shield-fill' : u.role === 'moderator' ? 'bi-star-fill' : 'bi-person-fill') +
+                        ' text-[9px]"></i>' + roleLabel + '</span>' +
+                        '<span class="status-badge ' + (u.status === 'active' ? 'status-active' : u.status === 'suspended' ? 'status-suspended' : 'status-disabled') +
+                        '"><span class="legend-dot" style="background: ' + statusColor +
+                        ';"></span>' + statusLabel + '</span></div>' +
+                        '<div class="name">' + u.username + '</div>' +
+                        '<div class="meta"><span><i class="bi bi-envelope"></i> ' + u.email +
+                        '</span><span><i class="bi bi-building"></i> ' + (u.clubName || '—') +
+                        '</span><span><i class="bi bi-calendar3"></i> ' + (u.createdAt ? new Date(u.createdAt).toLocaleDateString("fa-IR-u-nu-latn") : '—') +
+                        '</span></div></div></div>' +
+                        '<div class="action-box">' +
+                        '<a href="/admin/users/' + u._id + '" class="action-btn" title="مشاهده"><i class="bi bi-eye"></i> مشاهده</a>' +
+                        '<button class="action-btn promote" data-user-id="' + u._id + '" data-username="' + u.username + '" data-role="' + u.role +
+                        '" title="تغییر نقش"><i class="bi bi-arrow-repeat"></i> نقش</button>' +
+                        '<button class="action-btn status-btn" data-user-id="' + u._id + '" data-username="' + u.username + '" data-status="' + u.status +
+                        '" title="تغییر وضعیت"><i class="bi bi-sliders"></i> وضعیت</button>' +
+                        '<button class="action-btn delete" data-user-id="' + u._id + '" data-username="' + u.username + '" title="حذف"><i class="bi bi-trash"></i> حذف</button>' +
+                        '</div>';
+                    mobileWrapper.appendChild(card);
+                });
+            }
+        }
+
+        function updatePagination(pagination) {
+            var container = document.getElementById('paginationContainer');
+            if (!container) return;
+
+            currentPage = pagination.currentPage;
+            totalPages = pagination.totalPages;
+
+            var pageNumbers = document.getElementById('pageNumbers');
+            var prevBtn = document.getElementById('prevPageBtn');
+            var nextBtn = document.getElementById('nextPageBtn');
+
+            if (prevBtn) prevBtn.disabled = currentPage === 1;
+            if (nextBtn) nextBtn.disabled = currentPage === totalPages;
+
+            if (!pageNumbers) return;
+
+            var total = totalPages;
+            var current = currentPage;
+            var html = '';
+
+            if (total <= 7) {
+                for (var i = 1; i <= total; i++) {
+                    html += '<button class="pagination-btn' + (i === current ? ' active' : '') + '" data-page="' + i + '">' + i + '</button>';
+                }
+            } else if (current <= 3) {
+                for (var i = 1; i <= 5; i++) {
+                    html += '<button class="pagination-btn' + (i === current ? ' active' : '') + '" data-page="' + i + '">' + i + '</button>';
+                }
+                html += '<span class="pagination-dots">...</span>';
+                html += '<button class="pagination-btn" data-page="' + total + '">' + total + '</button>';
+            } else if (current >= total - 2) {
+                html += '<button class="pagination-btn" data-page="1">1</button>';
+                html += '<span class="pagination-dots">...</span>';
+                for (var i = total - 4; i <= total; i++) {
+                    html += '<button class="pagination-btn' + (i === current ? ' active' : '') + '" data-page="' + i + '">' + i + '</button>';
+                }
+            } else {
+                html += '<button class="pagination-btn" data-page="1">1</button>';
+                html += '<span class="pagination-dots">...</span>';
+                for (var i = current - 1; i <= current + 1; i++) {
+                    html += '<button class="pagination-btn' + (i === current ? ' active' : '') + '" data-page="' + i + '">' + i + '</button>';
+                }
+                html += '<span class="pagination-dots">...</span>';
+                html += '<button class="pagination-btn" data-page="' + total + '">' + total + '</button>';
+            }
+
+            pageNumbers.innerHTML = html;
+        }
+
+        function debounce(fn, delay) {
+            var timer;
+            return function() {
+                var args = arguments;
+                clearTimeout(timer);
+                timer = setTimeout(function() { fn.apply(null, args); }, delay);
+            };
+        }
+
+        async function fetchUsers(page, search, status) {
+            page = page || 1;
+            search = search || '';
+            status = status || '';
+
+            if (isLoading) return;
+            isLoading = true;
+
+            try {
+                var params = new URLSearchParams({ page: page, limit: 20, search: search, status: status });
+                var res = await fetch('/admin/users?' + params.toString(), {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                });
+                var data = await res.json();
+
+                if (data.success) {
+                    renderUsers(data.data);
+                    updatePagination(data.pagination);
+                }
+            } catch (e) {
+                toast('خطا در بارگذاری کاربران', 'error');
+            } finally {
+                isLoading = false;
+            }
+        }
+
+        function goToPage(page) {
+            if (page < 1 || page > totalPages || page === currentPage || isLoading) return;
+            fetchUsers(page, currentSearch, currentStatus);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var searchInput = document.getElementById('searchInput');
+
+            var debouncedSearch = debounce(function() {
+                currentSearch = searchInput ? searchInput.value.trim() : '';
+                fetchUsers(1, currentSearch, currentStatus);
+            }, 400);
+
+            if (searchInput) searchInput.addEventListener('input', debouncedSearch);
+
+            var pageNumbers = document.getElementById('pageNumbers');
+            if (pageNumbers) {
+                pageNumbers.addEventListener('click', function(e) {
+                    var btn = e.target.closest('button');
+                    if (btn && btn.dataset.page) {
+                        goToPage(parseInt(btn.dataset.page));
+                    }
+                });
+            }
+
+            var prevBtn = document.getElementById('prevPageBtn');
+            var nextBtn = document.getElementById('nextPageBtn');
+            if (prevBtn) prevBtn.addEventListener('click', function() { goToPage(currentPage - 1); });
+            if (nextBtn) nextBtn.addEventListener('click', function() { goToPage(currentPage + 1); });
+
+            // ====== ROLE MODAL ======
+            var selectedRole = null;
+            var roleData = null;
+
+            document.querySelectorAll('#roleModal .role-option').forEach(function(opt) {
+                opt.addEventListener('click', function() {
+                    var role = this.dataset.role;
+                    selectedRole = role;
+                    document.querySelectorAll('#roleModal .role-option').forEach(function(o) {
+                        o.classList.toggle('selected', o.dataset.role === role);
+                    });
+                    var btn = document.getElementById('roleConfirmBtn');
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.style.opacity = '1';
+                    }
+                });
+            });
+
+            document.getElementById('roleConfirmBtn').addEventListener('click', async function() {
+                if (!roleData || !selectedRole) return;
+                var btn = this;
+                var originalHTML = btn.innerHTML;
+                btn.innerHTML = '<span class="loader-spinner"></span>';
+                btn.disabled = true;
+
+                try {
+                    var res = await fetch('/admin/users/' + roleData.userId + '/role', {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ role: selectedRole })
+                    });
+                    var data = await res.json();
+                    if (res.ok) {
+                        toast(data.message || 'نقش کاربر تغییر کرد', 'success');
+                        setTimeout(function() { location.reload(); }, 600);
+                    } else {
+                        toast(data.message || data.error || 'خطا در تغییر نقش', 'error');
+                        closeModal('roleModal');
+                    }
+                } catch (e) {
+                    toast('خطا در ارتباط با سرور', 'error');
+                }
+
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+            });
+
+            function openRoleModal(userId, username, currentRole) {
+                roleData = { userId: userId, username: username };
+                selectedRole = null;
+                document.querySelectorAll('#roleModal .role-option').forEach(function(opt) {
+                    opt.classList.remove('selected');
+                    opt.classList.toggle('disabled-option', opt.dataset.role === currentRole);
+                });
+                var msgEl = document.getElementById('roleModalMsg');
+                if (msgEl) msgEl.textContent = 'انتخاب نقش جدید برای "' + username + '"';
+                var btn = document.getElementById('roleConfirmBtn');
+                if (btn) {
+                    btn.disabled = true;
+                    btn.style.opacity = '0.5';
+                }
+                openModal('roleModal');
+            }
+
+            // ====== STATUS MODAL ======
+            var selectedStatus = null;
+            var statusData = null;
+
+            document.querySelectorAll('#statusModal .status-option').forEach(function(opt) {
+                opt.addEventListener('click', function() {
+                    var status = this.dataset.status;
+                    selectedStatus = status;
+                    document.querySelectorAll('#statusModal .status-option').forEach(function(o) {
+                        o.classList.toggle('selected', o.dataset.status === status);
+                    });
+                    var btn = document.getElementById('statusConfirmBtn');
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.style.opacity = '1';
+                    }
+                });
+            });
+
+            document.getElementById('statusConfirmBtn').addEventListener('click', async function() {
+                if (!statusData || !selectedStatus) return;
+                var btn = this;
+                var originalHTML = btn.innerHTML;
+                btn.innerHTML = '<span class="loader-spinner"></span>';
+                btn.disabled = true;
+
+                try {
+                    var res = await fetch('/admin/users/' + statusData.userId + '/status', {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ status: selectedStatus })
+                    });
+                    var data = await res.json();
+                    if (res.ok) {
+                        toast(data.message || 'وضعیت کاربر تغییر کرد', 'success');
+                        setTimeout(function() { location.reload(); }, 600);
+                    } else {
+                        toast(data.message || data.error || 'خطا در تغییر وضعیت', 'error');
+                        closeModal('statusModal');
+                    }
+                } catch (e) {
+                    toast('خطا در ارتباط با سرور', 'error');
+                }
+
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+            });
+
+            function openStatusModal(userId, username, currentStatus) {
+                statusData = { userId: userId, username: username };
+                selectedStatus = null;
+                document.querySelectorAll('#statusModal .status-option').forEach(function(opt) {
+                    opt.classList.remove('selected');
+                    opt.classList.toggle('disabled-option', opt.dataset.status === currentStatus);
+                });
+                var msgEl = document.getElementById('statusModalMsg');
+                if (msgEl) msgEl.textContent = 'انتخاب وضعیت جدید برای "' + username + '"';
+                var btn = document.getElementById('statusConfirmBtn');
+                if (btn) {
+                    btn.disabled = true;
+                    btn.style.opacity = '0.5';
+                }
+                openModal('statusModal');
+            }
+
+            // ====== DELETE MODAL ======
+            var deleteId = null;
+
+            document.getElementById('deleteConfirmBtn').addEventListener('click', async function() {
+                if (!deleteId) return;
+                var btn = this;
+                var originalHTML = btn.innerHTML;
+                btn.innerHTML = '<span class="loader-spinner"></span> در حال حذف...';
+                btn.disabled = true;
+
+                try {
+                    var res = await fetch('/admin/users/' + deleteId, { method: 'DELETE' });
+                    var data = await res.json();
+                    if (res.ok) {
+                        toast(data.message || 'کاربر حذف شد', 'success');
+                        setTimeout(function() { location.reload(); }, 600);
+                    } else {
+                        toast(data.message || data.error || 'خطا در حذف کاربر', 'error');
+                        closeModal('deleteModal');
+                    }
+                } catch (e) {
+                    toast('خطا در ارتباط با سرور', 'error');
+                }
+
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+                deleteId = null;
+            });
+
+            function openDeleteModal(userId, username) {
+                deleteId = userId;
+                var msgEl = document.getElementById('deleteMsg');
+                if (msgEl) msgEl.textContent = 'آیا از حذف کاربر "' + username + '" و تمام داده‌هایش اطمینان دارید؟ این عمل قابل بازگشت نیست.';
+                openModal('deleteModal');
+            }
+
+            // ====== EVENT DELEGATION ======
+            var tbody = document.getElementById('usersTableBody');
+            if (tbody) {
+                tbody.addEventListener('click', function(e) {
+                    var btn = e.target.closest('button');
+                    if (!btn) return;
+
+                    if (btn.classList.contains('promote')) {
+                        openRoleModal(btn.dataset.userId, btn.dataset.username, btn.dataset.role);
+                    } else if (btn.classList.contains('status-btn')) {
+                        openStatusModal(btn.dataset.userId, btn.dataset.username, btn.dataset.status);
+                    } else if (btn.classList.contains('delete')) {
+                        openDeleteModal(btn.dataset.userId, btn.dataset.username);
+                    }
+                });
+            }
+
+            var mobileWrapper = document.getElementById('mobileCardsWrapper');
+            if (mobileWrapper) {
+                mobileWrapper.addEventListener('click', function(e) {
+                    var btn = e.target.closest('button');
+                    if (!btn) return;
+
+                    if (btn.classList.contains('promote')) {
+                        openRoleModal(btn.dataset.userId, btn.dataset.username, btn.dataset.role);
+                    } else if (btn.classList.contains('status-btn')) {
+                        openStatusModal(btn.dataset.userId, btn.dataset.username, btn.dataset.status);
+                    } else if (btn.classList.contains('delete')) {
+                        openDeleteModal(btn.dataset.userId, btn.dataset.username);
+                    }
+                });
+            }
+
+            updatePagination({ currentPage: currentPage, totalPages: totalPages });
+        });
+    </script>
+</body>
+</html>

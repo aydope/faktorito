@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" class="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>داشبورد | فاکتوریتو</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/sahel-font@v3.4.0/dist/font-face.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sahel': ['Sahel', 'Vazirmatn', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        ink: {
+                            950: '#050508', 900: '#0c0c14', 800: '#14141f', 700: '#1c1c2a',
+                            600: '#28283a', 500: '#36364c', 400: '#4a4a63',
+                        },
+                        accent: {
+                            400: '#a78bfa', 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9', 800: '#5b21b6', 900: '#4c1d95',
+                        },
+                        gold: { 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309' },
+                        success: { 300: '#6ee7b7', 400: '#34d399', 500: '#10b981', 600: '#059669' },
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3)',
+                        'glow': '0 0 32px rgba(124, 58, 237, 0.35)',
+                        'glow-lg': '0 8px 40px rgba(124, 58, 237, 0.45)',
+                        'card': '0 10px 40px -10px rgba(0, 0, 0, 0.4)',
+                    },
+                    borderRadius: { 'xl': '12px', '2xl': '16px', '3xl': '24px' },
+                    keyframes: {
+                        shimmer: { '0%': { backgroundPosition: '200% 0' }, '100%': { backgroundPosition: '-200% 0' } },
+                        toastIn: { '0%': { opacity: '0', transform: 'translateX(-50%) translateY(8px)' }, '100%': { opacity: '1', transform: 'translateX(-50%) translateY(0)' } },
+                        spin: { '0%': { transform: 'rotate(0deg)' }, '100%': { transform: 'rotate(360deg)' } },
+                        slideIn: { '0%': { transform: 'translateX(110%)' }, '100%': { transform: 'translateX(0)' } },
+                        slideUp: { '0%': { transform: 'translateY(100%)' }, '100%': { transform: 'translateY(0)' } },
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                    },
+                    animation: {
+                        shimmer: 'shimmer 1.8s infinite',
+                        toastIn: 'toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+                        spin: 'spin 0.6s linear infinite',
+                        slideIn: 'slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                        slideUp: 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                        fadeIn: 'fadeIn 0.3s ease',
+                    },
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * {
+            font-family: 'Sahel', 'Vazirmatn', system-ui, sans-serif !important;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #050508;
+            color: #d1d5db;
+            line-height: 1.8;
+            font-weight: 400;
+            letter-spacing: -0.1px;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            min-height: 100vh;
+            position: relative;
+        }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: #050508; }
+        ::-webkit-scrollbar-thumb { background: #1c1c2a; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #28283a; }
+
+        .grid-bg {
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+
+        .glass-header {
+            background: rgba(12, 12, 20, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.4);
+        }
+
+        .card {
+            background: #0c0c14;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .card-hover:hover {
+            border-color: rgba(139, 92, 246, 0.15);
+            background: #10101a;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px -12px rgba(0,0,0,0.5);
+        }
+
+        .stat-card {
+            background: #0c0c14;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #8b5cf6, transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .stat-card:hover::after {
+            opacity: 1;
+        }
+        .stat-card:hover {
+            border-color: rgba(139, 92, 246, 0.2);
+            background: #10101a;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px -12px rgba(124, 58, 237, 0.2);
+        }
+
+        .btn-primary {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            background: #7c3aed;
+            box-shadow: 0 8px 30px -8px rgba(124, 58, 237, 0.4);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+        .btn-primary:hover {
+            background: #8b5cf6;
+            box-shadow: 0 12px 40px -8px rgba(139, 92, 246, 0.5);
+            transform: translateY(-2px);
+        }
+        .btn-primary:active {
+            transform: scale(0.97);
+        }
+
+        .icon-btn {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 36px; height: 36px; flex-shrink: 0; padding: 0; margin: 0; line-height: 1;
+            border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.02); color: #9ca3af;
+            transition: all 0.25s ease; cursor: pointer;
+        }
+        .icon-btn i { font-size: 17px; display: flex; width: 100%; height: 100%; align-items: center; justify-content: center; margin: 0; padding: 0; }
+        .icon-btn:hover { background: rgba(139, 92, 246, 0.08); color: #c4b5fd; border-color: rgba(139, 92, 246, 0.3); }
+
+        .dropdown-trigger {
+            display: flex; align-items: center; gap: 10px; padding: 4px 12px 4px 6px;
+            background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 50px; cursor: pointer; transition: all 0.3s ease; color: #d1d5db;
+            font-weight: 500; font-size: 14px;
+        }
+        .dropdown-trigger:hover { background: rgba(255, 255, 255, 0.05); border-color: rgba(139, 92, 246, 0.4); }
+        .avatar {
+            width: 34px; height: 34px; border-radius: 50%;
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 14px; color: #fff; flex-shrink: 0;
+        }
+        .dropdown-menu {
+            position: absolute; top: calc(100% + 10px); left: 0; min-width: 260px;
+            background: #14141f; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px;
+            padding: 10px; box-shadow: 0 25px 50px -15px rgba(0, 0, 0, 0.6);
+            opacity: 0; visibility: hidden; transform: translateY(-8px) scale(0.97);
+            transition: all 0.25s cubic-bezier(0.23, 1, 0.32, 1); z-index: 100;
+        }
+        .dropdown-menu.active { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
+        .dropdown-item {
+            display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 10px;
+            color: #9ca3af; font-size: 14px; font-weight: 500; transition: all 0.2s ease;
+            cursor: pointer; text-decoration: none; background: none; border: none; width: 100%; text-align: right;
+        }
+        .dropdown-item:hover { background: rgba(139, 92, 246, 0.08); color: #c4b5fd; }
+        .dropdown-item i { font-size: 17px; width: 20px; text-align: center; }
+        .dropdown-item.danger:hover { background: rgba(220, 38, 38, 0.12); color: #f87171; }
+        .dropdown-divider { height: 1px; background: rgba(255, 255, 255, 0.05); margin: 6px 8px; }
+
+        .nav-link {
+            color: #9ca3af; font-size: 14px; font-weight: 500; padding: 8px 16px;
+            border-radius: 10px; transition: all 0.25s ease; text-decoration: none;
+            display: flex; align-items: center; gap: 8px; border: 1px solid transparent; background: transparent;
+        }
+        .nav-link:hover { color: #fff; background: rgba(255,255,255,0.04); }
+        .nav-link.active { color: #c4b5fd; background: rgba(139,92,246,0.08); border-color: rgba(139,92,246,0.2); }
+        .nav-link i { font-size: 16px; }
+
+        .mega-menu {
+            position: fixed; top: 80px; right: 50%; transform: translateX(50%) translateY(-8px);
+            width: min(90%, 500px); background: #14141f; border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px; padding: 16px; box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+            opacity: 0; visibility: hidden; transition: all 0.3s cubic-bezier(0.23,1,0.32,1); z-index: 200;
+        }
+        .mega-menu.active { opacity: 1; visibility: visible; transform: translateX(50%) translateY(0); }
+        .mega-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+        .mega-item {
+            display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 12px;
+            transition: all 0.2s ease; text-decoration: none; color: #9ca3af;
+        }
+        .mega-item:hover { background: rgba(139,92,246,0.06); color: #fff; }
+        .mega-item i { font-size: 20px; width: 24px; text-align: center; color: #a78bfa; }
+        .mega-item .mega-title { font-size: 14px; font-weight: 700; color: #e5e7eb; }
+        .mega-item .mega-desc { font-size: 11px; color: #6b7280; }
+
+        .sidebar {
+            position: fixed; top: 0; right: 0; bottom: 0; width: 85%; max-width: 320px;
+            background: #0c0c14; border-left: 1px solid rgba(255,255,255,0.06); z-index: 300;
+            padding: 20px; overflow-y: auto; transform: translateX(110%);
+            transition: transform 0.4s cubic-bezier(0.23,1,0.32,1);
+        }
+        .sidebar.open { transform: translateX(0); }
+        .sidebar-overlay {
+            position: fixed; inset: 0; background: rgba(5,5,8,0.7); backdrop-filter: blur(4px);
+            z-index: 290; opacity: 0; visibility: hidden; transition: all 0.3s ease;
+        }
+        .sidebar-overlay.active { opacity: 1; visibility: visible; }
+
+        .sidebar-link {
+            display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 12px;
+            color: #9ca3af; font-size: 14px; font-weight: 500; transition: all 0.2s ease;
+            text-decoration: none; margin-bottom: 2px; border: 1px solid transparent;
+        }
+        .sidebar-link i { font-size: 18px; width: 22px; text-align: center; }
+        .sidebar-link:hover { background: rgba(255,255,255,0.04); color: #fff; }
+        .sidebar-link.active { background: rgba(139,92,246,0.08); color: #c4b5fd; border-color: rgba(139,92,246,0.2); }
+        .sidebar-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 12px 0; }
+
+        .status-badge {
+            display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px;
+            border-radius: 20px; font-size: 11px; font-weight: 600; letter-spacing: 0.2px;
+        }
+        .status-paid { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: #6ee7b7; }
+        .status-pending { background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); color: #fcd34d; }
+
+        .invoice-table tbody tr {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            transition: all 0.2s ease;
+        }
+        .invoice-table tbody tr:last-child {
+            border-bottom: none;
+        }
+        .invoice-table tbody tr:hover {
+            background: rgba(139, 92, 246, 0.04);
+            border-bottom-color: rgba(139, 92, 246, 0.1);
+        }
+        .invoice-table thead tr {
+            background: rgba(255, 255, 255, 0.01);
+        }
+
+        .mobile-invoice-card {
+            background: #0c0c14;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .mobile-invoice-card:active {
+            transform: scale(0.98);
+            background: #10101a;
+            border-color: rgba(139, 92, 246, 0.2);
+        }
+
+        .bottom-sheet {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            z-index: 400;
+            background: #14141f;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px 24px 0 0;
+            padding: 24px 20px 32px;
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+        .bottom-sheet.active {
+            transform: translateY(0);
+        }
+        .bottom-sheet-handle {
+            width: 40px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin: 0 auto 20px;
+        }
+
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(5, 5, 8, 0.85);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 400; opacity: 0; visibility: hidden; transition: all 0.3s ease;
+        }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-dialog {
+            background: #14141f; border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px; padding: 32px; max-width: 420px; width: 90%;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
+            transform: scale(0.92) translateY(16px); transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .modal-overlay.active .modal-dialog { transform: scale(1) translateY(0); }
+
+        .skeleton {
+            background: linear-gradient(90deg, rgba(124, 58, 237, 0.1) 0%, rgba(139, 92, 246, 0.2) 50%, rgba(124, 58, 237, 0.1) 100%);
+            background-size: 200% 100%; animation: shimmer 1.8s infinite; border-radius: 6px;
+        }
+
+        @media (min-width: 769px) {
+            .mobile-only { display: none !important; }
+        }
+        @media (max-width: 768px) {
+            .desktop-only { display: none !important; }
+        }
+    </style>
+</head>
+<body class="antialiased bg-[#050508] grid-bg">
+
+    <!-- ========== SIDEBAR (Mobile) ========== -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+    <div class="sidebar" id="sidebar">
+        <div class="flex items-center justify-between mb-6 pb-4 border-b border-white/5">
+            <a href="/dashboard" class="flex items-center gap-2.5 no-underline">
+                <div class="w-9 h-9 bg-gradient-to-br from-accent-700 to-accent-500 rounded-xl flex items-center justify-center text-white font-extrabold text-lg">ف</div>
+                <span class="font-extrabold text-xl text-white">فاکتوریتو</span>
+            </a>
+            <button onclick="closeSidebar()" class="icon-btn"><i class="bi bi-x-lg"></i></button>
+        </div>
+
+        <div class="space-y-1">
+            <div class="text-xs font-bold text-gray-500 px-3 mb-2">منوی اصلی</div>
+            <a href="/dashboard" class="sidebar-link active"><i class="bi bi-speedometer2"></i> داشبورد</a>
+            <a href="/invoices" class="sidebar-link"><i class="bi bi-receipt"></i> فاکتورها</a>
+            <a href="/profile" class="sidebar-link"><i class="bi bi-person"></i> پروفایل</a>
+            <a href="/plans" class="sidebar-link"><i class="bi bi-collection"></i> پلن‌ها</a>
+            <a href="/settings" class="sidebar-link"><i class="bi bi-gear"></i> تنظیمات</a>
+            <% if (user.role && ["admin", "moderator"].includes(user.role)) { %>
+            <a href="/admin/dashboard" class="sidebar-link"><i class="bi bi-shield"></i> مدیریت سیستم</a>
+            <% } %>
+        </div>
+
+        <div class="sidebar-divider"></div>
+        <button onclick="openLogoutModal(); closeSidebar();" class="sidebar-link w-full text-red-400 hover:text-red-300 hover:bg-red-500/5"><i class="bi bi-box-arrow-right"></i> خروج از حساب</button>
+    </div>
+
+    <!-- ========== HEADER ========== -->
+    <header class="fixed top-0 right-0 left-0 z-50 px-4 md:px-6 py-4">
+        <div class="max-w-5xl mx-auto glass-header rounded-2xl px-4 md:px-5 py-2.5 flex items-center justify-between">
+            <a href="/dashboard" class="flex items-center gap-2.5 no-underline shrink-0 group">
+                <div class="w-9 h-9 bg-gradient-to-br from-accent-700 to-accent-500 rounded-xl flex items-center justify-center text-white font-extrabold text-lg shadow-glow group-hover:shadow-glow-lg transition-all">ف</div>
+                <span class="font-extrabold text-xl md:text-2xl text-white tracking-tight group-hover:text-accent-400 transition-colors">فاکتوریتو</span>
+            </a>
+
+            <div class="hidden md:flex items-center gap-1 desktop-only">
+                <a href="/dashboard" class="nav-link active"><i class="bi bi-speedometer2"></i> داشبورد</a>
+                <a href="/invoices" class="nav-link"><i class="bi bi-receipt"></i> فاکتورها</a>
+                <button onclick="toggleMegaMenu()" class="nav-link" id="megaMenuBtn">
+                    <i class="bi bi-grid-1x2"></i> بیشتر
+                    <i class="bi bi-chevron-down text-[10px]" id="megaCaret"></i>
+                </button>
+            </div>
+
+            <div class="flex items-center gap-2.5">
+                <a href="/invoices/new" class="btn-primary hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-xl text-white font-semibold text-sm">
+                    <i class="bi bi-plus-lg"></i> فاکتور جدید
+                </a>
+
+                <div class="relative" id="userDropdown">
+                    <button class="dropdown-trigger" onclick="toggleDropdown(event)" aria-label="منوی کاربری">
+                        <div class="avatar">
+                            <%= user.username ? user.username.charAt(0).toUpperCase() : 'U' %>
+                        </div>
+                        <span class="hidden sm:block max-w-[90px] truncate text-sm">
+                            <%= user.username || 'کاربر' %>
+                        </span>
+                        <span class="hidden sm:inline-flex items-center justify-center transition-transform duration-300 text-[10px] text-gray-500" id="dropdownCaret">
+                            <i class="bi bi-chevron-down"></i>
+                        </span>
+                    </button>
+
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <div class="px-4 py-3">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="avatar w-11 h-11 text-base">
+                                    <%= user.username ? user.username.charAt(0).toUpperCase() : 'U' %>
+                                </div>
+                                <div>
+                                    <div class="text-sm font-bold text-white"><%= user.username || 'کاربر' %></div>
+                                    <div class="text-xs text-gray-500"><%= user.email || '' %></div>
+                                </div>
+                            </div>
+                            <% if (user.clubName) { %>
+                            <div class="bg-accent-700/10 border border-accent-700/20 rounded-lg px-3 py-2 text-xs text-accent-400 flex items-center gap-2">
+                                <i class="bi bi-building"></i> <%= user.clubName %>
+                            </div>
+                            <% } %>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <a href="/dashboard" class="dropdown-item"><i class="bi bi-speedometer2"></i> داشبورد</a>
+                        <a href="/profile" class="dropdown-item"><i class="bi bi-person"></i> پروفایل</a>
+                        <a href="/invoices" class="dropdown-item"><i class="bi bi-receipt"></i> فاکتورهای من</a>
+                        <a href="/settings" class="dropdown-item"><i class="bi bi-gear"></i> تنظیمات</a>
+                        <div class="dropdown-divider"></div>
+                        <button onclick="openLogoutModal(); closeDropdown();" class="dropdown-item w-full danger">
+                            <i class="bi bi-box-arrow-right"></i> خروج از حساب
+                        </button>
+                    </div>
+                </div>
+
+                <button onclick="openSidebar()" class="icon-btn mobile-only md:hidden" aria-label="منو"><i class="bi bi-list"></i></button>
+            </div>
+        </div>
+
+        <div class="max-w-5xl mx-auto relative">
+            <div class="mega-menu" id="megaMenu">
+                <div class="mega-grid">
+                    <a href="/profile" class="mega-item">
+                        <i class="bi bi-person"></i>
+                        <div>
+                            <div class="mega-title">پروفایل</div>
+                            <div class="mega-desc">اطلاعات حساب کاربری</div>
+                        </div>
+                    </a>
+                    <a href="/plans" class="mega-item">
+                        <i class="bi bi-collection"></i>
+                        <div>
+                            <div class="mega-title">پلن‌ها</div>
+                            <div class="mega-desc">مدیریت اشتراک</div>
+                        </div>
+                    </a>
+                    <a href="/settings" class="mega-item">
+                        <i class="bi bi-gear"></i>
+                        <div>
+                            <div class="mega-title">تنظیمات</div>
+                            <div class="mega-desc">ترجیحات و امنیت</div>
+                        </div>
+                    </a>
+                    <% if (user.role && ["admin", "moderator"].includes(user.role)) { %>
+                    <a href="/admin/dashboard" class="mega-item">
+                        <i class="bi bi-shield"></i>
+                        <div>
+                            <div class="mega-title">مدیریت</div>
+                            <div class="mega-desc">کنترل سیستم</div>
+                        </div>
+                    </a>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ========== MAIN CONTENT ========== -->
+    <main class="max-w-5xl mx-auto px-4 pt-28 pb-16 relative z-10">
+
+        <!-- Welcome Skeleton -->
+        <div id="welcomeSkeleton" class="mb-8">
+            <div class="skeleton h-8 w-48 mb-3"></div>
+            <div class="skeleton h-4 w-64"></div>
+        </div>
+
+        <!-- Welcome Content (Hidden) -->
+        <div id="welcomeContent" class="mb-8" style="display: none;">
+            <div class="flex items-center gap-3 mb-2 flex-wrap">
+                <h1 class="text-3xl md:text-4xl font-black text-white tracking-tight">داشبورد</h1>
+                <% if (user.clubName) { %>
+                <span class="bg-accent-700/10 border border-accent-700/20 rounded-full px-3 py-1 text-xs text-accent-400 flex items-center gap-1.5">
+                    <i class="bi bi-building"></i> <%= user.clubName %>
+                </span>
+                <% } %>
+            </div>
+            <p class="text-gray-500 text-sm">خوش آمدید، <span class="text-accent-400 font-semibold"><%= user.username || 'کاربر' %></span></p>
+        </div>
+
+        <!-- Stats Skeleton -->
+        <div id="statsSkeleton" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div class="stat-card rounded-2xl p-6">
+                <div class="skeleton h-4 w-20 mb-3"></div>
+                <div class="skeleton h-8 w-24 mb-2"></div>
+                <div class="skeleton h-3 w-16"></div>
+            </div>
+            <div class="stat-card rounded-2xl p-6">
+                <div class="skeleton h-4 w-20 mb-3"></div>
+                <div class="skeleton h-8 w-32 mb-2"></div>
+                <div class="skeleton h-3 w-20"></div>
+            </div>
+            <div class="stat-card rounded-2xl p-6">
+                <div class="skeleton h-4 w-20 mb-3"></div>
+                <div class="skeleton h-8 w-20 mb-2"></div>
+                <div class="skeleton h-3 w-24"></div>
+            </div>
+        </div>
+
+        <!-- Stats Content (Hidden) -->
+        <div id="statsContent" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6" style="display: none;">
+            <div class="stat-card rounded-2xl p-6">
+                <div class="flex items-center gap-2 text-gray-400 text-xs mb-3">
+                    <span class="w-9 h-9 rounded-xl bg-accent-700/10 border border-accent-700/20 flex items-center justify-center">
+                        <i class="bi bi-receipt text-accent-400 text-base"></i>
+                    </span>
+                    کل فاکتورها
+                </div>
+                <div class="text-3xl font-black text-white"><%= invoiceCount.toLocaleString("fa-IR-u-nu-latn") %></div>
+                <div class="text-xs text-gray-500 mt-2 flex items-center gap-1.5">
+                    <i class="bi bi-arrow-up text-emerald-400"></i> صادر شده
+                </div>
+            </div>
+            <div class="stat-card rounded-2xl p-6">
+                <div class="flex items-center gap-2 text-gray-400 text-xs mb-3">
+                    <span class="w-9 h-9 rounded-xl bg-gold-500/10 border border-gold-500/20 flex items-center justify-center">
+                        <i class="bi bi-cash-stack text-gold-400 text-base"></i>
+                    </span>
+                    درآمد پرداخت شده
+                </div>
+                <div class="text-3xl font-black text-white"><%= totalRevenue.toLocaleString("fa-IR-u-nu-latn") %> <span class="text-sm font-normal text-gray-500">تومان</span></div>
+                <div class="text-xs text-gray-500 mt-2">مجموع پرداخت‌ها</div>
+            </div>
+            <div class="stat-card rounded-2xl p-6">
+                <div class="flex items-center gap-2 text-gray-400 text-xs mb-3">
+                    <span class="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+                        <i class="bi bi-check2-circle text-emerald-400 text-base"></i>
+                    </span>
+                    پرداخت شده
+                </div>
+                <div class="text-3xl font-black text-white"><%= paidCount.toLocaleString("fa-IR-u-nu-latn") %></div>
+                <div class="text-xs text-gray-500 mt-2 flex items-center gap-1.5">
+                    <i class="bi bi-check-circle-fill text-emerald-400 text-[10px]"></i> فاکتورهای موفق
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions (always visible) -->
+        <div class="grid md:grid-cols-2 gap-4 mb-8">
+            <a href="/invoices/new" class="card card-hover rounded-2xl p-6 flex items-center gap-4 no-underline group">
+                <div class="w-14 h-14 bg-gradient-to-br from-accent-700 to-accent-500 rounded-2xl flex items-center justify-center text-white shadow-glow group-hover:shadow-glow-lg transition-all group-hover:scale-105 shrink-0">
+                    <i class="bi bi-plus-lg text-2xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-white group-hover:text-accent-400 transition-colors">ایجاد فاکتور جدید</h3>
+                    <p class="text-xs text-gray-500 mt-1">صدور سریع برای اعضا</p>
+                </div>
+                <i class="bi bi-chevron-left text-gray-600 mr-auto group-hover:text-accent-400 transition-all group-hover:-translate-x-1"></i>
+            </a>
+            <a href="/plans" class="card card-hover rounded-2xl p-6 flex items-center gap-4 no-underline group">
+                <div class="w-14 h-14 bg-gradient-to-br from-gold-500 to-gold-400 rounded-2xl flex items-center justify-center text-white shadow-glow group-hover:shadow-glow-lg transition-all group-hover:scale-105 shrink-0">
+                    <i class="bi bi-collection text-2xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-white group-hover:text-gold-400 transition-colors">مدیریت پلن‌ها</h3>
+                    <p class="text-xs text-gray-500 mt-1">تعریف و ویرایش پلن‌ها</p>
+                </div>
+                <i class="bi bi-chevron-left text-gray-600 mr-auto group-hover:text-gold-400 transition-all group-hover:-translate-x-1"></i>
+            </a>
+        </div>
+
+        <!-- Recent Invoices Table Skeleton -->
+        <div id="tableSkeleton" class="card rounded-2xl overflow-hidden">
+            <div class="px-6 py-4 border-b border-white/5">
+                <div class="skeleton h-5 w-32"></div>
+            </div>
+            <div class="p-6 space-y-4">
+                <div class="skeleton h-5 w-full"></div>
+                <div class="skeleton h-5 w-5/6"></div>
+                <div class="skeleton h-5 w-4/6"></div>
+                <div class="skeleton h-5 w-3/6"></div>
+                <div class="skeleton h-5 w-2/6"></div>
+            </div>
+        </div>
+
+        <!-- Recent Invoices Table Content (Hidden) -->
+        <div id="tableContent" class="card rounded-2xl overflow-hidden" style="display: none;">
+            <div class="px-6 py-4 border-b border-white/5 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <span class="w-9 h-9 rounded-xl bg-accent-700/10 border border-accent-700/20 flex items-center justify-center">
+                        <i class="bi bi-clock-history text-accent-400"></i>
+                    </span>
+                    <h2 class="text-base font-bold text-white">آخرین فاکتورها</h2>
+                </div>
+                <% if (typeof recentInvoices !== 'undefined' && recentInvoices.length > 0) { %>
+                    <a href="/invoices" class="text-xs text-accent-400 hover:text-accent-300 font-semibold no-underline flex items-center gap-1 transition-colors">
+                        مشاهده همه <i class="bi bi-arrow-left text-xs"></i>
+                    </a>
+                <% } %>
+            </div>
+
+            <% if (typeof recentInvoices !== 'undefined' && recentInvoices.length > 0) { %>
+                <div class="hidden md:block overflow-x-auto">
+                    <table class="w-full text-sm invoice-table">
+                        <thead>
+                            <tr class="text-gray-500 text-xs border-b border-white/5">
+                                <th class="p-4 text-right font-medium">وضعیت</th>
+                                <th class="p-4 text-right font-medium">عضو</th>
+                                <th class="p-4 text-right font-medium">پلن</th>
+                                <th class="p-4 text-right font-medium">تاریخ</th>
+                                <th class="p-4 text-right font-medium">مبلغ</th>
+                                <th class="p-4"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% recentInvoices.forEach(function(inv) { %>
+                            <tr>
+                                <td class="p-4">
+                                    <span class="status-badge <%= inv.isPaid ? 'status-paid' : 'status-pending' %>">
+                                        <i class="bi <%= inv.isPaid ? 'bi-check-circle-fill' : 'bi-hourglass-split' %> text-[10px]"></i>
+                                        <%= inv.isPaid ? 'پرداخت' : 'در انتظار' %>
+                                    </span>
+                                </td>
+                                <td class="p-4">
+                                    <div class="font-semibold text-white text-xs"><%= inv.member.name %></div>
+                                    <div class="text-[10px] text-gray-500 mt-0.5"><%= inv.member.phone %></div>
+                                </td>
+                                <td class="p-4 text-gray-400 text-xs"><%= inv.plan.name %></td>
+                                <td class="p-4 text-gray-400 text-xs"><%= inv.invoiceDate %></td>
+                                <td class="p-4 font-bold text-white text-xs">
+                                    <%= inv.totalAmount.toLocaleString("fa-IR-u-nu-latn") %> <span class="text-[10px] text-gray-500 font-normal">ت</span>
+                                </td>
+                                <td class="p-4">
+                                    <a href="/i/<%= inv._id %>" class="icon-btn" title="مشاهده">
+                                        <i class="bi bi-eye text-sm"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="md:hidden space-y-3 p-4">
+                    <% recentInvoices.forEach(function(inv) { %>
+                    <div class="mobile-invoice-card" onclick='openInvoiceDetail(
+                        "<%= inv._id %>",
+                        "<%= inv.member.name %>",
+                        "<%= inv.member.phone %>",
+                        "<%= inv.plan.name %>",
+                        "<%= inv.invoiceNumber %>",
+                        "<%= inv.invoiceDate %>",
+                        "<%= inv.totalAmount.toLocaleString("fa-IR-u-nu-latn") %>",
+                        <%= inv.isPaid %>
+                    )'>
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-2">
+                                <span class="status-badge <%= inv.isPaid ? 'status-paid' : 'status-pending' %>">
+                                    <i class="bi <%= inv.isPaid ? 'bi-check-circle-fill' : 'bi-hourglass-split' %> text-[10px]"></i>
+                                    <%= inv.isPaid ? 'پرداخت' : 'در انتظار' %>
+                                </span>
+                                <span class="text-[11px] text-gray-500 font-mono">#<%= inv.invoiceNumber %></span>
+                            </div>
+                            <i class="bi bi-chevron-left text-gray-600 text-sm"></i>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <div class="font-bold text-white text-sm"><%= inv.member.name %></div>
+                                <div class="text-[11px] text-gray-500 mt-1"><%= inv.plan.name %></div>
+                            </div>
+                            <div class="text-left">
+                                <div class="font-extrabold text-white text-sm"><%= inv.totalAmount.toLocaleString("fa-IR-u-nu-latn") %></div>
+                                <div class="text-[10px] text-gray-500 mt-1">تومان</div>
+                            </div>
+                        </div>
+                    </div>
+                    <% }); %>
+                </div>
+            <% } else { %>
+                <div class="p-12 text-center">
+                    <div class="w-16 h-16 bg-accent-700/10 rounded-2xl flex items-center justify-center mx-auto mb-5 border border-accent-700/20">
+                        <i class="bi bi-inbox text-3xl text-accent-400"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-gray-200">هنوز فاکتوری ثبت نشده</h3>
+                    <p class="text-gray-500 text-xs mt-1.5 mb-6">اولین فاکتور را ایجاد کنید</p>
+                    <a href="/invoices/new" class="btn-primary inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold">
+                        <i class="bi bi-plus"></i> فاکتور جدید
+                    </a>
+                </div>
+            <% } %>
+        </div>
+    </main>
+
+    <!-- ========== BOTTOM SHEET (Mobile Invoice Detail) ========== -->
+    <div class="bottom-sheet" id="invoiceDetailSheet">
+        <div class="bottom-sheet-handle"></div>
+        <div id="invoiceDetailContent"></div>
+    </div>
+    <div class="sidebar-overlay" id="sheetOverlay" onclick="closeInvoiceDetail()"></div>
+
+    <!-- ========== MODALS ========== -->
+    <div class="modal-overlay" id="logoutModal">
+        <div class="modal-dialog text-center">
+            <div class="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5">
+                <i class="bi bi-box-arrow-right text-red-400 text-3xl"></i>
+            </div>
+            <h3 class="text-xl font-extrabold text-white mb-2">خروج از حساب</h3>
+            <p class="text-gray-400 text-sm mb-8">آیا مطمئن هستید که می‌خواهید خارج شوید؟</p>
+            <div class="flex gap-3 justify-center">
+                <button onclick="closeModal('logoutModal')" class="px-6 py-2.5 rounded-xl text-gray-300 font-semibold text-sm bg-white/5 border border-white/10 hover:bg-white/10 transition">انصراف</button>
+                <a href="/auth/logout" class="px-6 py-2.5 rounded-xl text-white font-semibold text-sm bg-red-600 hover:bg-red-500 transition shadow-lg shadow-red-900/30 no-underline">خروج</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" style="position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: rgba(20,20,31,0.95); backdrop-filter: blur(12px); color: #fff; padding: 12px 28px; border-radius: 50px; font-size: 13px; font-weight: 600; z-index: 500; box-shadow: 0 20px 40px rgba(0,0,0,0.5); border: 1px solid rgba(139,92,246,0.3); display: none; animation: toastIn 0.3s ease;"></div>
+
+    <script>
+        // ====== Skeleton Loading ======
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                // Hide skeletons
+                document.getElementById('welcomeSkeleton').style.display = 'none';
+                document.getElementById('statsSkeleton').style.display = 'none';
+                document.getElementById('tableSkeleton').style.display = 'none';
+
+                // Show content
+                document.getElementById('welcomeContent').style.display = 'block';
+                document.getElementById('statsContent').style.display = 'grid';
+                document.getElementById('tableContent').style.display = 'block';
+            }, 500); // 500ms delay for demo
+        });
+
+        // ====== Dropdown ======
+        function toggleDropdown(e) {
+            e.stopPropagation();
+            const menu = document.getElementById('dropdownMenu');
+            const caret = document.getElementById('dropdownCaret');
+            menu?.classList.toggle('active');
+            if (caret) {
+                const icon = caret.querySelector('i');
+                if (icon) icon.style.transform = menu?.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
+            }
+        }
+        function closeDropdown() {
+            const menu = document.getElementById('dropdownMenu');
+            const caret = document.getElementById('dropdownCaret');
+            if (menu) {
+                menu.classList.remove('active');
+                if (caret) {
+                    const icon = caret.querySelector('i');
+                    if (icon) icon.style.transform = 'rotate(0deg)';
+                }
+            }
+        }
+
+        // ====== Mega Menu ======
+        function toggleMegaMenu() {
+            const menu = document.getElementById('megaMenu');
+            const caret = document.getElementById('megaCaret');
+            menu?.classList.toggle('active');
+            if (caret) caret.style.transform = menu?.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
+        }
+        function closeMegaMenu() {
+            const menu = document.getElementById('megaMenu');
+            const caret = document.getElementById('megaCaret');
+            if (menu) {
+                menu.classList.remove('active');
+                if (caret) caret.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // ====== Sidebar ======
+        function openSidebar() {
+            document.getElementById('sidebar').classList.add('open');
+            document.getElementById('sidebarOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // ====== Invoice Detail Bottom Sheet ======
+        function openInvoiceDetail(id, name, phone, plan, invoiceNumber, date, amount, isPaid) {
+            const content = document.getElementById('invoiceDetailContent');
+            content.innerHTML = `
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-extrabold text-white">جزئیات فاکتور</h3>
+                    <button onclick="closeInvoiceDetail()" class="icon-btn"><i class="bi bi-x-lg"></i></button>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between p-4 bg-white/[0.02] rounded-xl border border-white/5">
+                        <span class="text-gray-400 text-xs flex items-center gap-2">
+                            <i class="bi bi-receipt text-accent-400"></i> شماره فاکتور
+                        </span>
+                        <span class="text-white font-bold text-sm font-mono">#${invoiceNumber}</span>
+                    </div>
+
+                    <div class="flex items-center justify-between p-4 bg-white/[0.02] rounded-xl border border-white/5">
+                        <span class="text-gray-400 text-xs flex items-center gap-2">
+                            <i class="bi bi-person text-accent-400"></i> نام عضو
+                        </span>
+                        <span class="text-white font-bold text-sm">${name}</span>
+                    </div>
+
+                    <div class="flex items-center justify-between p-4 bg-white/[0.02] rounded-xl border border-white/5">
+                        <span class="text-gray-400 text-xs flex items-center gap-2">
+                            <i class="bi bi-telephone text-accent-400"></i> تلفن
+                        </span>
+                        <span class="text-white font-bold text-sm" dir="ltr">${phone}</span>
+                    </div>
+
+                    <div class="flex items-center justify-between p-4 bg-white/[0.02] rounded-xl border border-white/5">
+                        <span class="text-gray-400 text-xs flex items-center gap-2">
+                            <i class="bi bi-tag text-accent-400"></i> پلن
+                        </span>
+                        <span class="text-white font-bold text-sm">${plan}</span>
+                    </div>
+
+                    <div class="flex items-center justify-between p-4 bg-white/[0.02] rounded-xl border border-white/5">
+                        <span class="text-gray-400 text-xs flex items-center gap-2">
+                            <i class="bi bi-calendar3 text-accent-400"></i> تاریخ
+                        </span>
+                        <span class="text-white font-bold text-sm">${date}</span>
+                    </div>
+
+                    <div class="flex items-center justify-between p-4 bg-white/[0.02] rounded-xl border border-white/5">
+                        <span class="text-gray-400 text-xs flex items-center gap-2">
+                            <i class="bi bi-cash text-accent-400"></i> مبلغ
+                        </span>
+                        <span class="text-white font-extrabold text-sm">${amount} <span class="text-xs font-normal text-gray-500">تومان</span></span>
+                    </div>
+
+                    <div class="flex items-center justify-between p-4 bg-white/[0.02] rounded-xl border border-white/5">
+                        <span class="text-gray-400 text-xs flex items-center gap-2">
+                            <i class="bi bi-check-circle text-accent-400"></i> وضعیت
+                        </span>
+                        <span class="status-badge ${isPaid ? 'status-paid' : 'status-pending'}">
+                            <i class="bi ${isPaid ? 'bi-check-circle-fill' : 'bi-hourglass-split'} text-[10px]"></i>
+                            ${isPaid ? 'پرداخت شده' : 'در انتظار پرداخت'}
+                        </span>
+                    </div>
+                </div>
+
+                <a href="/i/${id}" class="btn-primary w-full mt-6 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-white font-semibold text-sm">
+                    <i class="bi bi-eye"></i> مشاهده کامل فاکتور
+                </a>
+            `;
+
+            document.getElementById('invoiceDetailSheet').classList.add('active');
+            document.getElementById('sheetOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeInvoiceDetail() {
+            document.getElementById('invoiceDetailSheet').classList.remove('active');
+            document.getElementById('sheetOverlay').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // ====== Modals ======
+        window.openModal = (id) => document.getElementById(id)?.classList.add('active');
+        window.closeModal = (id) => document.getElementById(id)?.classList.remove('active');
+        function openLogoutModal() {
+            closeDropdown();
+            closeMegaMenu();
+            closeSidebar();
+            openModal('logoutModal');
+        }
+
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === this) this.classList.remove('active');
+            });
+        });
+
+        // ====== Global click handlers ======
+        document.addEventListener('click', (e) => {
+            const userDropdown = document.getElementById('userDropdown');
+            if (userDropdown && !userDropdown.contains(e.target)) closeDropdown();
+
+            const megaMenu = document.getElementById('megaMenu');
+            const megaBtn = document.getElementById('megaMenuBtn');
+            if (megaMenu && megaBtn && !megaMenu.contains(e.target) && !megaBtn.contains(e.target)) {
+                closeMegaMenu();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeDropdown();
+                closeMegaMenu();
+                closeSidebar();
+                closeInvoiceDetail();
+                document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+            }
+        });
+
+        // ====== Toast ======
+        function toast(msg, type) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.style.display = 'block';
+            if (type === 'error') {
+                t.style.background = 'rgba(127,29,29,0.95)';
+                t.style.borderColor = 'rgba(239,68,68,0.4)';
+                t.style.color = '#fca5a5';
+            } else if (type === 'success') {
+                t.style.background = 'rgba(6,78,59,0.95)';
+                t.style.borderColor = 'rgba(16,185,129,0.4)';
+                t.style.color = '#6ee7b7';
+            } else {
+                t.style.background = 'rgba(20,20,31,0.95)';
+                t.style.borderColor = 'rgba(139,92,246,0.4)';
+                t.style.color = '#fff';
+            }
+            clearTimeout(t._t);
+            t._t = setTimeout(() => t.style.display = 'none', 3000);
+        }
+    </script>
+</body>
+</html>

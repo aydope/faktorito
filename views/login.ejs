@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" class="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>ورود | فاکتوریتو</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/sahel-font@v3.4.0/dist/font-face.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sahel': ['Sahel', 'Vazirmatn', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        ink: {
+                            950: '#050508', 900: '#0c0c14', 800: '#14141f', 700: '#1c1c2a',
+                            600: '#28283a', 500: '#36364c', 400: '#4a4a63',
+                        },
+                        accent: {
+                            400: '#a78bfa', 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9', 800: '#5b21b6', 900: '#4c1d95',
+                        },
+                        gold: { 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309' },
+                        success: { 300: '#6ee7b7', 400: '#34d399', 500: '#10b981', 600: '#059669' },
+                    },
+                    boxShadow: {
+                        'glow': '0 0 32px rgba(124, 58, 237, 0.35)',
+                        'glow-lg': '0 8px 40px rgba(124, 58, 237, 0.45)',
+                        'card': '0 10px 40px -10px rgba(0, 0, 0, 0.4)',
+                    },
+                    borderRadius: { 'xl': '12px', '2xl': '16px', '3xl': '24px' },
+                    keyframes: {
+                        shimmer: { '0%': { backgroundPosition: '200% 0' }, '100%': { backgroundPosition: '-200% 0' } },
+                        toastIn: { '0%': { opacity: '0', transform: 'translateX(-50%) translateY(8px)' }, '100%': { opacity: '1', transform: 'translateX(-50%) translateY(0)' } },
+                        spin: { '0%': { transform: 'rotate(0deg)' }, '100%': { transform: 'rotate(360deg)' } },
+                    },
+                    animation: {
+                        shimmer: 'shimmer 1.8s infinite',
+                        toastIn: 'toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+                        spin: 'spin 0.6s linear infinite',
+                    },
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * { font-family: 'Sahel', 'Vazirmatn', system-ui, sans-serif !important; margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #050508; color: #d1d5db; line-height: 1.8; overflow-y: auto; min-height: 100vh; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #050508; }
+        ::-webkit-scrollbar-thumb { background: #1c1c2a; border-radius: 10px; }
+        .grid-bg { background-image: linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px); background-size: 60px 60px; }
+        .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: rgba(20,20,31,0.95); color: #fff; padding: 12px 24px; border-radius: 50px; font-size: 13px; font-weight: 600; z-index: 500; box-shadow: 0 20px 40px rgba(0,0,0,0.5); border: 1px solid rgba(139,92,246,0.3); display: none; animation: toastIn 0.3s ease; }
+        @keyframes toastIn { from { opacity: 0; transform: translateX(-50%) translateY(8px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+        .loader-spinner { width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.2); border-top-color: #fff; border-radius: 50%; animation: spin 0.6s linear infinite; display: inline-block; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .login-card {
+            background: #0c0c14;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 20px;
+            padding: 32px 28px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.5);
+        }
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #7c3aed, #a78bfa, #7c3aed, transparent);
+        }
+
+        .btn-primary {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            background: #7c3aed;
+            box-shadow: 0 8px 30px -8px rgba(124, 58, 237, 0.4);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+        .btn-primary:hover { background: #8b5cf6; box-shadow: 0 12px 40px -8px rgba(139, 92, 246, 0.5); transform: translateY(-2px); }
+        .btn-primary:active { transform: scale(0.97); }
+        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        .float-group { position: relative; margin-bottom: 22px; }
+        .float-group .float-input {
+            width: 100%;
+            padding: 20px 42px 8px 14px;
+            background: #0f0f1a;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            outline: none;
+            height: 54px;
+        }
+        .float-group .float-input:focus { border-color: rgba(139,92,246,0.5); box-shadow: 0 0 0 3px rgba(139,92,246,0.08); }
+        .float-group .float-input.error { border-color: rgba(239,68,68,0.4); }
+        .float-group .float-input.valid { border-color: rgba(16,185,129,0.4); }
+        .float-group .float-input.validating { border-color: rgba(245,158,11,0.4); }
+        .float-group .float-input::placeholder { color: transparent; }
+        .float-group .float-label {
+            position: absolute;
+            right: 42px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 13px;
+            color: #6b7280;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .float-group .float-input:focus ~ .float-label,
+        .float-group .float-input:not(:placeholder-shown) ~ .float-label {
+            top: 12px;
+            font-size: 10px;
+            color: #a78bfa;
+            font-weight: 700;
+        }
+        .float-group .float-icon { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: #6b7280; font-size: 15px; pointer-events: none; transition: color 0.3s ease; }
+        .float-group .float-input:focus ~ .float-icon { color: #a78bfa; }
+        .float-group .toggle-pass { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #6b7280; cursor: pointer; font-size: 15px; background: none; border: none; padding: 4px; transition: color 0.3s ease; }
+        .float-group .toggle-pass:hover { color: #a78bfa; }
+        .float-group .float-feedback { font-size: 11px; margin-top: 5px; margin-right: 4px; font-weight: 500; display: none; align-items: center; gap: 5px; }
+        .float-group .float-feedback.show { display: flex; animation: fadeIn 0.3s ease; }
+        .float-group .float-feedback.error { color: #fca5a5; }
+        .float-group .float-feedback.success { color: #6ee7b7; }
+        .float-group .float-feedback.validating { color: #fcd34d; }
+
+        .error-box { background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.2); border-radius: 12px; padding: 12px 16px; margin-bottom: 18px; color: #fca5a5; font-size: 13px; font-weight: 500; display: none; }
+        .error-box.show { display: block; animation: fadeIn 0.3s ease; }
+        .error-box p { display: flex; align-items: center; gap: 8px; margin-bottom: 3px; }
+        .error-box p:last-child { margin-bottom: 0; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="antialiased bg-[#050508] grid-bg">
+
+    <main class="max-w-md mx-auto px-5 relative z-10 flex items-center justify-center" style="min-height: 100vh; padding: 30px 0;">
+        <div class="w-full">
+            <div class="text-center mb-7">
+                <div class="w-14 h-14 bg-gradient-to-br from-accent-700 to-accent-500 rounded-2xl flex items-center justify-center text-white text-xl font-extrabold shadow-glow mx-auto mb-4">ف</div>
+                <h1 class="text-xl md:text-2xl font-black text-white mb-1">ورود به فاکتوریتو</h1>
+                <p class="text-gray-400 text-xs">به حساب کاربری خود وارد شوید</p>
+            </div>
+
+            <div class="error-box" id="errorBox"></div>
+
+            <div class="login-card">
+                <form id="loginForm" autocomplete="on" novalidate>
+                    <div class="float-group">
+                        <i class="bi bi-envelope float-icon"></i>
+                        <input type="email" name="email" id="email" required autocomplete="email" class="float-input" placeholder=" " />
+                        <label class="float-label" for="email">ایمیل</label>
+                        <div class="float-feedback" id="emailFeedback"></div>
+                    </div>
+
+                    <div class="float-group">
+                        <i class="bi bi-lock float-icon"></i>
+                        <input type="password" name="password" id="password" required autocomplete="current-password" class="float-input" placeholder=" " />
+                        <label class="float-label" for="password">رمز عبور</label>
+                        <button type="button" onclick="togglePass()" class="toggle-pass" tabindex="-1"><i class="bi bi-eye" id="passIcon"></i></button>
+                    </div>
+
+                    <button type="submit" class="btn-primary w-full py-3 rounded-xl text-white font-bold text-sm flex items-center justify-center gap-2" id="submitBtn">
+                        <i class="bi bi-box-arrow-in-right text-base"></i>
+                        <span>ورود</span>
+                    </button>
+                </form>
+
+                <div class="mt-5 text-center text-xs text-gray-400">
+                    حساب کاربری ندارید؟
+                    <a href="/auth/register" class="text-accent-400 font-bold hover:text-accent-300 transition-colors no-underline">ثبت‌نام کنید</a>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <a href="/" class="text-gray-500 hover:text-gray-300 text-xs no-underline inline-flex items-center gap-1 transition-colors">
+                    <i class="bi bi-arrow-right"></i> بازگشت به صفحه اصلی
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <div id="toast" class="toast"></div>
+
+    <script>
+        function debounce(func, wait) { let timeout; return function executedFunction(...args) { const later = () => { clearTimeout(timeout); func(...args); }; clearTimeout(timeout); timeout = setTimeout(later, wait); }; }
+        function escapeHtml(str) { if (!str) return ""; const div = document.createElement("div"); div.appendChild(document.createTextNode(str)); return div.innerHTML; }
+        function togglePass() { const input = document.getElementById("password"); const icon = document.getElementById("passIcon"); const isPassword = input.type === "password"; input.type = isPassword ? "text" : "password"; icon.className = isPassword ? "bi bi-eye-slash" : "bi bi-eye"; }
+        function showFeedback(elementId, message, type) { const el = document.getElementById(elementId); el.textContent = message; el.className = "float-feedback show " + type; }
+        function hideFeedback(elementId) { const el = document.getElementById(elementId); el.classList.remove("show"); }
+        function setFieldState(inputId, state) { const input = document.getElementById(inputId); input.classList.remove("error", "valid", "validating"); if (state) input.classList.add(state); }
+
+        const debouncedValidateEmail = debounce(() => {
+            const input = document.getElementById("email");
+            const value = input.value.trim();
+            if (!value) { hideFeedback("emailFeedback"); setFieldState("email", null); return; }
+            setFieldState("email", "validating");
+            showFeedback("emailFeedback", "در حال بررسی...", "validating");
+            setTimeout(() => {
+                const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\.[a-zA-Z]{2,}$/;
+                if (!emailRegex.test(value)) { showFeedback("emailFeedback", "لطفاً یک ایمیل معتبر وارد کنید", "error"); setFieldState("email", "error"); return; }
+                hideFeedback("emailFeedback"); setFieldState("email", "valid");
+            }, 400);
+        }, 600);
+
+        document.getElementById("email").addEventListener("input", debouncedValidateEmail);
+
+        function toast(msg, type) { const t = document.getElementById("toast"); t.textContent = msg; t.style.display = "block"; if (type === "error") { t.style.background = 'rgba(127,29,29,0.95)'; t.style.borderColor = 'rgba(239,68,68,0.4)'; t.style.color = '#fca5a5'; } else if (type === "success") { t.style.background = 'rgba(6,78,59,0.95)'; t.style.borderColor = 'rgba(16,185,129,0.4)'; t.style.color = '#6ee7b7'; } else { t.style.background = 'rgba(20,20,31,0.95)'; t.style.borderColor = 'rgba(139,92,246,0.4)'; t.style.color = '#fff'; } clearTimeout(t._t); t._t = setTimeout(() => { t.style.display = "none"; }, 3000); }
+
+        document.getElementById("loginForm").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById("submitBtn");
+            const originalHTML = btn.innerHTML;
+            const errorBox = document.getElementById("errorBox");
+            errorBox.classList.remove("show"); errorBox.innerHTML = "";
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value;
+            const errors = [];
+            if (!email) { errors.push("ایمیل الزامی است"); setFieldState("email", "error"); }
+            if (!password) { errors.push("رمز عبور الزامی است"); setFieldState("password", "error"); }
+            if (errors.length > 0) { errorBox.innerHTML = errors.map(err => `<p><i class="bi bi-exclamation-circle"></i>${escapeHtml(err)}</p>`).join(""); errorBox.classList.add("show"); return; }
+            btn.disabled = true; btn.innerHTML = '<span class="loader-spinner"></span><span>در حال ورود...</span>';
+            try {
+                const res = await fetch("/auth/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, password }) });
+                const data = await res.json();
+                if (data.success) { toast(data.message || "ورود با موفقیت انجام شد", "success"); setTimeout(() => { window.location.href = data.redirect || "/dashboard"; }, 500); }
+                else { const serverErrors = data.errors || [data.message || "ایمیل یا رمز عبور اشتباه است"]; errorBox.innerHTML = serverErrors.map(err => `<p><i class="bi bi-exclamation-circle"></i>${escapeHtml(err)}</p>`).join(""); errorBox.classList.add("show"); }
+            } catch (err) { toast("خطا در ارتباط با سرور", "error"); }
+            btn.disabled = false; btn.innerHTML = originalHTML;
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" class="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>مدیریت پلن‌ها | فاکتوریتو</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/sahel-font@v3.4.0/dist/font-face.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sahel': ['Sahel', 'Vazirmatn', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        'ink': {
+                            950: '#050508',
+                            900: '#0a0a12',
+                            800: '#0f0f1a',
+                            700: '#151522',
+                            600: '#1a1a2e',
+                            500: '#22223a',
+                            400: '#2a2a46',
+                        },
+                        'accent': {
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                        }
+                    },
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * {
+            font-family: 'Sahel', 'Vazirmatn', system-ui, sans-serif !important;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #050508;
+            color: #d1d5db;
+            line-height: 1.8;
+            font-weight: 400;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #050508; }
+        ::-webkit-scrollbar-thumb { background: #1a1a2e; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #2a2a46; }
+
+        .glass-nav {
+            background: rgba(10, 10, 18, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(167, 139, 250, 0.08);
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.6);
+        }
+        .glass-nav.admin {
+            border-color: rgba(167, 139, 250, 0.15);
+        }
+
+        .card {
+            background: rgba(15, 15, 26, 0.6);
+            border: 1px solid rgba(167, 139, 250, 0.06);
+            border-radius: 16px;
+        }
+
+        .plan-card {
+            background: rgba(15, 15, 26, 0.6);
+            border: 1px solid rgba(167, 139, 250, 0.06);
+            border-radius: 16px;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .plan-card:hover {
+            border-color: rgba(167, 139, 250, 0.15);
+            background: rgba(20, 20, 32, 0.7);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px -12px rgba(124, 58, 237, 0.15);
+        }
+
+        .section-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            background: rgba(167, 139, 250, 0.06);
+            color: #a78bfa;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link {
+            color: #9ca3af;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+        }
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 2px;
+            height: 0;
+            background: #a78bfa;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            color: #e5e7eb;
+            background: rgba(167, 139, 250, 0.04);
+        }
+        .nav-link.active {
+            color: #a78bfa;
+            background: rgba(167, 139, 250, 0.06);
+        }
+        .nav-link.active::before {
+            height: 24px;
+        }
+
+        .btn-logout {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(239, 68, 68, 0.06);
+            border: 1px solid rgba(239, 68, 68, 0.1);
+            border-radius: 10px;
+            color: #f87171;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn-logout:hover {
+            background: rgba(239, 68, 68, 0.12);
+            border-color: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .status-active {
+            background: rgba(52, 211, 153, 0.08);
+            border: 1px solid rgba(52, 211, 153, 0.2);
+            color: #6ee7b7;
+        }
+        .status-inactive {
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 5, 8, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 60;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 280px;
+            height: 100vh;
+            background: rgba(10, 10, 18, 0.95);
+            backdrop-filter: blur(20px);
+            border-left: 1px solid rgba(167, 139, 250, 0.06);
+            z-index: 70;
+            padding: 20px;
+            transition: right 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            overflow-y: auto;
+        }
+        .sidebar.open {
+            right: 0;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(167, 139, 250, 0.06);
+            margin-bottom: 20px;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+        .sidebar-logo .logo-box {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 800;
+            font-size: 16px;
+            box-shadow: 0 4px 16px rgba(124, 58, 237, 0.3);
+        }
+        .sidebar-logo span {
+            font-weight: 800;
+            font-size: 18px;
+            color: #fff;
+        }
+
+        .sidebar-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: #6b7280;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            font-size: 18px;
+        }
+        .sidebar-close:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            color: #9ca3af;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            background: transparent;
+            border: none;
+            width: 100%;
+            cursor: pointer;
+            text-align: right;
+        }
+        .sidebar-link:hover {
+            background: rgba(167, 139, 250, 0.06);
+            color: #c4b5fd;
+        }
+        .sidebar-link.active {
+            background: rgba(167, 139, 250, 0.08);
+            color: #a78bfa;
+        }
+        .sidebar-link i {
+            font-size: 18px;
+            width: 22px;
+            text-align: center;
+            color: #6b7280;
+        }
+        .sidebar-link.active i {
+            color: #a78bfa;
+        }
+        .sidebar-link.logout-link {
+            color: #f87171;
+        }
+        .sidebar-link.logout-link i {
+            color: #f87171;
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            background: rgba(167, 139, 250, 0.06);
+            margin: 8px 12px;
+        }
+
+        .menu-btn {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            color: #d1d5db;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .menu-btn:hover {
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .loading-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(10, 10, 18, 0.7);
+            backdrop-filter: blur(4px);
+            border-radius: 16px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+        }
+        .loading-overlay.active {
+            display: flex;
+        }
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(167, 139, 250, 0.1);
+            border-top-color: #a78bfa;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .plans-wrapper {
+            position: relative;
+            min-height: 200px;
+        }
+
+        @media (max-width: 480px) {
+            .glass-nav .font-extrabold.text-base {
+                font-size: 14px !important;
+            }
+            .glass-nav .w-8.h-8 {
+                width: 28px !important;
+                height: 28px !important;
+                font-size: 12px !important;
+            }
+            main {
+                padding-top: 88px !important;
+                padding-left: 12px !important;
+                padding-right: 12px !important;
+            }
+            .section-icon {
+                width: 32px !important;
+                height: 32px !important;
+                font-size: 14px !important;
+                border-radius: 10px !important;
+            }
+            .plan-card {
+                padding: 14px !important;
+                border-radius: 14px !important;
+            }
+            .status-badge {
+                font-size: 9px !important;
+                padding: 2px 8px !important;
+            }
+            .sidebar {
+                width: 260px !important;
+                padding: 16px !important;
+            }
+            .nav-link {
+                font-size: 11px !important;
+                padding: 6px 12px !important;
+            }
+            .btn-logout {
+                font-size: 11px !important;
+                padding: 6px 12px !important;
+            }
+            .pagination-btn {
+                width: 32px !important;
+                height: 32px !important;
+                min-width: 32px !important;
+                font-size: 12px !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none !important;
+            }
+            .menu-btn {
+                display: flex !important;
+            }
+            .glass-nav {
+                padding: 8px 12px !important;
+                border-radius: 16px !important;
+            }
+            main {
+                padding-top: 92px !important;
+                padding-left: 14px !important;
+                padding-right: 14px !important;
+            }
+            .section-icon {
+                width: 36px !important;
+                height: 36px !important;
+                font-size: 16px !important;
+            }
+            .plan-card {
+                padding: 16px !important;
+                border-radius: 14px !important;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .sidebar-overlay,
+            .sidebar,
+            .menu-btn {
+                display: none !important;
+            }
+            .plan-card {
+                padding: 24px !important;
+                border-radius: 18px !important;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased bg-[#050508]">
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="/admin/dashboard" class="sidebar-logo">
+                <div class="logo-box">ا</div>
+                <span>پنل ادمین</span>
+            </a>
+            <button class="sidebar-close" onclick="closeSidebar()">&times;</button>
+        </div>
+
+        <div class="space-y-1">
+            <a href="/admin/dashboard" class="sidebar-link">
+                <i class="bi bi-speedometer2"></i> داشبورد
+            </a>
+            <a href="/admin/users" class="sidebar-link">
+                <i class="bi bi-people"></i> کاربران
+            </a>
+            <a href="/admin/invoices" class="sidebar-link">
+                <i class="bi bi-receipt"></i> فاکتورها
+            </a>
+            <a href="/admin/plans" class="sidebar-link active">
+                <i class="bi bi-collection"></i> پلن‌ها
+            </a>
+        </div>
+
+        <div class="sidebar-divider"></div>
+
+        <a href="/dashboard" class="sidebar-link">
+            <i class="bi bi-globe"></i> داشبورد کاربر
+        </a>
+        <a href="/auth/logout" class="sidebar-link logout-link">
+            <i class="bi bi-box-arrow-right"></i> خروج
+        </a>
+    </div>
+
+    <nav class="fixed top-0 right-0 left-0 z-50 px-3 md:px-6 py-3 md:py-5">
+        <div class="max-w-6xl mx-auto glass-nav admin rounded-2xl px-3 md:px-6 py-2 md:py-3 flex items-center justify-between">
+            <div class="flex items-center gap-2 md:gap-3">
+                <button class="menu-btn" onclick="openSidebar()" aria-label="منو">
+                    <i class="bi bi-list text-xl"></i>
+                </button>
+                <a href="/admin/dashboard" class="flex items-center gap-2 md:gap-2.5 no-underline shrink-0 group">
+                    <div class="w-8 h-8 md:w-9 md:h-9 bg-gradient-to-br from-accent-600 to-accent-400 rounded-lg flex items-center justify-center text-white font-extrabold text-sm md:text-lg transition-transform group-hover:scale-105 shadow-lg shadow-accent-600/30">
+                        ا
+                    </div>
+                    <span class="font-extrabold text-base md:text-xl lg:text-2xl text-white tracking-tight">پنل ادمین</span>
+                </a>
+            </div>
+
+            <div class="nav-links flex items-center gap-1 md:gap-1.5">
+                <a href="/admin/dashboard" class="nav-link">
+                    <i class="bi bi-speedometer2"></i> <span class="hidden sm:inline">داشبورد</span>
+                </a>
+                <a href="/admin/users" class="nav-link">
+                    <i class="bi bi-people"></i> <span class="hidden sm:inline">کاربران</span>
+                </a>
+                <a href="/admin/invoices" class="nav-link">
+                    <i class="bi bi-receipt"></i> <span class="hidden sm:inline">فاکتورها</span>
+                </a>
+                <a href="/admin/plans" class="nav-link active">
+                    <i class="bi bi-collection"></i> پلن‌ها
+                </a>
+
+                <div class="w-px h-6 bg-white/5 mx-1 md:mx-2 hidden lg:block"></div>
+
+                <a href="/dashboard" class="nav-link hidden md:inline-flex">
+                    <i class="bi bi-globe"></i> <span class="hidden lg:inline">داشبورد کاربر</span>
+                </a>
+                <a href="/auth/logout" class="btn-logout">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span class="hidden sm:inline">خروج</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-3 md:px-4 pt-24 md:pt-28 pb-12 md:pb-16">
+
+        <div class="mb-8 md:mb-10 flex items-center gap-3">
+            <div class="section-icon">
+                <i class="bi bi-collection"></i>
+            </div>
+            <div>
+                <h1 class="text-2xl md:text-3xl lg:text-4xl font-black text-white mb-1">مدیریت پلن‌ها</h1>
+                <p class="text-gray-500 text-xs md:text-sm">مشاهده تمام پلن‌های تعریف شده توسط کاربران</p>
+            </div>
+        </div>
+
+        <div class="plans-wrapper" id="plansWrapper">
+            <div class="loading-overlay" id="loadingOverlay">
+                <div class="loading-spinner"></div>
+            </div>
+
+            <div id="plansContainer">
+                <% if (typeof plans !== 'undefined' && plans.length > 0) { %>
+                    <div class="space-y-3 md:space-y-4">
+                        <% plans.forEach(function(p) { %>
+                        <div class="plan-card p-5 md:p-6">
+                            <!-- Header: Name & Status -->
+                            <div class="flex items-center justify-between gap-3 mb-3">
+                                <h3 class="text-lg font-extrabold text-white truncate"><%= p.name %></h3>
+                                <span class="status-badge <%= p.isActive ? 'status-active' : 'status-inactive' %> shrink-0">
+                                    <span style="width: 6px; height: 6px; border-radius: 50%; display: inline-block; background: <%= p.isActive ? '#6ee7b7' : '#fca5a5' %>;"></span>
+                                    <%= p.isActive ? 'فعال' : 'غیرفعال' %>
+                                </span>
+                            </div>
+
+                            <% if (p.description) { %>
+                            <p class="text-sm text-gray-400 mb-3"><%= p.description %></p>
+                            <% } %>
+
+                            <!-- Grid: 2 columns -->
+                            <div class="grid grid-cols-2 gap-3 mb-3">
+                                <div class="flex items-baseline gap-1.5">
+                                    <span class="text-xl md:text-2xl font-black text-accent-400">
+                                        <%= p.price.toLocaleString("fa-IR-u-nu-latn") %>
+                                    </span>
+                                    <span class="text-sm text-gray-500">تومان</span>
+                                </div>
+                                <div class="flex items-center justify-end">
+                                    <span class="text-sm text-gray-300 truncate">
+                                        <%= p.user?.username || p.user?.clubName || '—' %>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Footer: Date & Email -->
+                            <div class="flex items-center justify-between mt-2 pt-2 border-t border-white/5">
+                                <span class="text-xs text-gray-500 flex items-center gap-1.5">
+                                    <i class="bi bi-calendar3"></i>
+                                    <%= p.createdAt ? new Date(p.createdAt).toLocaleDateString("fa-IR-u-nu-latn") : '—' %>
+                                </span>
+                                <% if (p.user?.email) { %>
+                                <span class="text-xs text-gray-500 truncate max-w-[150px]" dir="ltr">
+                                    <%= p.user.email %>
+                                </span>
+                                <% } %>
+                            </div>
+                        </div>
+                        <% }); %>
+                    </div>
+                <% } else { %>
+                    <div class="card rounded-2xl p-10 md:p-16 text-center">
+                        <div class="w-16 h-16 md:w-20 md:h-20 bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-5">
+                            <i class="bi bi-collection text-2xl md:text-3xl text-gray-600"></i>
+                        </div>
+                        <h3 class="text-lg font-extrabold text-white mb-2">هیچ پلنی تعریف نشده</h3>
+                        <p class="text-gray-500 text-sm">کاربران هنوز پلنی ایجاد نکرده‌اند</p>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+
+        <div id="paginationContainer">
+            <% if (totalPages > 1) { %>
+            <div class="flex items-center justify-center gap-1 md:gap-2 mt-8 md:mt-10">
+                <button onclick="loadPage(<%= currentPage - 1 %>)"
+                        class="pagination-btn flex items-center justify-center w-9 h-9 md:w-10 md:h-10 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all duration-200 <%= currentPage <= 1 ? 'opacity-30 pointer-events-none' : '' %>"
+                        <%= currentPage <= 1 ? 'disabled' : '' %>>
+                    <i class="bi bi-chevron-right text-lg"></i>
+                </button>
+
+                <%
+                    const total = totalPages;
+                    const current = currentPage;
+                    const pages = [];
+                    if (total <= 7) {
+                        for (let i = 1; i <= total; i++) pages.push(i);
+                    } else if (current <= 3) {
+                        for (let i = 1; i <= 5; i++) pages.push(i);
+                        pages.push('...');
+                        pages.push(total);
+                    } else if (current >= total - 2) {
+                        pages.push(1);
+                        pages.push('...');
+                        for (let i = total - 4; i <= total; i++) pages.push(i);
+                    } else {
+                        pages.push(1);
+                        pages.push('...');
+                        for (let i = current - 1; i <= current + 1; i++) pages.push(i);
+                        pages.push('...');
+                        pages.push(total);
+                    }
+                %>
+
+                <% pages.forEach(function(p) { %>
+                    <% if (p === '...') { %>
+                        <span class="text-gray-500 text-sm px-1 select-none">…</span>
+                    <% } else { %>
+                        <button onclick="loadPage(<%= p %>)"
+                                class="pagination-btn flex items-center justify-center min-w-[36px] md:min-w-[40px] h-9 md:h-10 px-2 md:px-3 rounded-lg text-sm font-medium transition-all duration-200
+                                <%= p === current ? 'bg-accent-600 text-white' : 'text-gray-400 hover:text-white hover:bg-white/5' %>">
+                            <%= p %>
+                        </button>
+                    <% } %>
+                <% }); %>
+
+                <button onclick="loadPage(<%= currentPage + 1 %>)"
+                        class="pagination-btn flex items-center justify-center w-9 h-9 md:w-10 md:h-10 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all duration-200 <%= currentPage >= totalPages ? 'opacity-30 pointer-events-none' : '' %>"
+                        <%= currentPage >= totalPages ? 'disabled' : '' %>>
+                    <i class="bi bi-chevron-left text-lg"></i>
+                </button>
+            </div>
+            <% } %>
+        </div>
+    </main>
+
+    <script>
+        function openSidebar() {
+            document.getElementById('sidebar').classList.add('open');
+            document.getElementById('sidebarOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeSidebar();
+            }
+        });
+
+        let currentPage = <%= currentPage %>;
+        let totalPages = <%= totalPages %>;
+        let isLoading = false;
+        let currentSearch = '<%= filters?.search || '' %>';
+
+        function showLoading() {
+            const overlay = document.getElementById('loadingOverlay');
+            if (overlay) overlay.classList.add('active');
+        }
+
+        function hideLoading() {
+            const overlay = document.getElementById('loadingOverlay');
+            if (overlay) overlay.classList.remove('active');
+        }
+
+        function renderPlans(plans) {
+            const container = document.getElementById('plansContainer');
+            if (!container) return;
+
+            if (plans.length === 0) {
+                container.innerHTML = `
+                    <div class="card rounded-2xl p-10 md:p-16 text-center">
+                        <div class="w-16 h-16 md:w-20 md:h-20 bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-5">
+                            <i class="bi bi-collection text-2xl md:text-3xl text-gray-600"></i>
+                        </div>
+                        <h3 class="text-lg font-extrabold text-white mb-2">هیچ پلنی تعریف نشده</h3>
+                        <p class="text-gray-500 text-sm">کاربران هنوز پلنی ایجاد نکرده‌اند</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '<div class="space-y-3 md:space-y-4">';
+            plans.forEach(p => {
+                const isActive = p.isActive;
+                const statusColor = isActive ? '#6ee7b7' : '#fca5a5';
+                const statusText = isActive ? 'فعال' : 'غیرفعال';
+                const statusClass = isActive ? 'status-active' : 'status-inactive';
+
+                html += `
+                    <div class="plan-card p-5 md:p-6">
+                        <div class="flex items-center justify-between gap-3 mb-3">
+                            <h3 class="text-lg font-extrabold text-white truncate">${p.name}</h3>
+                            <span class="status-badge ${statusClass} shrink-0">
+                                <span style="width: 6px; height: 6px; border-radius: 50%; display: inline-block; background: ${statusColor};"></span>
+                                ${statusText}
+                            </span>
+                        </div>
+                        ${p.description ? `<p class="text-sm text-gray-400 mb-3">${p.description}</p>` : ''}
+                        <div class="grid grid-cols-2 gap-3 mb-3">
+                            <div class="flex items-baseline gap-1.5">
+                                <span class="text-xl md:text-2xl font-black text-accent-400">
+                                    ${Number(p.price).toLocaleString("fa-IR-u-nu-latn")}
+                                </span>
+                                <span class="text-sm text-gray-500">تومان</span>
+                            </div>
+                            <div class="flex items-center justify-end">
+                                <span class="text-sm text-gray-300 truncate">
+                                    ${p.user?.username || p.user?.clubName || '—'}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between mt-2 pt-2 border-t border-white/5">
+                            <span class="text-xs text-gray-500 flex items-center gap-1.5">
+                                <i class="bi bi-calendar3"></i>
+                                ${p.createdAt ? new Date(p.createdAt).toLocaleDateString("fa-IR-u-nu-latn") : '—'}
+                            </span>
+                            ${p.user?.email ? `<span class="text-xs text-gray-500 truncate max-w-[150px]" dir="ltr">${p.user.email}</span>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function updatePagination(pagination) {
+            const paginationContainer = document.getElementById('paginationContainer');
+            if (!paginationContainer) return;
+
+            totalPages = pagination.totalPages;
+            currentPage = pagination.currentPage;
+
+            if (totalPages <= 1) {
+                paginationContainer.innerHTML = '';
+                return;
+            }
+
+            const hasPrev = currentPage > 1;
+            const hasNext = currentPage < totalPages;
+
+            let html = '<div class="flex items-center justify-center gap-1 md:gap-2 mt-8 md:mt-10">';
+
+            html += `
+                <button onclick="loadPage(${currentPage - 1})"
+                        class="pagination-btn flex items-center justify-center w-9 h-9 md:w-10 md:h-10 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all duration-200 ${!hasPrev ? 'opacity-30 pointer-events-none' : ''}"
+                        ${!hasPrev ? 'disabled' : ''}>
+                    <i class="bi bi-chevron-right text-lg"></i>
+                </button>
+            `;
+
+            const total = totalPages;
+            const current = currentPage;
+            const pages = [];
+
+            if (total <= 7) {
+                for (let i = 1; i <= total; i++) pages.push(i);
+            } else if (current <= 3) {
+                for (let i = 1; i <= 5; i++) pages.push(i);
+                pages.push('...');
+                pages.push(total);
+            } else if (current >= total - 2) {
+                pages.push(1);
+                pages.push('...');
+                for (let i = total - 4; i <= total; i++) pages.push(i);
+            } else {
+                pages.push(1);
+                pages.push('...');
+                for (let i = current - 1; i <= current + 1; i++) pages.push(i);
+                pages.push('...');
+                pages.push(total);
+            }
+
+            pages.forEach(p => {
+                if (p === '...') {
+                    html += `<span class="text-gray-500 text-sm px-1 select-none">…</span>`;
+                } else {
+                    html += `
+                        <button onclick="loadPage(${p})"
+                                class="pagination-btn flex items-center justify-center min-w-[36px] md:min-w-[40px] h-9 md:h-10 px-2 md:px-3 rounded-lg text-sm font-medium transition-all duration-200
+                                ${p === current ? 'bg-accent-600 text-white' : 'text-gray-400 hover:text-white hover:bg-white/5'}">
+                            ${p}
+                        </button>
+                    `;
+                }
+            });
+
+            html += `
+                <button onclick="loadPage(${currentPage + 1})"
+                        class="pagination-btn flex items-center justify-center w-9 h-9 md:w-10 md:h-10 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all duration-200 ${!hasNext ? 'opacity-30 pointer-events-none' : ''}"
+                        ${!hasNext ? 'disabled' : ''}>
+                    <i class="bi bi-chevron-left text-lg"></i>
+                </button>
+            `;
+
+            html += '</div>';
+            paginationContainer.innerHTML = html;
+        }
+
+        window.loadPage = function(page) {
+            if (page < 1 || page > totalPages || page === currentPage || isLoading) return;
+
+            isLoading = true;
+            showLoading();
+
+            let url = `/admin/plans?page=${page}`;
+            if (currentSearch) url += `&search=${encodeURIComponent(currentSearch)}`;
+
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    renderPlans(data.plans);
+                    updatePagination(data.pagination);
+                } else {
+                    alert(data.message || 'خطا در بارگذاری پلن‌ها');
+                }
+            })
+            .catch(error => {
+                console.error('Error loading plans:', error);
+                alert('خطا در ارتباط با سرور');
+            })
+            .finally(() => {
+                isLoading = false;
+                hideLoading();
+            });
+        };
+    </script>
+</body>
+</html>

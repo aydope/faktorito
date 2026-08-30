@@ -1,0 +1,1640 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" class="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>ایجاد فاکتور | فاکتوریتو</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/sahel-font@v3.4.0/dist/font-face.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sahel': ['Sahel', 'Vazirmatn', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        ink: {
+                            950: '#050508', 900: '#0c0c14', 800: '#14141f', 700: '#1c1c2a',
+                            600: '#28283a', 500: '#36364c', 400: '#4a4a63',
+                        },
+                        accent: {
+                            400: '#a78bfa', 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9', 800: '#5b21b6', 900: '#4c1d95',
+                        },
+                        gold: { 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309' },
+                        success: { 300: '#6ee7b7', 400: '#34d399', 500: '#10b981', 600: '#059669' },
+                    },
+                    boxShadow: {
+                        'glow': '0 0 32px rgba(124, 58, 237, 0.35)',
+                        'glow-lg': '0 8px 40px rgba(124, 58, 237, 0.45)',
+                        'card': '0 10px 40px -10px rgba(0, 0, 0, 0.4)',
+                    },
+                    borderRadius: { 'xl': '12px', '2xl': '16px', '3xl': '24px' },
+                    keyframes: {
+                        shimmer: { '0%': { backgroundPosition: '200% 0' }, '100%': { backgroundPosition: '-200% 0' } },
+                        toastIn: { '0%': { opacity: '0', transform: 'translateX(-50%) translateY(8px)' }, '100%': { opacity: '1', transform: 'translateX(-50%) translateY(0)' } },
+                        spin: { '0%': { transform: 'rotate(0deg)' }, '100%': { transform: 'rotate(360deg)' } },
+                        slideIn: { '0%': { transform: 'translateX(110%)' }, '100%': { transform: 'translateX(0)' } },
+                    },
+                    animation: {
+                        shimmer: 'shimmer 1.8s infinite',
+                        toastIn: 'toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+                        spin: 'spin 0.6s linear infinite',
+                        slideIn: 'slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                    },
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * {
+            font-family: 'Sahel', 'Vazirmatn', system-ui, sans-serif !important;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #050508;
+            color: #d1d5db;
+            line-height: 1.8;
+            font-weight: 400;
+            letter-spacing: -0.1px;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            min-height: 100vh;
+        }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: #050508; }
+        ::-webkit-scrollbar-thumb { background: #1c1c2a; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #28283a; }
+
+        .grid-bg {
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+
+        .glass-header {
+            background: rgba(12, 12, 20, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.4);
+        }
+
+        .card {
+            background: #0c0c14;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .btn-primary {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            background: #7c3aed;
+            box-shadow: 0 8px 30px -8px rgba(124, 58, 237, 0.4);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+        .btn-primary:hover {
+            background: #8b5cf6;
+            box-shadow: 0 12px 40px -8px rgba(139, 92, 246, 0.5);
+            transform: translateY(-2px);
+        }
+        .btn-primary:active { transform: scale(0.97); }
+        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        .btn-submit {
+            background: #059669;
+            box-shadow: 0 8px 30px -8px rgba(5, 150, 105, 0.4);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .btn-submit:hover {
+            background: #10b981;
+            box-shadow: 0 12px 40px -8px rgba(16, 185, 129, 0.5);
+        }
+
+        .btn-generate {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 11px 16px;
+            background: rgba(139, 92, 246, 0.08);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 12px;
+            color: #a78bfa;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .btn-generate:hover {
+            background: rgba(139, 92, 246, 0.15);
+            border-color: rgba(139, 92, 246, 0.4);
+            color: #c4b5fd;
+        }
+
+        .btn-add-option {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 11px 16px;
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 12px;
+            color: #6ee7b7;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn-add-option:hover {
+            background: rgba(16, 185, 129, 0.15);
+            border-color: rgba(16, 185, 129, 0.4);
+            color: #a7f3d0;
+        }
+
+        .nav-link {
+            color: #9ca3af; font-size: 14px; font-weight: 500;
+            padding: 8px 16px; border-radius: 10px;
+            transition: all 0.25s ease; text-decoration: none;
+            display: flex; align-items: center; gap: 8px;
+            border: 1px solid transparent; background: transparent;
+        }
+        .nav-link:hover { color: #fff; background: rgba(255,255,255,0.04); }
+        .nav-link.active { color: #c4b5fd; background: rgba(139,92,246,0.08); border-color: rgba(139,92,246,0.2); }
+        .nav-link i { font-size: 16px; }
+
+        .dropdown-trigger {
+            display: flex; align-items: center; gap: 10px; padding: 4px 12px 4px 6px;
+            background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 50px; cursor: pointer; transition: all 0.3s ease; color: #d1d5db;
+            font-weight: 500; font-size: 14px;
+        }
+        .dropdown-trigger:hover { background: rgba(255, 255, 255, 0.05); border-color: rgba(139, 92, 246, 0.4); }
+        .avatar {
+            width: 34px; height: 34px; border-radius: 50%;
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 14px; color: #fff; flex-shrink: 0;
+        }
+        .dropdown-menu {
+            position: absolute; top: calc(100% + 10px); left: 0; min-width: 260px;
+            background: #14141f; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px;
+            padding: 10px; box-shadow: 0 25px 50px -15px rgba(0, 0, 0, 0.6);
+            opacity: 0; visibility: hidden; transform: translateY(-8px) scale(0.97);
+            transition: all 0.25s cubic-bezier(0.23, 1, 0.32, 1); z-index: 100;
+        }
+        .dropdown-menu.active { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
+        .dropdown-item {
+            display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 10px;
+            color: #9ca3af; font-size: 14px; font-weight: 500; transition: all 0.2s ease;
+            cursor: pointer; text-decoration: none; background: none; border: none; width: 100%; text-align: right;
+        }
+        .dropdown-item:hover { background: rgba(139, 92, 246, 0.08); color: #c4b5fd; }
+        .dropdown-item i { font-size: 17px; width: 20px; text-align: center; }
+        .dropdown-item.danger:hover { background: rgba(220, 38, 38, 0.12); color: #f87171; }
+        .dropdown-divider { height: 1px; background: rgba(255, 255, 255, 0.05); margin: 6px 8px; }
+
+        .mega-menu {
+            position: fixed; top: 80px; right: 50%; transform: translateX(50%) translateY(-8px);
+            width: min(90%, 500px); background: #14141f; border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px; padding: 16px; box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+            opacity: 0; visibility: hidden; transition: all 0.3s cubic-bezier(0.23,1,0.32,1); z-index: 200;
+        }
+        .mega-menu.active { opacity: 1; visibility: visible; transform: translateX(50%) translateY(0); }
+        .mega-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+        .mega-item {
+            display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 12px;
+            transition: all 0.2s ease; text-decoration: none; color: #9ca3af;
+        }
+        .mega-item:hover { background: rgba(139,92,246,0.06); color: #fff; }
+        .mega-item i { font-size: 20px; width: 24px; text-align: center; color: #a78bfa; }
+        .mega-item .mega-title { font-size: 14px; font-weight: 700; color: #e5e7eb; }
+        .mega-item .mega-desc { font-size: 11px; color: #6b7280; }
+
+        .sidebar {
+            position: fixed; top: 0; right: 0; bottom: 0; width: 85%; max-width: 320px;
+            background: #0c0c14; border-left: 1px solid rgba(255,255,255,0.06); z-index: 300;
+            padding: 20px; overflow-y: auto; transform: translateX(110%);
+            transition: transform 0.4s cubic-bezier(0.23,1,0.32,1);
+        }
+        .sidebar.open { transform: translateX(0); }
+        .sidebar-overlay {
+            position: fixed; inset: 0; background: rgba(5,5,8,0.7); backdrop-filter: blur(4px);
+            z-index: 290; opacity: 0; visibility: hidden; transition: all 0.3s ease;
+        }
+        .sidebar-overlay.active { opacity: 1; visibility: visible; }
+
+        .sidebar-link {
+            display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 12px;
+            color: #9ca3af; font-size: 14px; font-weight: 500; transition: all 0.2s ease;
+            text-decoration: none; margin-bottom: 2px; border: 1px solid transparent;
+        }
+        .sidebar-link i { font-size: 18px; width: 22px; text-align: center; }
+        .sidebar-link:hover { background: rgba(255,255,255,0.04); color: #fff; }
+        .sidebar-link.active { background: rgba(139,92,246,0.08); color: #c4b5fd; border-color: rgba(139,92,246,0.2); }
+        .sidebar-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 12px 0; }
+
+        .input-field {
+            width: 100%; padding: 12px 14px;
+            background: #0c0c14; border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px; color: #fff; font-size: 14px;
+            transition: all 0.3s ease; outline: none;
+        }
+        .input-field:focus { border-color: rgba(139,92,246,0.4); box-shadow: 0 0 0 3px rgba(139,92,246,0.05); }
+        .input-field::placeholder { color: #4a4a63; }
+        .input-field.error { border-color: rgba(239,68,68,0.4); box-shadow: 0 0 0 3px rgba(239,68,68,0.05); }
+        textarea.input-field { resize: vertical; min-height: 80px; }
+
+        /* Input alignment styles */
+        .input-left {
+            text-align: left !important;
+            direction: ltr !important;
+        }
+        .input-center {
+            text-align: center !important;
+            direction: ltr !important;
+        }
+
+        .input-error {
+            color: #fca5a5;
+            font-size: 12px;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .pill-group {
+            display: inline-flex;
+            gap: 0;
+            background: #14141f;
+            border-radius: 14px;
+            padding: 3px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .pill-btn {
+            padding: 7px 18px;
+            border-radius: 11px;
+            border: none;
+            background: transparent;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            color: #6b7280;
+            transition: all 0.2s ease;
+            font-family: 'Sahel', sans-serif !important;
+        }
+        .pill-btn.active {
+            background: #7c3aed;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: #14141f;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #d1d5db;
+        }
+        .chip.option-chip {
+            background: rgba(16, 185, 129, 0.06);
+            border-color: rgba(16, 185, 129, 0.15);
+            color: #6ee7b7;
+        }
+        .chip.discount-chip {
+            background: rgba(239, 68, 68, 0.06);
+            border-color: rgba(239, 68, 68, 0.15);
+            color: #fca5a5;
+        }
+        .chip .chip-remove {
+            cursor: pointer;
+            opacity: 0.5;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            line-height: 1;
+        }
+        .chip .chip-remove:hover { opacity: 1; color: #ef4444; }
+
+        .custom-select { position: relative; width: 100%; }
+        .custom-select-trigger {
+            width: 100%; padding: 13px 16px;
+            background: #0c0c14; border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 14px; color: #fff; cursor: pointer;
+            display: flex; align-items: center; justify-content: space-between;
+            transition: all 0.3s ease; font-size: 14px; font-weight: 500;
+        }
+        .custom-select-trigger:hover { border-color: rgba(139, 92, 246, 0.3); }
+        .custom-select-trigger.active {
+            border-color: rgba(139, 92, 246, 0.5);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.05);
+        }
+        .custom-select-trigger .placeholder { color: #4a4a63; }
+        .custom-select-trigger .selected-text { display: flex; align-items: center; gap: 10px; }
+        .custom-select-trigger .selected-text .plan-name { font-weight: 700; color: #e2e8f0; }
+        .custom-select-trigger .selected-text .plan-price { font-weight: 700; color: #a78bfa; font-size: 13px; }
+        .custom-select-trigger.error { border-color: rgba(239, 68, 68, 0.4); box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.05); }
+
+        .custom-options {
+            position: absolute; top: calc(100% + 8px); left: 0; right: 0;
+            background: #14141f; border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px; overflow: hidden; z-index: 50;
+            opacity: 0; visibility: hidden; transform: translateY(-8px) scale(0.98);
+            transition: all 0.25s cubic-bezier(0.23, 1, 0.32, 1);
+            max-height: 300px; overflow-y: auto; padding: 6px;
+            box-shadow: 0 25px 50px -15px rgba(0, 0, 0, 0.6);
+        }
+        .custom-options::-webkit-scrollbar { width: 4px; }
+        .custom-options::-webkit-scrollbar-thumb { background: #28283a; border-radius: 2px; }
+        .custom-select.active .custom-options {
+            opacity: 1; visibility: visible; transform: translateY(0) scale(1);
+        }
+
+        .custom-option {
+            padding: 14px 16px; cursor: pointer; transition: all 0.2s ease;
+            border-radius: 10px; margin-bottom: 2px;
+            display: flex; align-items: center; gap: 14px;
+            border: 1px solid transparent;
+        }
+        .custom-option:last-child { margin-bottom: 0; }
+        .custom-option:hover { background: rgba(139, 92, 246, 0.05); border-color: rgba(139, 92, 246, 0.15); }
+        .custom-option.selected { background: rgba(139, 92, 246, 0.1); border-color: rgba(139, 92, 246, 0.3); }
+        .custom-option .option-dot {
+            width: 10px; height: 10px; border-radius: 50%;
+            flex-shrink: 0; background: #36364c; transition: all 0.2s ease;
+        }
+        .custom-option.selected .option-dot {
+            background: #a78bfa;
+            box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.2);
+        }
+        .custom-option .option-info { flex: 1; min-width: 0; }
+        .custom-option .option-info .option-name { font-weight: 700; font-size: 14px; color: #e2e8f0; margin-bottom: 2px; }
+        .custom-option .option-info .option-desc { font-size: 11px; color: #4a4a63; }
+        .custom-option .option-price {
+            font-weight: 800; font-size: 14px; color: #a78bfa;
+            background: rgba(139, 92, 246, 0.1); padding: 6px 12px;
+            border-radius: 8px; white-space: nowrap; flex-shrink: 0;
+            display: flex; align-items: baseline; gap: 3px;
+        }
+        .custom-option .option-price .toman { font-size: 10px; font-weight: 500; opacity: 0.7; }
+
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(5, 5, 8, 0.85);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 400; opacity: 0; visibility: hidden; transition: all 0.3s ease;
+        }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-dialog {
+            background: #14141f; border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px; padding: 28px; max-width: 420px; width: 90%;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
+            transform: scale(0.92) translateY(16px); transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .modal-overlay.active .modal-dialog { transform: scale(1) translateY(0); }
+
+        .toast {
+            position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+            background: rgba(20,20,31,0.95); backdrop-filter: blur(12px);
+            color: #fff; padding: 12px 24px; border-radius: 50px;
+            font-size: 13px; font-weight: 600; z-index: 500;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            border: 1px solid rgba(139,92,246,0.3);
+            display: none; animation: toastIn 0.3s ease;
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, rgba(124, 58, 237, 0.1) 0%, rgba(139, 92, 246, 0.2) 50%, rgba(124, 58, 237, 0.1) 100%);
+            background-size: 200% 100%; animation: shimmer 1.8s infinite; border-radius: 6px;
+        }
+
+        .counter { font-size: 11px; color: #6b7280; transition: color 0.3s ease; }
+        .counter.warning { color: #fcd34d; }
+        .counter.danger { color: #fca5a5; }
+
+        /* Member ID - New Design */
+        .member-id-input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            max-width: 400px;
+        }
+        .member-id-input-box {
+            position: relative;
+            flex: 1;
+            min-width: 0;
+        }
+        .member-id-input-box .input-field {
+            padding-left: 48px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            font-family: 'Sahel', 'Courier New', monospace;
+            background: #0f0f1a;
+            border-color: rgba(139, 92, 246, 0.15);
+        }
+        .member-id-input-box .input-field:focus {
+            border-color: rgba(139, 92, 246, 0.5);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+            background: #0c0c14;
+        }
+        .member-id-prefix {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 13px;
+            font-weight: 800;
+            color: #a78bfa;
+            pointer-events: none;
+            letter-spacing: 0.5px;
+        }
+        .member-id-input-box .input-field:focus + .member-id-prefix {
+            color: #c4b5fd;
+        }
+        .btn-generate-id {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.12), rgba(124, 58, 237, 0.08));
+            border: 1px solid rgba(139, 92, 246, 0.25);
+            border-radius: 12px;
+            color: #c4b5fd;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            white-space: nowrap;
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+            height: 48px;
+        }
+        .btn-generate-id::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(124, 58, 237, 0.15));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .btn-generate-id:hover {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(124, 58, 237, 0.15));
+            border-color: rgba(167, 139, 250, 0.5);
+            color: #fff;
+            box-shadow: 0 8px 25px -5px rgba(124, 58, 237, 0.35);
+            transform: translateY(-2px);
+        }
+        .btn-generate-id:hover::before {
+            opacity: 1;
+        }
+        .btn-generate-id:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 12px -2px rgba(124, 58, 237, 0.25);
+        }
+        .btn-generate-id i {
+            font-size: 18px;
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            z-index: 1;
+        }
+        .btn-generate-id:hover i {
+            transform: rotate(360deg) scale(1.1);
+        }
+        .btn-generate-id span {
+            position: relative;
+            z-index: 1;
+        }
+        .btn-generate-id:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+        .btn-generate-id .countdown {
+            position: relative;
+            z-index: 1;
+            font-weight: 800;
+            color: #fbbf24;
+            min-width: 20px;
+            display: inline-block;
+            text-align: center;
+        }
+
+        /* Options and Discounts - New UX Design */
+        .dynamic-section {
+            position: relative;
+            background: #0f0f1a;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+        .dynamic-section:hover {
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .input-group-row {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+        .input-group {
+            flex: 1;
+            min-width: 150px;
+            position: relative;
+        }
+        .input-group.small {
+            flex: 0 0 140px;
+            min-width: 120px;
+        }
+        .input-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            color: #6b7280;
+            margin-bottom: 6px;
+            letter-spacing: -0.2px;
+        }
+
+        .input-with-suffix {
+            position: relative;
+        }
+        .input-with-suffix .input-field {
+            padding-left: 50px;
+            text-align: left;
+            direction: ltr;
+        }
+        .input-suffix {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
+            font-weight: 700;
+            color: #6b7280;
+            pointer-events: none;
+            transition: color 0.3s ease;
+        }
+        .input-with-suffix .input-field:focus + .input-suffix {
+            color: #a78bfa;
+        }
+
+        .add-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 11px 20px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            white-space: nowrap;
+            flex-shrink: 0;
+            border: 1px solid;
+        }
+        .add-btn-option {
+            background: rgba(16, 185, 129, 0.08);
+            border-color: rgba(16, 185, 129, 0.2);
+            color: #6ee7b7;
+        }
+        .add-btn-option:hover {
+            background: rgba(16, 185, 129, 0.15);
+            border-color: rgba(16, 185, 129, 0.35);
+            color: #a7f3d0;
+            box-shadow: 0 8px 25px -5px rgba(16, 185, 129, 0.3);
+            transform: translateY(-1px);
+        }
+        .add-btn-discount {
+            background: rgba(239, 68, 68, 0.08);
+            border-color: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+        }
+        .add-btn-discount:hover {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: rgba(239, 68, 68, 0.35);
+            color: #fecaca;
+            box-shadow: 0 8px 25px -5px rgba(239, 68, 68, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .chips-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 16px;
+            min-height: 36px;
+            align-items: center;
+        }
+        .empty-state {
+            font-size: 11px;
+            color: #4a4a63;
+            font-style: italic;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .empty-state i {
+            font-size: 14px;
+            opacity: 0.5;
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            background: #14141f;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #d1d5db;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            animation: slideIn 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .chip:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        .chip.option-chip {
+            background: rgba(16, 185, 129, 0.08);
+            border-color: rgba(16, 185, 129, 0.2);
+            color: #6ee7b7;
+        }
+        .chip.discount-chip {
+            background: rgba(239, 68, 68, 0.08);
+            border-color: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+        }
+        .chip .chip-remove {
+            cursor: pointer;
+            opacity: 0.4;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+        }
+        .chip .chip-remove:hover {
+            opacity: 1;
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        /* Auto-resize textarea */
+        .auto-resize-textarea {
+            overflow: hidden;
+            resize: none;
+            min-height: 44px;
+            max-height: 200px;
+            line-height: 1.8;
+            transition: height 0.2s ease;
+        }
+
+        @media (min-width: 769px) {
+            .mobile-only { display: none !important; }
+        }
+        @media (max-width: 768px) {
+            .desktop-only { display: none !important; }
+        }
+    </style>
+</head>
+<body class="antialiased bg-[#050508] grid-bg">
+
+    <!-- ========== SIDEBAR (Mobile) ========== -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+    <div class="sidebar" id="sidebar">
+        <div class="flex items-center justify-between mb-6 pb-4 border-b border-white/5">
+            <a href="/dashboard" class="flex items-center gap-2.5 no-underline">
+                <div class="w-9 h-9 bg-gradient-to-br from-accent-700 to-accent-500 rounded-xl flex items-center justify-center text-white font-extrabold text-lg">ف</div>
+                <span class="font-extrabold text-xl text-white">فاکتوریتو</span>
+            </a>
+            <button onclick="closeSidebar()" class="btn-logout"><i class="bi bi-x-lg"></i></button>
+        </div>
+
+        <div class="space-y-1">
+            <div class="text-xs font-bold text-gray-500 px-3 mb-2">منوی اصلی</div>
+            <a href="/dashboard" class="sidebar-link"><i class="bi bi-speedometer2"></i> داشبورد</a>
+            <a href="/invoices" class="sidebar-link active"><i class="bi bi-receipt"></i> فاکتورها</a>
+            <a href="/plans" class="sidebar-link"><i class="bi bi-collection"></i> پلن‌ها</a>
+            <a href="/profile" class="sidebar-link"><i class="bi bi-person"></i> پروفایل</a>
+        </div>
+
+        <div class="sidebar-divider"></div>
+        <a href="/settings" class="sidebar-link"><i class="bi bi-gear"></i> تنظیمات</a>
+        <button onclick="openLogoutModal(); closeSidebar();" class="sidebar-link w-full text-red-400 hover:text-red-300 hover:bg-red-500/5"><i class="bi bi-box-arrow-right"></i> خروج از حساب</button>
+    </div>
+
+    <!-- ========== HEADER ========== -->
+    <header class="fixed top-0 right-0 left-0 z-50 px-4 md:px-6 py-4">
+        <div class="max-w-5xl mx-auto glass-header rounded-2xl px-4 md:px-5 py-2.5 flex items-center justify-between">
+            <a href="/dashboard" class="flex items-center gap-2.5 no-underline shrink-0 group">
+                <div class="w-9 h-9 bg-gradient-to-br from-accent-700 to-accent-500 rounded-xl flex items-center justify-center text-white font-extrabold text-lg shadow-glow group-hover:shadow-glow-lg transition-all">ف</div>
+                <span class="font-extrabold text-xl md:text-2xl text-white tracking-tight group-hover:text-accent-400 transition-colors">فاکتوریتو</span>
+            </a>
+
+            <div class="hidden md:flex items-center gap-1 desktop-only">
+                <a href="/dashboard" class="nav-link"><i class="bi bi-speedometer2"></i> داشبورد</a>
+                <button onclick="toggleMegaMenu()" class="nav-link" id="megaMenuBtn">
+                    <i class="bi bi-grid-1x2"></i> بیشتر
+                    <i class="bi bi-chevron-down text-[10px]" id="megaCaret"></i>
+                </button>
+            </div>
+
+            <div class="flex items-center gap-2.5">
+                <div class="relative" id="userDropdown">
+                    <button class="dropdown-trigger" onclick="toggleDropdown(event)" aria-label="منوی کاربری">
+                        <div class="avatar">
+                            <%= (user && user.username) ? user.username.charAt(0).toUpperCase() : 'U' %>
+                        </div>
+                        <span class="hidden sm:block max-w-[90px] truncate text-sm">
+                            <%= (user && user.username) ? user.username : 'کاربر' %>
+                        </span>
+                        <span class="hidden sm:inline-flex items-center justify-center transition-transform duration-300 text-[10px] text-gray-500" id="dropdownCaret">
+                            <i class="bi bi-chevron-down"></i>
+                        </span>
+                    </button>
+
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <div class="px-4 py-3">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="avatar w-11 h-11 text-base">
+                                    <%= (user && user.username) ? user.username.charAt(0).toUpperCase() : 'U' %>
+                                </div>
+                                <div>
+                                    <div class="text-sm font-bold text-white"><%= (user && user.username) ? user.username : 'کاربر' %></div>
+                                    <div class="text-xs text-gray-500"><%= (user && user.email) ? user.email : '' %></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <a href="/dashboard" class="dropdown-item"><i class="bi bi-speedometer2"></i> داشبورد</a>
+                        <a href="/profile" class="dropdown-item"><i class="bi bi-person"></i> پروفایل</a>
+                        <a href="/invoices" class="dropdown-item"><i class="bi bi-receipt"></i> فاکتورهای من</a>
+                        <a href="/plans" class="dropdown-item"><i class="bi bi-collection"></i> پلن‌ها</a>
+                        <div class="dropdown-divider"></div>
+                        <button onclick="openLogoutModal(); closeDropdown();" class="dropdown-item w-full danger">
+                            <i class="bi bi-box-arrow-right"></i> خروج از حساب
+                        </button>
+                    </div>
+                </div>
+
+                <button onclick="openSidebar()" class="btn-logout mobile-only md:hidden" aria-label="منو"><i class="bi bi-list"></i></button>
+            </div>
+        </div>
+
+        <!-- MEGA MENU -->
+        <div class="max-w-5xl mx-auto relative">
+            <div class="mega-menu" id="megaMenu">
+                <div class="mega-grid">
+                    <a href="/invoices" class="mega-item">
+                        <i class="bi bi-receipt"></i>
+                        <div>
+                            <div class="mega-title">فاکتورها</div>
+                            <div class="mega-desc">مدیریت فاکتورهای صادر شده</div>
+                        </div>
+                    </a>
+                    <a href="/plans" class="mega-item">
+                        <i class="bi bi-collection"></i>
+                        <div>
+                            <div class="mega-title">پلن‌ها</div>
+                            <div class="mega-desc">مدیریت پلن‌های عضویت</div>
+                        </div>
+                    </a>
+                    <a href="/profile" class="mega-item">
+                        <i class="bi bi-person"></i>
+                        <div>
+                            <div class="mega-title">پروفایل</div>
+                            <div class="mega-desc">اطلاعات حساب کاربری</div>
+                        </div>
+                    </a>
+                    <a href="/settings" class="mega-item">
+                        <i class="bi bi-gear"></i>
+                        <div>
+                            <div class="mega-title">تنظیمات</div>
+                            <div class="mega-desc">تنظیمات حساب و برنامه</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ========== MAIN CONTENT ========== -->
+    <main class="max-w-4xl mx-auto px-4 pt-28 pb-16 relative z-10">
+
+        <div class="mb-8">
+            <h1 class="text-3xl md:text-4xl font-black text-white tracking-tight mb-1">ایجاد فاکتور جدید</h1>
+            <p class="text-gray-500 text-sm">اطلاعات عضو و پلن را وارد کنید</p>
+        </div>
+
+        <!-- Skeleton Loading -->
+        <div id="skeletonLoader" class="space-y-5">
+            <div class="card rounded-2xl p-6 md:p-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="skeleton w-10 h-10 rounded-xl"></div>
+                    <div class="skeleton h-6 w-32 rounded"></div>
+                </div>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <div class="skeleton h-4 w-24 rounded mb-2"></div>
+                        <div class="skeleton h-12 rounded-xl"></div>
+                    </div>
+                    <div>
+                        <div class="skeleton h-4 w-24 rounded mb-2"></div>
+                        <div class="skeleton h-12 rounded-xl"></div>
+                    </div>
+                    <div>
+                        <div class="skeleton h-4 w-24 rounded mb-2"></div>
+                        <div class="skeleton h-12 rounded-xl"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="card rounded-2xl p-6 md:p-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="skeleton w-10 h-10 rounded-xl"></div>
+                    <div class="skeleton h-6 w-24 rounded"></div>
+                </div>
+                <div class="skeleton h-12 rounded-xl"></div>
+            </div>
+            <div class="card rounded-2xl p-6 md:p-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="skeleton w-10 h-10 rounded-xl"></div>
+                    <div class="skeleton h-6 w-40 rounded"></div>
+                </div>
+                <div class="flex gap-2 items-end flex-wrap">
+                    <div class="flex-1 min-w-[140px]">
+                        <div class="skeleton h-4 w-20 rounded mb-2"></div>
+                        <div class="skeleton h-12 rounded-xl"></div>
+                    </div>
+                    <div class="w-32">
+                        <div class="skeleton h-4 w-12 rounded mb-2"></div>
+                        <div class="skeleton h-12 rounded-xl"></div>
+                    </div>
+                    <div class="skeleton h-11 w-24 rounded-xl"></div>
+                </div>
+            </div>
+            <div class="card rounded-2xl p-6 md:p-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="skeleton w-10 h-10 rounded-xl"></div>
+                    <div class="skeleton h-6 w-24 rounded"></div>
+                </div>
+                <div class="flex gap-2 items-end flex-wrap">
+                    <div class="flex-1 min-w-[140px]">
+                        <div class="skeleton h-4 w-20 rounded mb-2"></div>
+                        <div class="skeleton h-12 rounded-xl"></div>
+                    </div>
+                    <div class="w-32">
+                        <div class="skeleton h-4 w-12 rounded mb-2"></div>
+                        <div class="skeleton h-12 rounded-xl"></div>
+                    </div>
+                    <div class="skeleton h-11 w-24 rounded-xl"></div>
+                </div>
+            </div>
+            <div class="card rounded-2xl p-6 md:p-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="skeleton w-10 h-10 rounded-xl"></div>
+                    <div class="skeleton h-6 w-32 rounded"></div>
+                </div>
+                <div class="skeleton h-24 rounded-xl"></div>
+            </div>
+            <div class="card rounded-2xl p-6 md:p-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="skeleton w-10 h-10 rounded-xl"></div>
+                    <div class="skeleton h-6 w-24 rounded"></div>
+                </div>
+                <div class="space-y-2">
+                    <div class="skeleton h-5 w-full rounded"></div>
+                    <div class="skeleton h-5 w-full rounded"></div>
+                    <div class="skeleton h-5 w-full rounded"></div>
+                    <div class="skeleton h-8 w-full rounded"></div>
+                </div>
+            </div>
+            <div class="skeleton h-14 rounded-2xl"></div>
+        </div>
+
+        <!-- Form Content (hidden initially) -->
+        <div id="formContent" class="hidden space-y-5">
+            <form id="invoiceForm" class="space-y-5">
+
+                <!-- Member Info -->
+                <div class="card rounded-2xl p-6 md:p-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="section-icon bg-accent-700/10 text-accent-400"><i class="bi bi-person-badge"></i></div>
+                        <h2 class="text-lg font-extrabold text-white">اطلاعات عضو</h2>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-400 mb-1.5">نام و نام خانوادگی</label>
+                            <input type="text" name="memberName" id="memberName" class="input-field" placeholder="علی محمدی" required>
+                            <div class="input-error" id="memberNameError"></div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-400 mb-1.5">شماره تماس</label>
+                            <input type="text" name="memberPhone" id="memberPhone" class="input-field input-left" placeholder="۰۹۱۲۳۴۵۶۷۸۹">
+                            <div class="input-error" id="memberPhoneError"></div>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-semibold text-gray-400 mb-1.5">کد عضویت</label>
+                            <div class="member-id-input-group">
+                                <div class="member-id-input-box">
+                                    <input type="text" name="memberId" id="memberId" class="input-field input-left" placeholder="کد یکتا" maxlength="12" readonly>
+                                    <span class="member-id-prefix">ID</span>
+                                </div>
+                                <button type="button" onclick="generateMemberId()" class="btn-generate-id" id="generateBtn">
+                                    <i class="bi bi-magic"></i>
+                                    <span>تولید کد</span>
+                                </button>
+                            </div>
+                            <div class="input-error" id="memberIdError"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Plan Selection -->
+                <div class="card rounded-2xl p-6 md:p-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="section-icon bg-purple-700/10 text-purple-400"><i class="bi bi-tag"></i></div>
+                        <h2 class="text-lg font-extrabold text-white">پلن</h2>
+                    </div>
+
+                    <% if (typeof plans !== 'undefined' && plans.length > 0) { %>
+                    <div class="custom-select" id="planDropdown">
+                        <div class="custom-select-trigger" onclick="togglePlanDropdown()" id="planTrigger">
+                            <span id="planSelectedText" class="placeholder">انتخاب پلن...</span>
+                            <i class="bi bi-chevron-down text-gray-500 text-sm transition-transform duration-200" id="dropdownArrow"></i>
+                        </div>
+                        <div class="input-error" id="planIdError"></div>
+                        <div class="custom-options" id="planOptions">
+                            <% plans.forEach(function(p) { %>
+                            <div class="custom-option" data-value="<%= p._id %>" data-price="<%= p.price %>" data-name="<%= p.name %>" onclick="selectPlan(this)">
+                                <div class="option-dot"></div>
+                                <div class="option-info">
+                                    <div class="option-name"><%= p.name %></div>
+                                    <% if (p.description) { %><div class="option-desc"><%= p.description %></div><% } %>
+                                </div>
+                                <div class="option-price"><%= p.price.toLocaleString("fa-IR-u-nu-latn") %> <span class="toman">تومان</span></div>
+                            </div>
+                            <% }); %>
+                        </div>
+                    </div>
+                    <% } else { %>
+                    <div class="text-center py-10">
+                        <div class="w-16 h-16 bg-accent-700/10 rounded-2xl flex items-center justify-center mx-auto mb-5 border border-accent-700/20">
+                            <i class="bi bi-inbox text-3xl text-accent-400"></i>
+                        </div>
+                        <h3 class="text-base font-bold text-white mb-2">هیچ پلنی تعریف نشده</h3>
+                        <p class="text-gray-500 text-sm mb-6">برای ایجاد فاکتور، ابتدا باید پلن تعریف کنید</p>
+                        <a href="/plans" class="btn-primary inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-white font-semibold text-sm no-underline">
+                            <i class="bi bi-plus-lg"></i> مدیریت پلن‌ها
+                        </a>
+                    </div>
+                    <% } %>
+
+                    <input type="hidden" name="planId" id="planId" required>
+                </div>
+
+                <!-- Additional Options -->
+                <div class="card rounded-2xl p-6 md:p-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="section-icon bg-emerald-500/10 text-emerald-400"><i class="bi bi-plus-slash-minus"></i></div>
+                        <div>
+                            <h2 class="text-lg font-extrabold text-white">آپشن‌های اضافه</h2>
+                            <p class="text-xs text-gray-500 mt-0.5">آیتم‌های اختیاری مثل بوفه، خدمات ویژه و...</p>
+                        </div>
+                    </div>
+
+                    <div class="dynamic-section">
+                        <div class="input-group-row">
+                            <div class="input-group">
+                                <label class="input-label">نام آپشن</label>
+                                <input type="text" id="optionName" class="input-field" placeholder="مثلاً: بوفه، ماساژ، پارکینگ">
+                            </div>
+                            <div class="input-group small">
+                                <label class="input-label">قیمت</label>
+                                <div class="input-with-suffix">
+                                    <input type="text" id="optionPrice" class="input-field" placeholder="۰" oninput="formatPrice(this)">
+                                    <span class="input-suffix">تومان</span>
+                                </div>
+                            </div>
+                            <button type="button" onclick="addOption()" class="add-btn add-btn-option">
+                                <i class="bi bi-plus-lg"></i>
+                                <span>افزودن</span>
+                            </button>
+                        </div>
+                        <div class="chips-container" id="optionChips">
+                            <span class="empty-state"><i class="bi bi-info-circle"></i> هنوز آپشنی اضافه نشده</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Discount -->
+                <div class="card rounded-2xl p-6 md:p-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="section-icon bg-amber-500/10 text-amber-400"><i class="bi bi-percent"></i></div>
+                        <h2 class="text-lg font-extrabold text-white">تخفیف</h2>
+                    </div>
+
+                    <div class="dynamic-section">
+                        <div class="pill-group mb-4" id="pillGroup">
+                            <button type="button" class="pill-btn active" data-dt="amount" onclick="setDiscType('amount', this)">تومان</button>
+                            <button type="button" class="pill-btn" data-dt="percent" onclick="setDiscType('percent', this)">درصد</button>
+                        </div>
+                        <div class="input-group-row">
+                            <div class="input-group">
+                                <label class="input-label">توضیح تخفیف</label>
+                                <input type="text" id="discDesc" class="input-field" placeholder="عنوان تخفیف">
+                            </div>
+                            <div class="input-group small">
+                                <label class="input-label" id="discLabel">مبلغ</label>
+                                <div class="input-with-suffix">
+                                    <input type="text" id="discVal" class="input-field" placeholder="۰" oninput="formatPrice(this)">
+                                    <span class="input-suffix" id="discSuffix">تومان</span>
+                                </div>
+                            </div>
+                            <button type="button" onclick="addDisc()" class="add-btn add-btn-discount">
+                                <i class="bi bi-plus-lg"></i>
+                                <span>افزودن</span>
+                            </button>
+                        </div>
+                        <div class="chips-container" id="discChips"></div>
+                    </div>
+                </div>
+
+                <!-- Note -->
+                <div class="card rounded-2xl p-6 md:p-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="section-icon bg-gray-700/10 text-gray-400"><i class="bi bi-pencil"></i></div>
+                        <h2 class="text-lg font-extrabold text-white">یادداشت</h2>
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label class="text-xs font-semibold text-gray-400">یادداشت</label>
+                            <span class="counter" id="noteCounter">0 / 64</span>
+                        </div>
+                        <textarea name="note" id="note" rows="1" class="input-field auto-resize-textarea" placeholder="یادداشت روی فاکتور..." maxlength="64"></textarea>
+                        <div class="input-error" id="noteError"></div>
+                    </div>
+                </div>
+
+                <!-- Summary -->
+                <div class="card rounded-2xl p-6 md:p-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="section-icon bg-accent-700/10 text-accent-400"><i class="bi bi-calculator"></i></div>
+                        <h2 class="text-lg font-extrabold text-white">خلاصه فاکتور</h2>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex justify-between py-1 text-sm">
+                            <span class="text-gray-400">پلن</span>
+                            <span id="sPlan" class="font-bold text-white">—</span>
+                        </div>
+                        <div class="flex justify-between py-1 text-sm hidden" id="sOptionRow">
+                            <span class="text-gray-400">آپشن‌های اضافه</span>
+                            <span id="sOption" class="font-bold text-emerald-400">—</span>
+                        </div>
+                        <div class="flex justify-between py-1 text-sm hidden" id="sDiscRow">
+                            <span class="text-red-400">تخفیف</span>
+                            <span id="sDisc" class="font-bold text-red-400">—</span>
+                        </div>
+                        <div class="h-px bg-white/5 my-3"></div>
+                        <div class="flex justify-between text-lg font-extrabold">
+                            <span class="text-white">قابل پرداخت</span>
+                            <span id="sTotal" class="text-accent-400">۰ تومان</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="hiddenInputs"></div>
+
+                <div id="globalError" class="input-error text-center text-red-400 hidden"></div>
+
+                <button type="submit" class="btn-primary btn-submit w-full py-4 rounded-2xl text-white font-extrabold text-base flex items-center justify-center gap-2" id="submitBtn">
+                    <i class="bi bi-check-lg text-lg"></i>
+                    <span>صدور فاکتور</span>
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <!-- ========== LOGOUT MODAL ========== -->
+    <div class="modal-overlay" id="logoutModal">
+        <div class="modal-dialog text-center">
+            <div class="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5">
+                <i class="bi bi-box-arrow-right text-red-400 text-3xl"></i>
+            </div>
+            <h3 class="text-xl font-extrabold text-white mb-2">خروج از حساب</h3>
+            <p class="text-gray-400 text-sm mb-8">آیا مطمئن هستید که می‌خواهید خارج شوید؟</p>
+            <div class="flex gap-3 justify-center">
+                <button onclick="closeModal('logoutModal')" class="px-6 py-2.5 rounded-xl text-gray-300 font-semibold text-sm bg-white/5 border border-white/10 hover:bg-white/10 transition">انصراف</button>
+                <a href="/auth/logout" class="px-6 py-2.5 rounded-xl text-white font-semibold text-sm bg-red-600 hover:bg-red-500 transition shadow-lg shadow-red-900/30 no-underline">خروج</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast"></div>
+
+    <script>
+        // ====== Dropdown ======
+        function toggleDropdown(e) {
+            e.stopPropagation();
+            const menu = document.getElementById('dropdownMenu');
+            const caret = document.getElementById('dropdownCaret');
+            menu?.classList.toggle('active');
+            if (caret) {
+                const icon = caret.querySelector('i');
+                if (icon) icon.style.transform = menu?.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
+            }
+        }
+        function closeDropdown() {
+            const menu = document.getElementById('dropdownMenu');
+            const caret = document.getElementById('dropdownCaret');
+            if (menu) {
+                menu.classList.remove('active');
+                if (caret) {
+                    const icon = caret.querySelector('i');
+                    if (icon) icon.style.transform = 'rotate(0deg)';
+                }
+            }
+        }
+
+        // ====== Mega Menu ======
+        function toggleMegaMenu() {
+            const menu = document.getElementById('megaMenu');
+            const caret = document.getElementById('megaCaret');
+            menu?.classList.toggle('active');
+            if (caret) caret.style.transform = menu?.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
+        }
+        function closeMegaMenu() {
+            const menu = document.getElementById('megaMenu');
+            const caret = document.getElementById('megaCaret');
+            if (menu) {
+                menu.classList.remove('active');
+                if (caret) caret.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // ====== Sidebar ======
+        function openSidebar() {
+            document.getElementById('sidebar').classList.add('open');
+            document.getElementById('sidebarOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // ====== Modals ======
+        window.openModal = (id) => document.getElementById(id)?.classList.add('active');
+        window.closeModal = (id) => document.getElementById(id)?.classList.remove('active');
+        function openLogoutModal() {
+            closeDropdown();
+            closeMegaMenu();
+            closeSidebar();
+            openModal('logoutModal');
+        }
+
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === this) this.classList.remove('active');
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            const userDropdown = document.getElementById('userDropdown');
+            if (userDropdown && !userDropdown.contains(e.target)) closeDropdown();
+
+            const megaMenu = document.getElementById('megaMenu');
+            const megaBtn = document.getElementById('megaMenuBtn');
+            if (megaMenu && megaBtn && !megaMenu.contains(e.target) && !megaBtn.contains(e.target)) {
+                closeMegaMenu();
+            }
+
+            const planDropdown = document.getElementById('planDropdown');
+            if (planDropdown && !planDropdown.contains(e.target)) {
+                planDropdown.classList.remove('active');
+                document.getElementById('dropdownArrow').style.transform = 'rotate(0)';
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeDropdown();
+                closeMegaMenu();
+                closeSidebar();
+                document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+            }
+        });
+
+        // ====== Toast ======
+        function toast(msg, type) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.style.display = 'block';
+            if (type === 'error') {
+                t.style.background = 'rgba(127,29,29,0.95)';
+                t.style.borderColor = 'rgba(239,68,68,0.4)';
+                t.style.color = '#fca5a5';
+            } else if (type === 'success') {
+                t.style.background = 'rgba(6,78,59,0.95)';
+                t.style.borderColor = 'rgba(16,185,129,0.4)';
+                t.style.color = '#6ee7b7';
+            } else {
+                t.style.background = 'rgba(20,20,31,0.95)';
+                t.style.borderColor = 'rgba(139,92,246,0.4)';
+                t.style.color = '#fff';
+            }
+            clearTimeout(t._t);
+            t._t = setTimeout(() => t.style.display = 'none', 3000);
+        }
+
+        // ====== Helpers ======
+        function fmt(n) { return parseInt(n).toLocaleString("fa-IR-u-nu-latn"); }
+        function unfmt(s) { return parseInt(s.replace(/,/g, '')) || 0; }
+        function formatPrice(el) {
+            let v = el.value.replace(/,/g, '');
+            if (v === '' || isNaN(v)) { el.value = ''; return; }
+            el.value = fmt(parseInt(v));
+            refresh();
+        }
+
+        // ====== Generate Unique Member ID ======
+        let memberIdCooldown = false;
+        let memberIdTimer = null;
+
+        function generateMemberId() {
+            if (memberIdCooldown) return;
+
+            const btn = document.getElementById('generateBtn');
+            const input = document.getElementById('memberId');
+
+            // تولید کد یکتا
+            const timestamp = Date.now().toString(36).toUpperCase();
+            const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase();
+            const userPart = '<%= (user && user._id) ? user._id.toString().slice(-4).toUpperCase() : "USER" %>';
+            const uniqueId = `${userPart}${timestamp.slice(-4)}${randomPart}`;
+
+            input.value = uniqueId;
+
+            // فعال کردن cooldown
+            memberIdCooldown = true;
+            btn.disabled = true;
+
+            let countdown = 30;
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = `<span>صبر کنید</span><span class="countdown">${countdown}</span>`;
+
+            memberIdTimer = setInterval(() => {
+                countdown--;
+                const countdownEl = btn.querySelector('.countdown');
+                if (countdownEl) {
+                    countdownEl.textContent = countdown;
+                }
+
+                if (countdown <= 0) {
+                    clearInterval(memberIdTimer);
+                    memberIdCooldown = false;
+                    btn.disabled = false;
+                    btn.innerHTML = originalHTML;
+                }
+            }, 1000);
+
+            toast('کد عضویت یکتا: ' + uniqueId, 'success');
+        }
+
+        // ====== Auto-resize textarea ======
+        function autoResizeTextarea() {
+            const textarea = document.getElementById('note');
+            if (!textarea) return;
+
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+
+            // به‌روزرسانی شمارنده
+            updateNoteCounter();
+        }
+
+        function updateNoteCounter() {
+            const note = document.getElementById('note');
+            const counter = document.getElementById('noteCounter');
+            const maxLength = 64;
+            const currentLength = note.value.length;
+            counter.textContent = `${currentLength} / ${maxLength}`;
+            const remaining = maxLength - currentLength;
+            counter.classList.remove('warning', 'danger');
+            if (remaining <= 0) counter.classList.add('danger');
+            else if (remaining <= 10) counter.classList.add('warning');
+        }
+
+        // ====== Plan Dropdown ======
+        function togglePlanDropdown() {
+            const d = document.getElementById('planDropdown');
+            const a = document.getElementById('dropdownArrow');
+            if (!d) return;
+            d.classList.toggle('active');
+            a.style.transform = d.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0)';
+        }
+
+        function selectPlan(opt) {
+            document.getElementById('planId').value = opt.dataset.value;
+            document.getElementById('planSelectedText').innerHTML = `
+                <div class="selected-text">
+                    <span class="plan-name">${opt.dataset.name}</span>
+                    <span class="plan-price">${fmt(opt.dataset.price)} تومان</span>
+                </div>`;
+            document.getElementById('planSelectedText').classList.remove('placeholder');
+            document.querySelectorAll('.custom-option').forEach(o => o.classList.remove('selected'));
+            opt.classList.add('selected');
+            planPrice = parseInt(opt.dataset.price);
+            const d = document.getElementById('planDropdown');
+            if (d) {
+                d.classList.remove('active');
+                document.getElementById('dropdownArrow').style.transform = 'rotate(0)';
+            }
+            document.getElementById('planIdError').textContent = '';
+            document.getElementById('planTrigger').classList.remove('error');
+            refresh();
+        }
+
+        // ====== State ======
+        let options = [], discs = [], discType = 'amount', planPrice = 0;
+
+        function refresh() {
+            const oT = options.reduce((s, o) => s + o.price, 0);
+            const dT = discs.reduce((s, d) => s + (d.type === 'percent' ? Math.floor((planPrice + oT) * d.val / 100) : d.val), 0);
+            const f = Math.max(0, planPrice + oT - dT);
+
+            document.getElementById('sPlan').textContent = planPrice ? fmt(planPrice) + ' تومان' : '—';
+            document.getElementById('sOptionRow').classList.toggle('hidden', oT === 0);
+            document.getElementById('sOption').textContent = '+' + fmt(oT) + ' تومان';
+            document.getElementById('sDiscRow').classList.toggle('hidden', dT === 0);
+            document.getElementById('sDisc').textContent = '-' + fmt(dT) + ' تومان';
+            document.getElementById('sTotal').textContent = fmt(f) + ' تومان';
+
+            const h = document.getElementById('hiddenInputs');
+            h.innerHTML = '';
+            options.forEach((o, i) => {
+                h.innerHTML += `<input type="hidden" name="cafeItems[${i}][name]" value="${o.name}"><input type="hidden" name="cafeItems[${i}][price]" value="${o.price}">`;
+            });
+            discs.forEach((d, i) => {
+                h.innerHTML += `<input type="hidden" name="discounts[${i}][description]" value="${d.desc}"><input type="hidden" name="discounts[${i}][type]" value="${d.type}"><input type="hidden" name="discounts[${i}][value]" value="${d.val}">`;
+            });
+        }
+
+        function setDiscType(t, btn) {
+            discType = t;
+            document.querySelectorAll('#pillGroup .pill-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('discLabel').textContent = t === 'percent' ? 'درصد' : 'مبلغ';
+            document.getElementById('discSuffix').textContent = t === 'percent' ? '٪' : 'تومان';
+            document.getElementById('discVal').placeholder = '۰';
+            document.getElementById('discVal').value = '';
+        }
+
+        function addOption() {
+            const n = document.getElementById('optionName').value.trim();
+            const p = unfmt(document.getElementById('optionPrice').value);
+            if (!n) { toast('نام آپشن را وارد کنید', 'error'); return; }
+            if (!p || p <= 0) { toast('قیمت معتبر وارد کنید', 'error'); return; }
+            options.push({ id: Date.now(), name: n, price: p });
+            document.getElementById('optionName').value = '';
+            document.getElementById('optionPrice').value = '';
+            render();
+        }
+
+        function addDisc() {
+            const d = document.getElementById('discDesc').value.trim();
+            const v = unfmt(document.getElementById('discVal').value);
+            if (!d) { toast('توضیح تخفیف را وارد کنید', 'error'); return; }
+            if (!v || v <= 0) { toast(discType === 'percent' ? 'درصد معتبر وارد کنید' : 'مبلغ معتبر وارد کنید', 'error'); return; }
+            if (discType === 'percent' && v > 100) { toast('حداکثر ۱۰۰٪', 'error'); return; }
+            discs.push({ id: Date.now(), desc: d, val: v, type: discType });
+            document.getElementById('discDesc').value = '';
+            document.getElementById('discVal').value = '';
+            render();
+        }
+
+        function render() {
+            const optionChipsEl = document.getElementById('optionChips');
+            if (options.length > 0) {
+                optionChipsEl.innerHTML = options.map(o => `
+                    <span class="chip option-chip">
+                        <span>${o.name}</span>
+                        <span class="font-bold">${fmt(o.price)}</span>
+                        <span class="text-xs opacity-60">تومان</span>
+                        <span class="chip-remove" onclick="removeOption(${o.id})"><i class="bi bi-x"></i></span>
+                    </span>`).join('');
+            } else {
+                optionChipsEl.innerHTML = '<span class="empty-state"><i class="bi bi-info-circle"></i> هنوز آپشنی اضافه نشده</span>';
+            }
+
+            const discChipsEl = document.getElementById('discChips');
+            if (discs.length > 0) {
+                discChipsEl.innerHTML = discs.map(d => `
+                    <span class="chip discount-chip">
+                        <span>${d.desc}</span>
+                        <span class="font-bold">${d.type === 'percent' ? d.val + '٪' : fmt(d.val)}</span>
+                        ${d.type === 'amount' ? '<span class="text-xs opacity-60">تومان</span>' : ''}
+                        <span class="chip-remove" onclick="removeDisc(${d.id})"><i class="bi bi-x"></i></span>
+                    </span>`).join('');
+            } else {
+                discChipsEl.innerHTML = '';
+            }
+            refresh();
+        }
+
+        function removeOption(id) { options = options.filter(o => o.id !== id); render(); }
+        function removeDisc(id) { discs = discs.filter(d => d.id !== id); render(); }
+
+        // ====== Clear Errors ======
+        function clearErrors() {
+            document.querySelectorAll('.input-error').forEach(el => el.textContent = '');
+            document.querySelectorAll('.input-field, .custom-select-trigger').forEach(el => el.classList.remove('error'));
+            const ge = document.getElementById('globalError');
+            ge.classList.add('hidden');
+            ge.textContent = '';
+        }
+
+        // ====== Scroll to Error ======
+        function scrollToError(fieldId) {
+            const inputEl = document.getElementById(fieldId);
+            const triggerEl = document.getElementById('planTrigger');
+            if (inputEl) {
+                const rect = inputEl.getBoundingClientRect();
+                const absoluteTop = rect.top + window.pageYOffset;
+                const scrollTo = absoluteTop - 120;
+                window.scrollTo({ top: scrollTo, behavior: 'smooth' });
+                setTimeout(() => inputEl.focus({ preventScroll: true }), 400);
+            } else if (fieldId === 'planId' && triggerEl) {
+                const rect = triggerEl.getBoundingClientRect();
+                const absoluteTop = rect.top + window.pageYOffset;
+                const scrollTo = absoluteTop - 120;
+                window.scrollTo({ top: scrollTo, behavior: 'smooth' });
+                setTimeout(() => triggerEl.focus({ preventScroll: true }), 400);
+            }
+        }
+
+        // ====== Show Errors ======
+        function showErrors(result) {
+            clearErrors();
+            let firstErrorField = null;
+            if (result.validationErrors && typeof result.validationErrors === 'object') {
+                const fieldMap = {
+                    'memberName': 'memberName',
+                    'memberPhone': 'memberPhone',
+                    'memberId': 'memberId',
+                    'planId': 'planId',
+                    'note': 'note'
+                };
+                for (const [field, message] of Object.entries(result.validationErrors)) {
+                    const fieldId = fieldMap[field] || field;
+                    const errorEl = document.getElementById(`${fieldId}Error`);
+                    const inputEl = document.getElementById(fieldId);
+                    const triggerEl = document.getElementById('planTrigger');
+                    if (errorEl) errorEl.textContent = message;
+                    if (inputEl) inputEl.classList.add('error');
+                    if (field === 'planId' && triggerEl) triggerEl.classList.add('error');
+                    if (!firstErrorField) firstErrorField = fieldId;
+                    toast(message, 'error');
+                }
+                if (firstErrorField) {
+                    scrollToError(firstErrorField);
+                }
+                return;
+            }
+            if (result.errors && Array.isArray(result.errors)) {
+                result.errors.forEach(err => toast(err, 'error'));
+                const ge = document.getElementById('globalError');
+                ge.textContent = result.errors.join(' • ');
+                ge.classList.remove('hidden');
+                scrollToError('memberName');
+                return;
+            }
+            if (result.message) {
+                const ge = document.getElementById('globalError');
+                ge.textContent = result.message;
+                ge.classList.remove('hidden');
+                toast(result.message, 'error');
+                scrollToError('memberName');
+            }
+        }
+
+        // ====== Form Submit ======
+        document.getElementById('invoiceForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            clearErrors();
+
+            const planId = document.getElementById('planId').value;
+            if (!planId) {
+                document.getElementById('planIdError').textContent = 'لطفاً پلن را انتخاب کنید';
+                document.getElementById('planTrigger').classList.add('error');
+                toast('لطفاً پلن را انتخاب کنید', 'error');
+                scrollToError('planId');
+                return;
+            }
+
+            const btn = document.getElementById('submitBtn');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<span style="width:20px;height:20px;border:2px solid rgba(255,255,255,0.2);border-top-color:#fff;border-radius:50%;animation:spin 0.6s linear infinite;display:inline-block;"></span><span>در حال صدور...</span>';
+            btn.disabled = true;
+
+            try {
+                const cafeItems = options.map(o => ({
+                    name: o.name,
+                    price: o.price
+                }));
+
+                const discounts = discs.map(d => ({
+                    description: d.desc,
+                    type: d.type,
+                    value: d.val
+                }));
+
+                const data = {
+                    memberName: document.getElementById('memberName').value,
+                    memberPhone: document.getElementById('memberPhone').value || '',
+                    memberId: document.getElementById('memberId').value || '',
+                    planId: planId,
+                    cafeItems: cafeItems,
+                    discounts: discounts,
+                    note: document.getElementById('note').value || ''
+                };
+
+                console.log('Sending data:', data);
+
+                const res = await fetch('/invoices', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await res.json();
+
+                if (result.success) {
+                    toast(result.message, 'success');
+                    setTimeout(() => window.location.href = result.redirect || '/invoices', 500);
+                } else {
+                    showErrors(result);
+                }
+            } catch (err) {
+                toast('خطا در ارتباط با سرور', 'error');
+                console.error(err);
+            }
+
+            btn.innerHTML = originalHTML;
+            btn.disabled = false;
+        });
+
+        // ====== Init ======
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                document.getElementById('skeletonLoader').classList.add('hidden');
+                document.getElementById('formContent').classList.remove('hidden');
+                refresh();
+                render();
+                updateNoteCounter();
+                autoResizeTextarea();
+            }, 800);
+
+            const note = document.getElementById('note');
+            if (note) {
+                note.addEventListener('input', autoResizeTextarea);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" class="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>فاکتور <%= invoice.invoiceNumber %> | فاکتوریتو</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/sahel-font@v3.4.0/dist/font-face.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sahel': ['Sahel', 'Vazirmatn', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        ink: {
+                            950: '#050508', 900: '#0c0c14', 800: '#14141f', 700: '#1c1c2a',
+                            600: '#28283a', 500: '#36364c', 400: '#4a4a63',
+                        },
+                        accent: {
+                            400: '#a78bfa', 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9', 800: '#5b21b6', 900: '#4c1d95',
+                        },
+                        gold: { 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309' },
+                        success: { 300: '#6ee7b7', 400: '#34d399', 500: '#10b981', 600: '#059669' },
+                    },
+                    boxShadow: {
+                        'glow': '0 0 32px rgba(124, 58, 237, 0.35)',
+                        'glow-lg': '0 8px 40px rgba(124, 58, 237, 0.45)',
+                        'card': '0 10px 40px -10px rgba(0, 0, 0, 0.4)',
+                    },
+                    borderRadius: { 'xl': '12px', '2xl': '16px', '3xl': '24px' },
+                    keyframes: {
+                        shimmer: { '0%': { backgroundPosition: '200% 0' }, '100%': { backgroundPosition: '-200% 0' } },
+                        toastIn: { '0%': { opacity: '0', transform: 'translateX(-50%) translateY(8px)' }, '100%': { opacity: '1', transform: 'translateX(-50%) translateY(0)' } },
+                        spin: { '0%': { transform: 'rotate(0deg)' }, '100%': { transform: 'rotate(360deg)' } },
+                        slideIn: { '0%': { transform: 'translateX(110%)' }, '100%': { transform: 'translateX(0)' } },
+                    },
+                    animation: {
+                        shimmer: 'shimmer 1.8s infinite',
+                        toastIn: 'toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+                        spin: 'spin 0.6s linear infinite',
+                        slideIn: 'slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                    },
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * { font-family: 'Sahel', 'Vazirmatn', system-ui, sans-serif !important; margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #050508; color: #d1d5db; line-height: 1.8; overflow-x: hidden; min-height: 100vh; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #050508; }
+        ::-webkit-scrollbar-thumb { background: #1c1c2a; border-radius: 10px; }
+        .grid-bg { background-image: linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px); background-size: 60px 60px; }
+        .glass-header { background: rgba(12,12,20,0.85); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.04); box-shadow: 0 10px 40px -10px rgba(0,0,0,0.4); }
+        .btn-primary { background: #7c3aed; box-shadow: 0 8px 30px -8px rgba(124,58,237,0.4); border: 1px solid rgba(139,92,246,0.3); transition: all 0.4s; }
+        .btn-primary:hover { background: #8b5cf6; transform: translateY(-2px); }
+        .btn-submit { background: #059669; border: 1px solid rgba(16,185,129,0.3); }
+        .btn-generate { display: inline-flex; align-items: center; gap: 6px; padding: 11px 16px; background: rgba(139,92,246,0.08); border: 1px solid rgba(139,92,246,0.2); border-radius: 12px; color: #a78bfa; font-size: 12px; font-weight: 600; cursor: pointer; }
+        .nav-link { color: #9ca3af; font-size: 14px; padding: 8px 16px; border-radius: 10px; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        .nav-link:hover { color: #fff; background: rgba(255,255,255,0.04); }
+        .nav-link.active { color: #c4b5fd; background: rgba(139,92,246,0.08); }
+        .sidebar { position: fixed; top: 0; right: 0; bottom: 0; width: 85%; max-width: 320px; background: #0c0c14; z-index: 300; padding: 20px; transform: translateX(110%); transition: transform 0.4s; }
+        .sidebar.open { transform: translateX(0); }
+        .sidebar-overlay { position: fixed; inset: 0; background: rgba(5,5,8,0.7); z-index: 290; opacity: 0; visibility: hidden; }
+        .sidebar-overlay.active { opacity: 1; visibility: visible; }
+        .sidebar-link { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 12px; color: #9ca3af; font-size: 14px; text-decoration: none; }
+        .sidebar-link:hover { background: rgba(255,255,255,0.04); color: #fff; }
+        .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: rgba(20,20,31,0.95); color: #fff; padding: 12px 24px; border-radius: 50px; font-size: 13px; z-index: 500; display: none; }
+
+        .invoice-card { background: #0c0c14; border: 1px solid rgba(255, 255, 255, 0.04); border-radius: 20px; padding: 0; position: relative; overflow: hidden; box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.5); }
+        .invoice-card::before { content: ''; position: absolute; top: 0; right: 0; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, #7c3aed, #a78bfa, #7c3aed, transparent); }
+
+        .invoice-header { padding: 24px 28px; background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(124, 58, 237, 0.02)); border-bottom: 1px solid rgba(255, 255, 255, 0.05); display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+        .brand-icon { width: 44px; height: 44px; background: linear-gradient(135deg, #7c3aed, #a78bfa); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 900; color: #fff; box-shadow: 0 8px 20px rgba(124, 58, 237, 0.3); }
+        .brand-name { font-size: 18px; font-weight: 800; color: #fff; }
+        .brand-meta { font-size: 11px; color: #6b7280; margin-top: 2px; display: flex; gap: 10px; flex-wrap: wrap; }
+        .brand-meta i { font-size: 12px; color: #a78bfa; }
+        .tracking-label { font-size: 9px; color: #6b7280; font-weight: 600; }
+        .tracking-code { font-family: 'Courier New', monospace; font-size: 18px; font-weight: 900; color: #a78bfa; letter-spacing: 2px; }
+
+        .invoice-body { padding: 24px 28px; }
+        .status-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+        .status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 50px; font-size: 11px; font-weight: 700; }
+        .status-paid { background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2); color: #34d399; }
+        .status-pending { background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2); color: #fbbf24; }
+        .status-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+        .invoice-number-badge { font-size: 12px; color: #6b7280; }
+        .invoice-number-badge strong { color: #a78bfa; font-size: 14px; }
+
+        .member-section {
+            background: #0f0f1a;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 14px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            position: relative;
+            overflow: hidden;
+        }
+        .member-section::before {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, #7c3aed, #a78bfa);
+        }
+        .member-left { display: flex; align-items: center; gap: 14px; }
+        .member-avatar {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(124, 58, 237, 0.1));
+            border: 1px solid rgba(139, 92, 246, 0.25);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 800;
+            color: #a78bfa;
+            flex-shrink: 0;
+        }
+        .member-info .member-name { font-size: 16px; font-weight: 800; color: #fff; }
+        .member-info .member-details { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 4px; }
+        .member-info .member-detail {
+            font-size: 11px;
+            color: #6b7280;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .member-info .member-detail i { font-size: 12px; color: #a78bfa; }
+        .member-right { text-align: left; }
+        .member-right .member-label { font-size: 9px; color: #6b7280; font-weight: 600; }
+        .member-right .member-id { font-size: 13px; font-weight: 700; color: #a78bfa; font-family: 'Courier New', monospace; letter-spacing: 1px; }
+
+        .plan-box {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.06), rgba(124, 58, 237, 0.02));
+            border: 1px solid rgba(139, 92, 246, 0.15);
+            border-radius: 14px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        .plan-box::after { content: ''; position: absolute; left: -20px; top: -20px; width: 80px; height: 80px; background: radial-gradient(circle, rgba(139, 92, 246, 0.1), transparent); border-radius: 50%; }
+        .plan-content { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; position: relative; z-index: 1; }
+        .plan-left { display: flex; align-items: center; gap: 10px; }
+        .plan-icon { width: 36px; height: 36px; background: rgba(139, 92, 246, 0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; color: #a78bfa; }
+        .plan-info .plan-label { font-size: 9px; color: #6b7280; font-weight: 600; }
+        .plan-info .plan-name { font-size: 15px; font-weight: 800; color: #a78bfa; }
+        .plan-price { font-size: 18px; font-weight: 900; color: #fff; }
+        .plan-price small { font-size: 11px; color: #6b7280; font-weight: 400; }
+
+        .items-section { margin-bottom: 16px; }
+        .items-title { font-size: 10px; font-weight: 700; color: #6b7280; display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+        .items-title i { font-size: 13px; color: #a78bfa; }
+        .items-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .items-column { display: flex; flex-direction: column; gap: 8px; }
+        .items-column-title { font-size: 9px; font-weight: 700; color: #6b7280; margin-bottom: 4px; display: flex; align-items: center; gap: 5px; }
+        .items-column-title i { font-size: 11px; }
+        .cafe-column .items-column-title { color: #34d399; }
+        .discount-column .items-column-title { color: #f87171; }
+        .item-card { background: #0f0f1a; border: 1px solid rgba(255, 255, 255, 0.04); border-radius: 10px; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; }
+        .item-name { color: #9ca3af; font-size: 11px; }
+        .item-price { font-weight: 700; font-size: 12px; }
+        .cafe-column .item-price { color: #34d399; }
+        .discount-column .item-price { color: #f87171; }
+
+        .note-box { background: rgba(245, 158, 11, 0.04); border: 1px dashed rgba(245, 158, 11, 0.15); border-radius: 10px; padding: 10px 14px; color: #fcd34d; font-size: 11px; display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+
+        .invoice-footer { padding: 16px 28px; border-top: 1px solid rgba(255, 255, 255, 0.05); background: rgba(0, 0, 0, 0.2); display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .footer-date { font-size: 11px; color: #6b7280; }
+        .total-label { font-size: 10px; color: #6b7280; font-weight: 600; }
+        .total-amount { font-size: 24px; font-weight: 900; color: #a78bfa; }
+        .total-amount small { font-size: 13px; color: #6b7280; font-weight: 400; }
+
+        @media (max-width: 768px) {
+            .invoice-header { padding: 16px; }
+            .invoice-body { padding: 16px; }
+            .invoice-footer { padding: 12px 16px; }
+            .items-grid { grid-template-columns: 1fr !important; }
+            .member-section { flex-direction: column; align-items: flex-start; }
+            .member-right { text-align: right; width: 100%; }
+            .plan-content { flex-direction: column; align-items: flex-start; }
+        }
+
+        @media print {
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color: #000 !important; background: #fff !important; border-color: transparent !important; box-shadow: none !important; }
+            body { font-size: 8px !important; line-height: 1.5 !important; }
+            .no-print { display: none !important; }
+            .grid-bg { background: none !important; }
+            main { padding: 0 !important; margin: 0 !important; max-width: 100% !important; }
+            #invoiceContainer { display: none !important; }
+            #printClone { display: block !important; background: #fff !important; padding: 10px !important; margin: 0 !important; width: 100% !important; font-family: 'Courier New', 'Sahel', monospace !important; }
+            #printClone .print-brand { display: table !important; width: 100% !important; margin-bottom: 5px !important; }
+            #printClone .brand-name { display: table-cell !important; text-align: center !important; font-size: 12px !important; font-weight: 900 !important; padding: 2px !important; }
+            #printClone .brand-address { display: table-cell !important; text-align: center !important; font-size: 7px !important; padding: 2px !important; }
+            #printClone .print-table { width: 100% !important; border-collapse: collapse !important; margin: 3px 0 !important; border: none !important; }
+            #printClone .print-table tr { border: none !important; }
+            #printClone .print-table td { padding: 3px 4px !important; font-size: 8px !important; border: none !important; }
+            #printClone .label-cell { font-weight: 700 !important; width: 30% !important; }
+            #printClone .value-cell { text-align: left !important; }
+            #printClone .print-items { width: 100% !important; border-collapse: collapse !important; margin: 3px 0 !important; border: none !important; }
+            #printClone .print-items tr { border: none !important; }
+            #printClone .print-items td { padding: 2px 4px !important; font-size: 8px !important; border: none !important; }
+            #printClone .item-name-cell { text-align: right !important; }
+            #printClone .item-price-cell { text-align: left !important; font-weight: 600 !important; }
+            #printClone .print-footer { display: table !important; width: 100% !important; margin-top: 5px !important; border: none !important; }
+            #printClone .footer-left { display: table-cell !important; text-align: right !important; font-size: 8px !important; padding: 3px !important; border: none !important; }
+            #printClone .footer-right { display: table-cell !important; text-align: left !important; font-size: 11px !important; font-weight: 900 !important; padding: 3px !important; border: none !important; }
+            #printClone .print-watermark { display: table !important; width: 100% !important; text-align: center !important; margin-top: 5px !important; font-size: 7px !important; color: #666 !important; border: none !important; }
+            @page { size: A5 portrait; margin: 5mm; }
+        }
+
+        @media (max-width: 768px) {
+            .hamburger-btn { display: flex !important; }
+            .desktop-nav { display: none !important; }
+            main { padding-top: 90px !important; }
+        }
+        @media (min-width: 769px) { .hamburger-btn { display: none !important; } }
+    </style>
+</head>
+<body class="antialiased bg-[#050508] grid-bg">
+
+    <div class="sidebar-overlay no-print" id="sidebarOverlay" onclick="closeSidebar()"></div>
+    <div class="sidebar no-print md:hidden" id="sidebar">
+        <div class="flex items-center justify-between mb-6 pb-4 border-b border-white/5">
+            <a href="/dashboard" class="flex items-center gap-2.5 no-underline"><div class="w-9 h-9 bg-gradient-to-br from-accent-700 to-accent-500 rounded-xl flex items-center justify-center text-white font-extrabold">ف</div><span class="font-extrabold text-xl text-white">فاکتوریتو</span></a>
+            <button onclick="closeSidebar()" class="btn-logout"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="space-y-1">
+            <a href="/dashboard" class="sidebar-link"><i class="bi bi-speedometer2"></i> داشبورد</a>
+            <a href="/invoices" class="sidebar-link active"><i class="bi bi-receipt"></i> فاکتورها</a>
+            <a href="/plans" class="sidebar-link"><i class="bi bi-collection"></i> پلن‌ها</a>
+        </div>
+    </div>
+
+    <header class="fixed top-0 right-0 left-0 z-50 px-4 md:px-6 py-4 no-print">
+        <div class="max-w-5xl mx-auto glass-header rounded-2xl px-4 md:px-5 py-2.5 flex items-center justify-between">
+            <a href="/dashboard" class="flex items-center gap-2.5 no-underline"><div class="w-9 h-9 bg-gradient-to-br from-accent-700 to-accent-500 rounded-xl flex items-center justify-center text-white font-extrabold">ف</div><span class="font-extrabold text-xl text-white">فاکتوریتو</span></a>
+            <div class="hidden md:flex items-center gap-1 desktop-nav">
+                <a href="/dashboard" class="nav-link"><i class="bi bi-speedometer2"></i> داشبورد</a>
+                <a href="/invoices" class="nav-link active"><i class="bi bi-receipt"></i> فاکتورها</a>
+            </div>
+            <div class="flex items-center gap-2.5">
+                <button onclick="downloadInvoice()" class="btn-primary btn-submit inline-flex items-center gap-2 px-4 py-2 rounded-xl text-white font-semibold text-sm"><i class="bi bi-download"></i></button>
+                <button onclick="window.print()" class="btn-generate"><i class="bi bi-printer"></i><span>چاپ</span></button>
+                <button onclick="openSidebar()" class="btn-logout hamburger-btn md:hidden"><i class="bi bi-list"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 pt-28 pb-16 relative z-10">
+        <div id="invoiceContainer" class="invoice-card">
+            <div class="invoice-header">
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <div class="brand-icon">ف</div>
+                    <div>
+                        <div class="brand-name"><%= invoice.user && invoice.user.clubName ? invoice.user.clubName : 'باشگاه' %></div>
+                        <div class="brand-meta">
+                            <span><i class="bi bi-telephone"></i> <%= invoice.user && invoice.user.clubPhone ? invoice.user.clubPhone : '---' %></span>
+                            <span><i class="bi bi-geo-alt"></i> <%= invoice.user && invoice.user.clubAddress ? invoice.user.clubAddress : '---' %></span>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align:center;">
+                    <div class="tracking-label">کد پیگیری</div>
+                    <div class="tracking-code"><%= invoice.trackingCode %></div>
+                </div>
+            </div>
+
+            <div class="invoice-body">
+                <div class="status-row">
+                    <span class="status-badge <%= invoice.isPaid ? 'status-paid' : 'status-pending' %>">
+                        <span class="status-dot"></span>
+                        <%= invoice.isPaid ? 'پرداخت شده' : 'در انتظار پرداخت' %>
+                    </span>
+                    <span class="invoice-number-badge">فاکتور <strong><%= invoice.invoiceNumber %></strong></span>
+                </div>
+
+                <div class="member-section">
+                    <div class="member-left">
+                        <div class="member-avatar"><%= invoice.member.name ? invoice.member.name.charAt(0) : '؟' %></div>
+                        <div class="member-info">
+                            <div class="member-name"><%= invoice.member.name %></div>
+                            <div class="member-details">
+                                <span class="member-detail"><i class="bi bi-telephone"></i> <%= invoice.member.phone %></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="member-right">
+                        <div class="member-label">کد عضویت</div>
+                        <div class="member-id"><%= invoice.member.memberId %></div>
+                    </div>
+                </div>
+
+                <div class="plan-box">
+                    <div class="plan-content">
+                        <div class="plan-left">
+                            <div class="plan-icon"><i class="bi bi-tag"></i></div>
+                            <div class="plan-info">
+                                <div class="plan-label">پلن انتخابی</div>
+                                <div class="plan-name"><%= invoice.plan.name %></div>
+                            </div>
+                        </div>
+                        <div class="plan-price"><%= invoice.plan.price.toLocaleString("fa-IR-u-nu-latn") %> <small>تومان</small></div>
+                    </div>
+                </div>
+
+                <% if (invoice.extraItems && invoice.extraItems.length > 0) { %>
+                <div class="items-section">
+                    <div class="items-title"><i class="bi bi-plus-slash-minus"></i> آیتم‌ها</div>
+                    <div class="items-grid">
+                        <div class="items-column cafe-column">
+                            <div class="items-column-title"><i class="bi bi-plus-circle"></i> آیتم‌های اضافه</div>
+                            <% invoice.extraItems.filter(function(i) { return i.type === 'cafe'; }).forEach(function(item) { %>
+                            <div class="item-card">
+                                <span class="item-name"><%= item.name %></span>
+                                <span class="item-price"><%= item.price.toLocaleString("fa-IR-u-nu-latn") %> تومان</span>
+                            </div>
+                            <% }); %>
+                        </div>
+                        <div class="items-column discount-column">
+                            <div class="items-column-title"><i class="bi bi-percent"></i> تخفیف‌ها</div>
+                            <% invoice.extraItems.filter(function(i) { return i.type === 'discount'; }).forEach(function(item) { %>
+                            <div class="item-card">
+                                <span class="item-name"><%= item.name %></span>
+                                <span class="item-price"><%= item.price.toLocaleString("fa-IR-u-nu-latn") %> تومان</span>
+                            </div>
+                            <% }); %>
+                        </div>
+                    </div>
+                </div>
+                <% } %>
+
+                <% if (invoice.note) { %>
+                <div class="note-box"><i class="bi bi-pencil"></i> <%= invoice.note %></div>
+                <% } %>
+            </div>
+
+            <div class="invoice-footer">
+                <div class="footer-date"><i class="bi bi-calendar3"></i> <%= invoice.invoiceDate %></div>
+                <div style="text-align:left;">
+                    <div class="total-label">مبلغ قابل پرداخت</div>
+                    <div class="total-amount"><%= invoice.totalAmount.toLocaleString("fa-IR-u-nu-latn") %> <small>تومان</small></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="printClone" style="display: none;">
+            <table class="print-brand">
+                <tr><td class="brand-name"><%= invoice.user && invoice.user.clubName ? invoice.user.clubName : 'باشگاه' %></td></tr>
+                <tr><td class="brand-address"><%= invoice.user && invoice.user.clubPhone ? invoice.user.clubPhone : '' %><%= invoice.user && invoice.user.clubAddress ? ' | ' + invoice.user.clubAddress : '' %></td></tr>
+            </table>
+
+            <table class="print-table">
+                <tr><td class="label-cell">کد پیگیری:</td><td class="value-cell"><%= invoice.trackingCode %></td></tr>
+                <tr><td class="label-cell">وضعیت:</td><td class="value-cell"><%= invoice.isPaid ? 'پرداخت شده' : 'در انتظار پرداخت' %></td></tr>
+                <tr><td class="label-cell">شماره باشگاه:</td><td class="value-cell"><%= invoice.user && invoice.user.clubPhone ? invoice.user.clubPhone : '---' %></td></tr>
+                <tr><td class="label-cell">نام عضو:</td><td class="value-cell"><%= invoice.member.name %></td></tr>
+                <tr><td class="label-cell">شماره عضو:</td><td class="value-cell"><%= invoice.member.phone %></td></tr>
+                <tr><td class="label-cell">کد عضو:</td><td class="value-cell"><%= invoice.member.memberId %></td></tr>
+                <tr><td class="label-cell">پلن:</td><td class="value-cell"><%= invoice.plan.name %> - <%= invoice.plan.price.toLocaleString("fa-IR-u-nu-latn") %> تومان</td></tr>
+            </table>
+
+            <% if (invoice.extraItems && invoice.extraItems.length > 0) { %>
+            <table class="print-items">
+                <tr><td colspan="2" style="font-weight:700;">آیتم‌ها:</td></tr>
+                <% invoice.extraItems.forEach(function(item) { %>
+                <tr>
+                    <td class="item-name-cell"><%= item.type === 'cafe' ? 'آیتم اضافه' : 'تخفیف' %>: <%= item.name %></td>
+                    <td class="item-price-cell"><%= item.price.toLocaleString("fa-IR-u-nu-latn") %> تومان</td>
+                </tr>
+                <% }); %>
+            </table>
+            <% } %>
+
+            <table class="print-footer">
+                <tr>
+                    <td class="footer-left"><%= invoice.invoiceDate %><br><%= invoice.invoiceNumber %></td>
+                    <td class="footer-right"><%= invoice.totalAmount.toLocaleString("fa-IR-u-nu-latn") %> تومان</td>
+                </tr>
+            </table>
+
+            <table class="print-watermark">
+                <tr><td>این فاکتور توسط فاکتوریتو صادر شده است</td></tr>
+            </table>
+        </div>
+    </main>
+
+    <div id="toast" class="toast no-print"></div>
+
+    <script>
+        function openSidebar() { document.getElementById('sidebar').classList.add('open'); document.getElementById('sidebarOverlay').classList.add('active'); }
+        function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('active'); }
+        function toast(msg, type) { const t = document.getElementById('toast'); t.textContent = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3000); }
+        function downloadInvoice() {
+            html2canvas(document.getElementById('invoiceContainer'), { scale: 2.5, backgroundColor: '#0c0c14' }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'فاکتور-<%= invoice.invoiceNumber %>.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" class="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>پنل ادمین | فاکتوریتو</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/sahel-font@v3.4.0/dist/font-face.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sahel': ['Sahel', 'Vazirmatn', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        'ink': {
+                            950: '#050508',
+                            900: '#0a0a12',
+                            800: '#0f0f1a',
+                            700: '#151522',
+                            600: '#1a1a2e',
+                            500: '#22223a',
+                            400: '#2a2a46',
+                        },
+                        'accent': {
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                        }
+                    },
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * {
+            font-family: 'Sahel', 'Vazirmatn', system-ui, sans-serif !important;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #050508;
+            color: #d1d5db;
+            line-height: 1.8;
+            font-weight: 400;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #050508; }
+        ::-webkit-scrollbar-thumb { background: #1a1a2e; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #2a2a46; }
+
+        .glass-nav {
+            background: rgba(10, 10, 18, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(167, 139, 250, 0.08);
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.6);
+        }
+        .glass-nav.admin {
+            border-color: rgba(167, 139, 250, 0.15);
+        }
+
+        .stat-card {
+            background: rgba(15, 15, 26, 0.6);
+            border: 1px solid rgba(167, 139, 250, 0.06);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+            padding: 20px;
+        }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(167, 139, 250, 0.03) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .stat-card:hover {
+            border-color: rgba(167, 139, 250, 0.15);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px -12px rgba(124, 58, 237, 0.15);
+        }
+
+        .section-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            background: rgba(167, 139, 250, 0.06);
+            color: #a78bfa;
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover .section-icon {
+            background: rgba(167, 139, 250, 0.12);
+            transform: scale(1.05);
+        }
+
+        .nav-link {
+            color: #9ca3af;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+        }
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 2px;
+            height: 0;
+            background: #a78bfa;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            color: #e5e7eb;
+            background: rgba(167, 139, 250, 0.04);
+        }
+        .nav-link.active {
+            color: #a78bfa;
+            background: rgba(167, 139, 250, 0.06);
+        }
+        .nav-link.active::before {
+            height: 24px;
+        }
+
+        .btn-logout {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(239, 68, 68, 0.06);
+            border: 1px solid rgba(239, 68, 68, 0.1);
+            border-radius: 10px;
+            color: #f87171;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn-logout:hover {
+            background: rgba(239, 68, 68, 0.12);
+            border-color: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(167, 139, 250, 0.04);
+            transition: all 0.2s ease;
+        }
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        .activity-item:hover {
+            background: rgba(167, 139, 250, 0.02);
+            margin: 0 -12px;
+            padding-left: 12px;
+            padding-right: 12px;
+            border-radius: 8px;
+        }
+
+        .activity-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .badge-purple {
+            background: rgba(167, 139, 250, 0.08);
+            color: #a78bfa;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .badge-status {
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 9px;
+            font-weight: 700;
+        }
+        .badge-status.paid {
+            background: rgba(52, 211, 153, 0.08);
+            color: #34d399;
+        }
+        .badge-status.pending {
+            background: rgba(251, 191, 36, 0.08);
+            color: #fbbf24;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 5, 8, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 60;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 280px;
+            height: 100vh;
+            background: rgba(10, 10, 18, 0.95);
+            backdrop-filter: blur(20px);
+            border-left: 1px solid rgba(167, 139, 250, 0.06);
+            z-index: 70;
+            padding: 20px;
+            transition: right 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            overflow-y: auto;
+        }
+        .sidebar.open {
+            right: 0;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(167, 139, 250, 0.06);
+            margin-bottom: 20px;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+        .sidebar-logo .logo-box {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 800;
+            font-size: 16px;
+            box-shadow: 0 4px 16px rgba(124, 58, 237, 0.3);
+        }
+        .sidebar-logo span {
+            font-weight: 800;
+            font-size: 18px;
+            color: #fff;
+        }
+
+        .sidebar-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: #6b7280;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            font-size: 18px;
+        }
+        .sidebar-close:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            color: #9ca3af;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+        .sidebar-link:hover {
+            background: rgba(167, 139, 250, 0.06);
+            color: #c4b5fd;
+        }
+        .sidebar-link.active {
+            background: rgba(167, 139, 250, 0.08);
+            color: #a78bfa;
+        }
+        .sidebar-link i {
+            font-size: 18px;
+            width: 22px;
+            text-align: center;
+            color: #6b7280;
+        }
+        .sidebar-link.active i {
+            color: #a78bfa;
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            background: rgba(167, 139, 250, 0.06);
+            margin: 8px 12px;
+        }
+
+        .menu-btn {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            color: #d1d5db;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .menu-btn:hover {
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .card-footer-link {
+            display: block;
+            text-align: center;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(167, 139, 250, 0.06);
+            font-size: 12px;
+            font-weight: 600;
+            color: #a78bfa;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .card-footer-link:hover {
+            color: #c4b5fd;
+        }
+        .card-footer-link i {
+            margin-right: 4px;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 5, 8, 0.85);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-dialog {
+            background: #14141f;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 28px;
+            max-width: 420px;
+            width: 90%;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
+            transform: scale(0.92) translateY(16px);
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .modal-overlay.active .modal-dialog {
+            transform: scale(1) translateY(0);
+        }
+
+        @media (max-width: 480px) {
+            .glass-nav .font-extrabold.text-xl {
+                font-size: 14px !important;
+            }
+            .glass-nav .w-9.h-9 {
+                width: 28px !important;
+                height: 28px !important;
+                font-size: 12px !important;
+            }
+            .glass-nav .gap-1.5 {
+                gap: 4px !important;
+            }
+            .glass-nav .px-3 {
+                padding-left: 10px !important;
+                padding-right: 10px !important;
+            }
+            .glass-nav .py-2 {
+                padding-top: 6px !important;
+                padding-bottom: 6px !important;
+            }
+
+            main {
+                padding-top: 80px !important;
+                padding-left: 12px !important;
+                padding-right: 12px !important;
+            }
+
+            .stat-card {
+                padding: 14px !important;
+            }
+            .stat-card .text-2xl {
+                font-size: 18px !important;
+            }
+            .stat-card .text-xl {
+                font-size: 16px !important;
+            }
+            .section-icon {
+                width: 32px !important;
+                height: 32px !important;
+                font-size: 14px !important;
+            }
+            .grid.grid-cols-2 {
+                gap: 8px !important;
+            }
+
+            .sidebar {
+                width: 260px !important;
+                padding: 16px !important;
+            }
+            .sidebar-link {
+                font-size: 13px !important;
+                padding: 8px 12px !important;
+            }
+
+            .nav-link {
+                font-size: 11px !important;
+                padding: 6px 12px !important;
+            }
+            .nav-link i {
+                font-size: 14px !important;
+            }
+            .btn-logout {
+                font-size: 11px !important;
+                padding: 6px 12px !important;
+            }
+            .btn-logout i {
+                font-size: 14px !important;
+            }
+
+            .activity-item {
+                padding: 10px 0 !important;
+                gap: 10px !important;
+            }
+            .activity-avatar {
+                width: 32px !important;
+                height: 32px !important;
+                font-size: 11px !important;
+            }
+            .activity-item .text-sm {
+                font-size: 12px !important;
+            }
+            .activity-item .text-xs {
+                font-size: 9px !important;
+            }
+
+            .card {
+                padding: 14px !important;
+                border-radius: 14px !important;
+            }
+            .card .text-sm {
+                font-size: 13px !important;
+            }
+            .card .text-xs {
+                font-size: 9px !important;
+            }
+
+            .badge-purple {
+                font-size: 9px !important;
+                padding: 1px 8px !important;
+            }
+            .badge-status {
+                font-size: 8px !important;
+                padding: 1px 8px !important;
+            }
+
+            .card-footer-link {
+                font-size: 11px !important;
+                margin-top: 12px !important;
+                padding-top: 12px !important;
+            }
+
+            .modal-dialog {
+                padding: 20px !important;
+                border-radius: 16px !important;
+            }
+            .modal-dialog .flex.gap-3.justify-center {
+                flex-direction: column-reverse !important;
+                gap: 8px !important;
+            }
+            .modal-dialog .flex.gap-3.justify-center button {
+                width: 100% !important;
+                justify-content: center !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none !important;
+            }
+            .menu-btn {
+                display: flex !important;
+            }
+
+            .glass-nav {
+                padding: 8px 12px !important;
+                border-radius: 16px !important;
+            }
+            .glass-nav .font-extrabold.text-xl {
+                font-size: 16px !important;
+            }
+            .glass-nav .w-9.h-9 {
+                width: 32px !important;
+                height: 32px !important;
+                font-size: 14px !important;
+            }
+
+            main {
+                padding-top: 90px !important;
+                padding-left: 14px !important;
+                padding-right: 14px !important;
+            }
+
+            .stat-card {
+                padding: 16px !important;
+            }
+            .stat-card .text-2xl {
+                font-size: 20px !important;
+            }
+            .section-icon {
+                width: 36px !important;
+                height: 36px !important;
+                font-size: 16px !important;
+            }
+            .grid.grid-cols-2 {
+                gap: 10px !important;
+            }
+            .card {
+                padding: 18px !important;
+                border-radius: 16px !important;
+            }
+            .grid.md\:grid-cols-2 {
+                gap: 16px !important;
+            }
+
+            .sidebar {
+                width: 280px !important;
+            }
+
+            .activity-avatar {
+                width: 36px !important;
+                height: 36px !important;
+                font-size: 13px !important;
+            }
+
+            .card-footer-link {
+                font-size: 12px !important;
+                padding-top: 14px !important;
+            }
+
+            .modal-dialog {
+                padding: 20px !important;
+                border-radius: 16px !important;
+            }
+            .modal-dialog .flex.gap-3.justify-center {
+                flex-direction: column-reverse !important;
+                gap: 8px !important;
+            }
+            .modal-dialog .flex.gap-3.justify-center button {
+                width: 100% !important;
+                justify-content: center !important;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .sidebar-overlay,
+            .sidebar,
+            .menu-btn {
+                display: none !important;
+            }
+
+            .card-footer-link {
+                margin-top: 20px !important;
+                padding-top: 16px !important;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .stat-card {
+                padding: 18px !important;
+            }
+            .stat-card .text-2xl {
+                font-size: 22px !important;
+            }
+            .grid.grid-cols-2 {
+                gap: 14px !important;
+            }
+        }
+
+        @media (min-width: 1025px) {
+            .stat-card {
+                padding: 24px !important;
+            }
+            .stat-card .text-2xl {
+                font-size: 28px !important;
+            }
+            .grid.grid-cols-2 {
+                gap: 20px !important;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased bg-[#050508]">
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="/admin/dashboard" class="sidebar-logo">
+                <div class="logo-box">ا</div>
+                <span>پنل ادمین</span>
+            </a>
+            <button class="sidebar-close" onclick="closeSidebar()">&times;</button>
+        </div>
+
+        <div class="space-y-1">
+            <a href="/admin/dashboard" class="sidebar-link active">
+                <i class="bi bi-speedometer2"></i> داشبورد
+            </a>
+            <a href="/admin/users" class="sidebar-link">
+                <i class="bi bi-people"></i> کاربران
+            </a>
+            <a href="/admin/invoices" class="sidebar-link">
+                <i class="bi bi-receipt"></i> فاکتورها
+            </a>
+            <a href="/admin/plans" class="sidebar-link">
+                <i class="bi bi-collection"></i> پلن‌ها
+            </a>
+        </div>
+
+        <div class="sidebar-divider"></div>
+
+        <a href="/dashboard" class="sidebar-link">
+            <i class="bi bi-globe"></i> داشبورد کاربر
+        </a>
+        <button onclick="openLogoutModal()" class="sidebar-link" style="color: #f87171; width: 100%; text-align: right; border: none; background: transparent; cursor: pointer;">
+            <i class="bi bi-box-arrow-right" style="color: #f87171;"></i> خروج
+        </button>
+    </div>
+
+    <nav class="fixed top-0 right-0 left-0 z-50 px-3 md:px-6 py-3 md:py-5">
+        <div class="max-w-6xl mx-auto glass-nav admin rounded-2xl px-3 md:px-6 py-2 md:py-3 flex items-center justify-between">
+            <div class="flex items-center gap-2 md:gap-3">
+                <button class="menu-btn" onclick="openSidebar()">
+                    <i class="bi bi-list text-xl"></i>
+                </button>
+                <a href="/admin/dashboard" class="flex items-center gap-2 md:gap-2.5 no-underline shrink-0 group">
+                    <div class="w-8 h-8 md:w-9 md:h-9 bg-gradient-to-br from-accent-600 to-accent-400 rounded-lg flex items-center justify-center text-white font-extrabold text-sm md:text-lg transition-transform group-hover:scale-105 shadow-lg shadow-accent-600/30">
+                        ا
+                    </div>
+                    <span class="font-extrabold text-base md:text-xl lg:text-2xl text-white tracking-tight">پنل ادمین</span>
+                </a>
+            </div>
+
+            <div class="nav-links flex items-center gap-1 md:gap-1.5">
+                <a href="/admin/dashboard" class="nav-link active">
+                    <i class="bi bi-speedometer2"></i> <span class="hidden sm:inline">داشبورد</span>
+                </a>
+                <a href="/admin/users" class="nav-link">
+                    <i class="bi bi-people"></i> <span class="hidden sm:inline">کاربران</span>
+                </a>
+                <a href="/admin/invoices" class="nav-link">
+                    <i class="bi bi-receipt"></i> <span class="hidden sm:inline">فاکتورها</span>
+                </a>
+                <a href="/admin/plans" class="nav-link hidden lg:inline-flex">
+                    <i class="bi bi-collection"></i> پلن‌ها
+                </a>
+
+                <div class="w-px h-6 bg-white/5 mx-1 md:mx-2 hidden lg:block"></div>
+
+                <a href="/dashboard" class="nav-link hidden md:inline-flex">
+                    <i class="bi bi-globe"></i> <span class="hidden lg:inline">داشبورد کاربر</span>
+                </a>
+                <button onclick="openLogoutModal()" class="btn-logout">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span class="hidden sm:inline">خروج</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-3 md:px-4 pt-24 md:pt-28 pb-12 md:pb-16">
+
+        <div class="mb-8 md:mb-12">
+            <h1 class="text-2xl md:text-3xl lg:text-4xl font-black text-white mb-1 md:mb-2 flex items-center gap-3">
+                <span class="bg-gradient-to-r from-accent-400 to-accent-600 bg-clip-text text-transparent">داشبورد</span>
+                <span class="text-gray-400 text-base md:text-lg font-normal"><%= user.role === "admin" ? "ادمین" : user.role === "moderator" ? "مدیر ارشد" : "مشکوک میزنیا شیطون" %></span>
+            </h1>
+            <p class="text-gray-500 text-xs md:text-sm">نمای کلی سیستم و آمار</p>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5 mb-8 md:mb-12">
+            <div class="stat-card">
+                <div class="flex items-center justify-between mb-2 md:mb-4">
+                    <div class="section-icon">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <span class="badge-purple">کل</span>
+                </div>
+                <div class="text-xl md:text-2xl lg:text-3xl font-black text-white mb-0.5 md:mb-1">
+                    <%= totalUsers.toLocaleString("fa-IR-u-nu-latn") %>
+                </div>
+                <div class="text-[10px] md:text-xs text-gray-500">کاربر ثبت‌نام شده</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="flex items-center justify-between mb-2 md:mb-4">
+                    <div class="section-icon">
+                        <i class="bi bi-receipt"></i>
+                    </div>
+                    <span class="badge-purple">کل</span>
+                </div>
+                <div class="text-xl md:text-2xl lg:text-3xl font-black text-white mb-0.5 md:mb-1">
+                    <%= totalInvoices.toLocaleString("fa-IR-u-nu-latn") %>
+                </div>
+                <div class="text-[10px] md:text-xs text-gray-500">فاکتور صادر شده</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="flex items-center justify-between mb-2 md:mb-4">
+                    <div class="section-icon">
+                        <i class="bi bi-collection"></i>
+                    </div>
+                    <span class="badge-purple">فعال</span>
+                </div>
+                <div class="text-xl md:text-2xl lg:text-3xl font-black text-white mb-0.5 md:mb-1">
+                    <%= totalPlans.toLocaleString("fa-IR-u-nu-latn") %>
+                </div>
+                <div class="text-[10px] md:text-xs text-gray-500">پلن تعریف شده</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="flex items-center justify-between mb-2 md:mb-4">
+                    <div class="section-icon">
+                        <i class="bi bi-cash-stack"></i>
+                    </div>
+                    <span class="badge-purple">تومان</span>
+                </div>
+                <div class="text-xl md:text-2xl lg:text-3xl font-black text-white mb-0.5 md:mb-1">
+                    <%= totalRevenue.toLocaleString("fa-IR-u-nu-latn") %>
+                </div>
+                <div class="text-[10px] md:text-xs text-gray-500">درآمد کل</div>
+            </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4 md:gap-6">
+
+            <div class="card rounded-2xl p-4 md:p-6 flex flex-col">
+                <div class="flex items-center justify-between mb-4 md:mb-5">
+                    <div class="flex items-center gap-3">
+                        <div class="section-icon">
+                            <i class="bi bi-person-plus"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-sm md:text-base font-extrabold text-white">آخرین کاربران</h2>
+                            <p class="text-[10px] md:text-xs text-gray-500">کاربران جدید ثبت‌نام شده</p>
+                        </div>
+                    </div>
+                    <span class="badge-purple text-xs">
+                        <i class="bi bi-people"></i> <%= typeof recentUsers !== 'undefined' ? recentUsers.length : 0 %>
+                    </span>
+                </div>
+
+                <div class="flex-1">
+                    <% if (typeof recentUsers !== 'undefined' && recentUsers.length > 0) { %>
+                        <% recentUsers.forEach(function(u) { %>
+                        <div class="activity-item">
+                            <div class="activity-avatar" style="background: linear-gradient(135deg, #7c3aed, #a78bfa);">
+                                <%= u.username ? u.username.charAt(0).toUpperCase() : '?' %>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="text-sm font-semibold text-white truncate"><%= u.username %></div>
+                                <div class="text-[10px] md:text-xs text-gray-500 truncate"><%= u.email %></div>
+                            </div>
+                            <span class="text-[10px] md:text-xs text-gray-500 flex-shrink-0">
+                                <%= u.createdAt ? new Date(u.createdAt).toLocaleDateString("fa-IR-u-nu-latn") : '' %>
+                            </span>
+                        </div>
+                        <% }); %>
+                    <% } else { %>
+                        <div class="text-center py-6 md:py-8 text-gray-500 text-xs md:text-sm">هنوز کاربری ثبت‌نام نکرده</div>
+                    <% } %>
+                </div>
+
+                <a href="/admin/users" class="card-footer-link">
+                    مشاهده همه کاربران <i class="bi bi-arrow-left"></i>
+                </a>
+            </div>
+
+            <div class="card rounded-2xl p-4 md:p-6 flex flex-col">
+                <div class="flex items-center justify-between mb-4 md:mb-5">
+                    <div class="flex items-center gap-3">
+                        <div class="section-icon">
+                            <i class="bi bi-receipt-cutoff"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-sm md:text-base font-extrabold text-white">آخرین فاکتورها</h2>
+                            <p class="text-[10px] md:text-xs text-gray-500">فاکتورهای جدید صادر شده</p>
+                        </div>
+                    </div>
+                    <span class="badge-purple text-xs">
+                        <i class="bi bi-receipt"></i> <%= typeof recentInvoices !== 'undefined' ? recentInvoices.length : 0 %>
+                    </span>
+                </div>
+
+                <div class="flex-1">
+                    <% if (typeof recentInvoices !== 'undefined' && recentInvoices.length > 0) { %>
+                        <% recentInvoices.forEach(function(inv) { %>
+                        <div class="activity-item">
+                            <div class="activity-avatar" style="background: linear-gradient(135deg, #059669, #34d399);">
+                                <i class="bi bi-receipt text-sm"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="text-sm font-semibold text-white truncate"><%= inv.member?.name || 'بدون نام' %></div>
+                                <div class="text-[10px] md:text-xs text-gray-500 truncate">
+                                    <%= inv.user?.username || inv.user?.clubName || '—' %>
+                                    <span class="badge-status <%= inv.isPaid ? 'paid' : 'pending' %> mx-1">
+                                        <%= inv.isPaid ? 'پرداخت شده' : 'در انتظار' %>
+                                    </span>
+                                </div>
+                            </div>
+                            <span class="text-[10px] md:text-xs text-gray-500 flex-shrink-0">
+                                <%= inv.createdAt ? new Date(inv.createdAt).toLocaleDateString("fa-IR-u-nu-latn") : '' %>
+                            </span>
+                        </div>
+                        <% }); %>
+                    <% } else { %>
+                        <div class="text-center py-6 md:py-8 text-gray-500 text-xs md:text-sm">هنوز فاکتوری صادر نشده</div>
+                    <% } %>
+                </div>
+
+                <a href="/admin/invoices" class="card-footer-link">
+                    مشاهده همه فاکتورها <i class="bi bi-arrow-left"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <div class="modal-overlay" id="logoutModal">
+        <div class="modal-dialog text-center">
+            <div class="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5">
+                <i class="bi bi-box-arrow-right text-red-400 text-2xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2">خروج از حساب</h3>
+            <p class="text-gray-400 text-sm mb-6">آیا مطمئن هستید که می‌خواهید خارج شوید؟</p>
+            <div class="flex gap-3 justify-center">
+                <button onclick="closeModal('logoutModal')" class="px-6 py-2.5 rounded-xl text-gray-300 font-semibold text-sm bg-white/5 border border-white/10 hover:bg-white/10 transition-all">
+                    انصراف
+                </button>
+                <a href="/auth/logout" class="px-6 py-2.5 rounded-xl text-white font-semibold text-sm bg-red-600 hover:bg-red-500 transition-all no-underline">
+                    خروج
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openSidebar() {
+            document.getElementById('sidebar').classList.add('open');
+            document.getElementById('sidebarOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeSidebar();
+                closeModal('logoutModal');
+            }
+        });
+
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        function openLogoutModal() {
+            openModal('logoutModal');
+        }
+
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

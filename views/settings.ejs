@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" class="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>تنظیمات | فاکتوریتو</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/sahel-font@v3.4.0/dist/font-face.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sahel': ['Sahel', 'Vazirmatn', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        ink: {
+                            950: '#050508', 900: '#0c0c14', 800: '#14141f', 700: '#1c1c2a',
+                            600: '#28283a', 500: '#36364c', 400: '#4a4a63',
+                        },
+                        accent: {
+                            400: '#a78bfa', 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9', 800: '#5b21b6', 900: '#4c1d95',
+                        },
+                        gold: { 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309' },
+                        success: { 300: '#6ee7b7', 400: '#34d399', 500: '#10b981', 600: '#059669' },
+                    },
+                    boxShadow: {
+                        'glow': '0 0 32px rgba(124, 58, 237, 0.35)',
+                        'glow-lg': '0 8px 40px rgba(124, 58, 237, 0.45)',
+                        'card': '0 10px 40px -10px rgba(0, 0, 0, 0.4)',
+                    },
+                    borderRadius: { 'xl': '12px', '2xl': '16px', '3xl': '24px' },
+                    keyframes: {
+                        shimmer: { '0%': { backgroundPosition: '200% 0' }, '100%': { backgroundPosition: '-200% 0' } },
+                        toastIn: { '0%': { opacity: '0', transform: 'translateX(-50%) translateY(8px)' }, '100%': { opacity: '1', transform: 'translateX(-50%) translateY(0)' } },
+                        spin: { '0%': { transform: 'rotate(0deg)' }, '100%': { transform: 'rotate(360deg)' } },
+                        slideIn: { '0%': { transform: 'translateX(110%)' }, '100%': { transform: 'translateX(0)' } },
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                    },
+                    animation: {
+                        shimmer: 'shimmer 1.8s infinite',
+                        toastIn: 'toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+                        spin: 'spin 0.6s linear infinite',
+                        slideIn: 'slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                        fadeIn: 'fadeIn 0.3s ease',
+                    },
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * {
+            font-family: 'Sahel', 'Vazirmatn', system-ui, sans-serif !important;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #050508;
+            color: #d1d5db;
+            line-height: 1.8;
+            font-weight: 400;
+            letter-spacing: -0.1px;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            min-height: 100vh;
+        }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: #050508; }
+        ::-webkit-scrollbar-thumb { background: #1c1c2a; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #28283a; }
+
+        .grid-bg {
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+
+        .glass-header {
+            background: rgba(12, 12, 20, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.4);
+        }
+
+        .card {
+            background: #0c0c14;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .btn-primary {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            background: #7c3aed;
+            box-shadow: 0 8px 30px -8px rgba(124, 58, 237, 0.4);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+        .btn-primary:hover {
+            background: #8b5cf6;
+            box-shadow: 0 12px 40px -8px rgba(139, 92, 246, 0.5);
+            transform: translateY(-2px);
+        }
+        .btn-primary:active { transform: scale(0.97); }
+        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        .btn-logout {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 38px; height: 38px;
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 12px; color: #fca5a5;
+            transition: all 0.3s ease; cursor: pointer; outline: none;
+        }
+        .btn-logout:hover {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: rgba(239, 68, 68, 0.4);
+            color: #fecaca;
+        }
+
+        .btn-generate {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 10px 18px;
+            background: rgba(139, 92, 246, 0.08);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 12px; color: #a78bfa;
+            font-size: 13px; font-weight: 600;
+            cursor: pointer; transition: all 0.3s ease; outline: none;
+        }
+        .btn-generate:hover {
+            background: rgba(139, 92, 246, 0.15);
+            border-color: rgba(139, 92, 246, 0.4);
+            color: #c4b5fd;
+            transform: translateY(-1px);
+        }
+        .btn-generate:active { transform: scale(0.95); }
+
+        .nav-link {
+            color: #9ca3af; font-size: 14px; font-weight: 500;
+            padding: 8px 16px; border-radius: 10px;
+            transition: all 0.25s ease; text-decoration: none;
+            display: flex; align-items: center; gap: 8px;
+            border: 1px solid transparent; background: transparent;
+        }
+        .nav-link:hover { color: #fff; background: rgba(255,255,255,0.04); }
+        .nav-link.active { color: #c4b5fd; background: rgba(139,92,246,0.08); border-color: rgba(139,92,246,0.2); }
+        .nav-link i { font-size: 16px; }
+
+        .dropdown-trigger {
+            display: flex; align-items: center; gap: 10px; padding: 4px 12px 4px 6px;
+            background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 50px; cursor: pointer; transition: all 0.3s ease; color: #d1d5db;
+            font-weight: 500; font-size: 14px;
+        }
+        .dropdown-trigger:hover { background: rgba(255, 255, 255, 0.05); border-color: rgba(139, 92, 246, 0.4); }
+        .avatar {
+            width: 34px; height: 34px; border-radius: 50%;
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 14px; color: #fff; flex-shrink: 0;
+        }
+        .dropdown-menu {
+            position: absolute; top: calc(100% + 10px); left: 0; min-width: 260px;
+            background: #14141f; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px;
+            padding: 10px; box-shadow: 0 25px 50px -15px rgba(0, 0, 0, 0.6);
+            opacity: 0; visibility: hidden; transform: translateY(-8px) scale(0.97);
+            transition: all 0.25s cubic-bezier(0.23, 1, 0.32, 1); z-index: 100;
+        }
+        .dropdown-menu.active { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
+        .dropdown-item {
+            display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 10px;
+            color: #9ca3af; font-size: 14px; font-weight: 500; transition: all 0.2s ease;
+            cursor: pointer; text-decoration: none; background: none; border: none; width: 100%; text-align: right;
+        }
+        .dropdown-item:hover { background: rgba(139, 92, 246, 0.08); color: #c4b5fd; }
+        .dropdown-item i { font-size: 17px; width: 20px; text-align: center; }
+        .dropdown-item.danger:hover { background: rgba(220, 38, 38, 0.12); color: #f87171; }
+        .dropdown-divider { height: 1px; background: rgba(255, 255, 255, 0.05); margin: 6px 8px; }
+
+        .mega-menu {
+            position: fixed; top: 80px; right: 50%; transform: translateX(50%) translateY(-8px);
+            width: min(90%, 500px); background: #14141f; border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px; padding: 16px; box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+            opacity: 0; visibility: hidden; transition: all 0.3s cubic-bezier(0.23,1,0.32,1); z-index: 200;
+        }
+        .mega-menu.active { opacity: 1; visibility: visible; transform: translateX(50%) translateY(0); }
+        .mega-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+        .mega-item {
+            display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 12px;
+            transition: all 0.2s ease; text-decoration: none; color: #9ca3af;
+        }
+        .mega-item:hover { background: rgba(139,92,246,0.06); color: #fff; }
+        .mega-item i { font-size: 20px; width: 24px; text-align: center; color: #a78bfa; }
+        .mega-item .mega-title { font-size: 14px; font-weight: 700; color: #e5e7eb; }
+        .mega-item .mega-desc { font-size: 11px; color: #6b7280; }
+
+        .sidebar {
+            position: fixed; top: 0; right: 0; bottom: 0; width: 85%; max-width: 320px;
+            background: #0c0c14; border-left: 1px solid rgba(255,255,255,0.06); z-index: 300;
+            padding: 20px; overflow-y: auto; transform: translateX(110%);
+            transition: transform 0.4s cubic-bezier(0.23,1,0.32,1);
+        }
+        .sidebar.open { transform: translateX(0); }
+        .sidebar-overlay {
+            position: fixed; inset: 0; background: rgba(5,5,8,0.7); backdrop-filter: blur(4px);
+            z-index: 290; opacity: 0; visibility: hidden; transition: all 0.3s ease;
+        }
+        .sidebar-overlay.active { opacity: 1; visibility: visible; }
+
+        .sidebar-link {
+            display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 12px;
+            color: #9ca3af; font-size: 14px; font-weight: 500; transition: all 0.2s ease;
+            text-decoration: none; margin-bottom: 2px; border: 1px solid transparent;
+        }
+        .sidebar-link i { font-size: 18px; width: 22px; text-align: center; }
+        .sidebar-link:hover { background: rgba(255,255,255,0.04); color: #fff; }
+        .sidebar-link.active { background: rgba(139,92,246,0.08); color: #c4b5fd; border-color: rgba(139,92,246,0.2); }
+        .sidebar-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 12px 0; }
+
+        .section-icon {
+            width: 40px; height: 40px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px;
+        }
+
+        .input-field {
+            width: 100%; padding: 12px 14px;
+            background: #0c0c14; border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px; color: #fff; font-size: 14px;
+            transition: all 0.3s ease; outline: none;
+        }
+        .input-field:focus { border-color: rgba(139,92,246,0.4); box-shadow: 0 0 0 3px rgba(139,92,246,0.05); }
+        .input-field::placeholder { color: #4a4a63; }
+        .input-field.error { border-color: rgba(239,68,68,0.4); box-shadow: 0 0 0 3px rgba(239,68,68,0.05); }
+
+        .error-text { font-size: 11px; color: #fca5a5; margin-top: 4px; display: none; }
+        .error-text.show { display: block; }
+
+        .code-display {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(139, 92, 246, 0.02));
+            border: 1px solid rgba(139, 92, 246, 0.25);
+            border-radius: 16px; padding: 20px;
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 16px; transition: all 0.3s ease;
+        }
+        .code-display .code-text {
+            font-size: 20px; font-weight: 800; color: #c4b5fd;
+            letter-spacing: 1.5px; direction: ltr; text-align: left;
+            font-family: 'Courier New', monospace !important;
+        }
+        .code-display .code-copy {
+            width: 40px; height: 40px; border-radius: 10px;
+            background: rgba(139, 92, 246, 0.15);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            color: #a78bfa; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.2s ease; flex-shrink: 0;
+            font-size: 16px; outline: none;
+        }
+        .code-display .code-copy:hover {
+            background: rgba(139, 92, 246, 0.25);
+            border-color: rgba(139, 92, 246, 0.5);
+            color: #c4b5fd;
+            transform: scale(1.05);
+        }
+        .code-display .code-copy.copied {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: #6ee7b7;
+            color: #6ee7b7;
+        }
+
+        .code-placeholder {
+            background: rgba(255, 255, 255, 0.02);
+            border: 2px dashed rgba(139, 92, 246, 0.2);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .code-placeholder:hover {
+            border-color: rgba(139, 92, 246, 0.4);
+            background: rgba(139, 92, 246, 0.03);
+        }
+
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(5, 5, 8, 0.85);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 400; opacity: 0; visibility: hidden; transition: all 0.3s ease;
+        }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-dialog {
+            background: #14141f; border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px; padding: 28px; max-width: 420px; width: 90%;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
+            transform: scale(0.92) translateY(16px); transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .modal-overlay.active .modal-dialog { transform: scale(1) translateY(0); }
+
+        .toast {
+            position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+            background: rgba(20,20,31,0.95); backdrop-filter: blur(12px);
+            color: #fff; padding: 12px 24px; border-radius: 50px;
+            font-size: 13px; font-weight: 600; z-index: 500;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            border: 1px solid rgba(139,92,246,0.3);
+            display: none; animation: toastIn 0.3s ease;
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, rgba(124, 58, 237, 0.1) 0%, rgba(139, 92, 246, 0.2) 50%, rgba(124, 58, 237, 0.1) 100%);
+            background-size: 200% 100%; animation: shimmer 1.8s infinite; border-radius: 6px;
+        }
+
+        .counter {
+            font-size: 10px;
+            color: #6b7280;
+            transition: color 0.3s ease;
+        }
+        .counter.warning { color: #fcd34d; }
+        .counter.danger { color: #fca5a5; }
+
+        @media (min-width: 769px) {
+            .mobile-only { display: none !important; }
+        }
+        @media (max-width: 768px) {
+            .desktop-only { display: none !important; }
+        }
+    </style>
+</head>
+<body class="antialiased bg-[#050508] grid-bg">
+
+    <!-- ========== SIDEBAR (Mobile) ========== -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+    <div class="sidebar" id="sidebar">
+        <div class="flex items-center justify-between mb-6 pb-4 border-b border-white/5">
+            <a href="/dashboard" class="flex items-center gap-2.5 no-underline">
+                <div class="w-9 h-9 bg-gradient-to-br from-accent-700 to-accent-500 rounded-xl flex items-center justify-center text-white font-extrabold text-lg">ف</div>
+                <span class="font-extrabold text-xl text-white">فاکتوریتو</span>
+            </a>
+            <button onclick="closeSidebar()" class="btn-logout"><i class="bi bi-x-lg"></i></button>
+        </div>
+
+        <div class="space-y-1">
+            <div class="text-xs font-bold text-gray-500 px-3 mb-2">منوی اصلی</div>
+            <a href="/dashboard" class="sidebar-link"><i class="bi bi-speedometer2"></i> داشبورد</a>
+            <a href="/invoices" class="sidebar-link"><i class="bi bi-receipt"></i> فاکتورها</a>
+            <a href="/plans" class="sidebar-link"><i class="bi bi-collection"></i> پلن‌ها</a>
+            <a href="/profile" class="sidebar-link"><i class="bi bi-person"></i> پروفایل</a>
+            <a href="/settings" class="sidebar-link active"><i class="bi bi-gear"></i> تنظیمات</a>
+            <% if (user && user.role && ["admin", "moderator"].includes(user.role)) { %>
+            <a href="/admin/dashboard" class="sidebar-link"><i class="bi bi-shield"></i> مدیریت سیستم</a>
+            <% } %>
+        </div>
+
+        <div class="sidebar-divider"></div>
+        <button onclick="openLogoutModal(); closeSidebar();" class="sidebar-link w-full text-red-400 hover:text-red-300 hover:bg-red-500/5"><i class="bi bi-box-arrow-right"></i> خروج از حساب</button>
+    </div>
+
+    <!-- ========== HEADER ========== -->
+    <header class="fixed top-0 right-0 left-0 z-50 px-4 md:px-6 py-4">
+        <div class="max-w-5xl mx-auto glass-header rounded-2xl px-4 md:px-5 py-2.5 flex items-center justify-between">
+            <a href="/dashboard" class="flex items-center gap-2.5 no-underline shrink-0 group">
+                <div class="w-9 h-9 bg-gradient-to-br from-accent-700 to-accent-500 rounded-xl flex items-center justify-center text-white font-extrabold text-lg shadow-glow group-hover:shadow-glow-lg transition-all">ف</div>
+                <span class="font-extrabold text-xl md:text-2xl text-white tracking-tight group-hover:text-accent-400 transition-colors">فاکتوریتو</span>
+            </a>
+
+            <div class="hidden md:flex items-center gap-1 desktop-only">
+                <a href="/dashboard" class="nav-link"><i class="bi bi-speedometer2"></i> داشبورد</a>
+                <a href="/settings" class="nav-link active"><i class="bi bi-gear"></i> تنظیمات</a>
+                <button onclick="toggleMegaMenu()" class="nav-link" id="megaMenuBtn">
+                    <i class="bi bi-grid-1x2"></i> بیشتر
+                    <i class="bi bi-chevron-down text-[10px]" id="megaCaret"></i>
+                </button>
+            </div>
+
+            <div class="flex items-center gap-2.5">
+                <div class="relative" id="userDropdown">
+                    <button class="dropdown-trigger" onclick="toggleDropdown(event)" aria-label="منوی کاربری">
+                        <div class="avatar">
+                            <%= (user && user.username) ? user.username.charAt(0).toUpperCase() : 'U' %>
+                        </div>
+                        <span class="hidden sm:block max-w-[90px] truncate text-sm">
+                            <%= (user && user.username) ? user.username : 'کاربر' %>
+                        </span>
+                        <span class="hidden sm:inline-flex items-center justify-center transition-transform duration-300 text-[10px] text-gray-500" id="dropdownCaret">
+                            <i class="bi bi-chevron-down"></i>
+                        </span>
+                    </button>
+
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <div class="px-4 py-3">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="avatar w-11 h-11 text-base">
+                                    <%= (user && user.username) ? user.username.charAt(0).toUpperCase() : 'U' %>
+                                </div>
+                                <div>
+                                    <div class="text-sm font-bold text-white"><%= (user && user.username) ? user.username : 'کاربر' %></div>
+                                    <div class="text-xs text-gray-500"><%= (user && user.email) ? user.email : '' %></div>
+                                </div>
+                            </div>
+                            <% if (user && user.clubName) { %>
+                            <div class="bg-accent-700/10 border border-accent-700/20 rounded-lg px-3 py-2 text-xs text-accent-400 flex items-center gap-2">
+                                <i class="bi bi-building"></i> <%= user.clubName %>
+                            </div>
+                            <% } %>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <a href="/dashboard" class="dropdown-item"><i class="bi bi-speedometer2"></i> داشبورد</a>
+                        <a href="/profile" class="dropdown-item"><i class="bi bi-person"></i> پروفایل</a>
+                        <a href="/invoices" class="dropdown-item"><i class="bi bi-receipt"></i> فاکتورهای من</a>
+                        <a href="/plans" class="dropdown-item"><i class="bi bi-collection"></i> پلن‌ها</a>
+                        <div class="dropdown-divider"></div>
+                        <button onclick="openLogoutModal(); closeDropdown();" class="dropdown-item w-full danger">
+                            <i class="bi bi-box-arrow-right"></i> خروج از حساب
+                        </button>
+                    </div>
+                </div>
+
+                <button onclick="openSidebar()" class="btn-logout mobile-only md:hidden" aria-label="منو"><i class="bi bi-list"></i></button>
+            </div>
+        </div>
+
+        <!-- MEGA MENU -->
+        <div class="max-w-5xl mx-auto relative">
+            <div class="mega-menu" id="megaMenu">
+                <div class="mega-grid">
+                    <a href="/invoices" class="mega-item">
+                        <i class="bi bi-receipt"></i>
+                        <div>
+                            <div class="mega-title">فاکتورها</div>
+                            <div class="mega-desc">مدیریت فاکتورهای صادر شده</div>
+                        </div>
+                    </a>
+                    <a href="/plans" class="mega-item">
+                        <i class="bi bi-collection"></i>
+                        <div>
+                            <div class="mega-title">پلن‌ها</div>
+                            <div class="mega-desc">مدیریت پلن‌های عضویت</div>
+                        </div>
+                    </a>
+                    <a href="/profile" class="mega-item">
+                        <i class="bi bi-person"></i>
+                        <div>
+                            <div class="mega-title">پروفایل</div>
+                            <div class="mega-desc">اطلاعات حساب کاربری</div>
+                        </div>
+                    </a>
+                    <% if (user && user.role && ["admin", "moderator"].includes(user.role)) { %>
+                    <a href="/admin/dashboard" class="mega-item">
+                        <i class="bi bi-shield"></i>
+                        <div>
+                            <div class="mega-title">مدیریت سیستم</div>
+                            <div class="mega-desc">کنترل کامل</div>
+                        </div>
+                    </a>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ========== MAIN CONTENT ========== -->
+    <main class="max-w-3xl mx-auto px-4 pt-28 pb-16 relative z-10">
+
+        <!-- Header Skeleton -->
+        <div id="headerSkeleton" class="mb-8">
+            <div class="skeleton h-8 w-40 mb-3"></div>
+            <div class="skeleton h-4 w-64"></div>
+        </div>
+
+        <!-- Header Content -->
+        <div id="headerContent" class="mb-8" style="display: none;">
+            <h1 class="text-3xl md:text-4xl font-black text-white tracking-tight mb-1">تنظیمات</h1>
+            <p class="text-gray-500 text-sm">اطلاعات باشگاه و تنظیمات حساب کاربری</p>
+        </div>
+
+        <!-- Form Skeleton -->
+        <div id="formSkeleton" class="card rounded-2xl p-6 md:p-8 mb-5">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="skeleton w-10 h-10 rounded-xl"></div>
+                <div class="skeleton h-5 w-32"></div>
+            </div>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="md:col-span-2"><div class="skeleton h-12 rounded-xl"></div></div>
+                <div><div class="skeleton h-12 rounded-xl"></div></div>
+                <div><div class="skeleton h-12 rounded-xl"></div></div>
+                <div class="md:col-span-2"><div class="skeleton h-20 rounded-xl"></div></div>
+                <div class="md:col-span-2"><div class="skeleton h-20 rounded-xl"></div></div>
+            </div>
+        </div>
+
+        <!-- Form Content -->
+        <form id="settingsForm" class="space-y-5" style="display: none;" novalidate>
+            <div class="card rounded-2xl p-6 md:p-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="section-icon bg-accent-700/10 text-accent-400">
+                        <i class="bi bi-building"></i>
+                    </div>
+                    <h2 class="text-lg font-extrabold text-white">اطلاعات باشگاه</h2>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-4">
+                    <!-- Club Name -->
+                    <div class="md:col-span-2">
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label class="text-xs font-semibold text-gray-400">نام باشگاه</label>
+                            <span class="counter" id="clubNameCounter">0 / 24</span>
+                        </div>
+                        <input type="text" name="clubName" id="clubName" value="<%- user && user.clubName ? user.clubName : '' %>" class="input-field" placeholder="نام باشگاه خود را وارد کنید" maxlength="24">
+                        <p class="error-text" id="clubNameError"></p>
+                    </div>
+
+                    <!-- Phone -->
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-400 mb-1.5">شماره تماس</label>
+                        <input type="text" name="clubPhone" id="clubPhone" value="<%- user && user.clubPhone ? user.clubPhone : '' %>" class="input-field text-left dir-ltr" placeholder="09123456789" maxlength="11">
+                        <p class="error-text" id="clubPhoneError"></p>
+                    </div>
+
+                    <!-- Email -->
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-400 mb-1.5">ایمیل</label>
+                        <input type="email" name="clubEmail" id="clubEmail" value="<%- user && user.clubEmail ? user.clubEmail : '' %>" class="input-field text-left dir-ltr" placeholder="info@example.com" maxlength="254">
+                        <p class="error-text" id="clubEmailError"></p>
+                    </div>
+
+                    <!-- Address -->
+                    <div class="md:col-span-2">
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label class="text-xs font-semibold text-gray-400">آدرس</label>
+                            <span class="counter" id="clubAddressCounter">0 / 128</span>
+                        </div>
+                        <textarea name="clubAddress" id="clubAddress" rows="2" class="input-field" placeholder="آدرس باشگاه خود را وارد کنید" maxlength="128"><%- user && user.clubAddress ? user.clubAddress : '' %></textarea>
+                        <p class="error-text" id="clubAddressError"></p>
+                    </div>
+
+                    <!-- Club Code -->
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-semibold text-gray-400 mb-1.5">کد باشگاه</label>
+                        <input type="hidden" name="clubCode" id="clubCodeHidden" value="<%- user && user.clubCode ? user.clubCode : '' %>">
+
+                        <% if (user && user.clubCode) { %>
+                        <div class="code-display fade-in-up" id="codeDisplay">
+                            <div class="flex items-center gap-3">
+                                <i class="bi bi-key text-accent-400 text-xl"></i>
+                                <span class="code-text" id="codeText"><%- user.clubCode %></span>
+                            </div>
+                            <button type="button" class="code-copy" onclick="copyCode()" title="کپی کد">
+                                <i class="bi bi-clipboard"></i>
+                            </button>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2 flex items-center gap-1">
+                            <i class="bi bi-info-circle"></i>
+                            برای تغییر کد، دکمه ساخت کد جدید را بزنید
+                        </p>
+                        <button type="button" onclick="generateClubCode()" class="btn-generate mt-3" id="generateBtn">
+                            <i class="bi bi-arrow-repeat"></i>
+                            <span>ساخت کد جدید</span>
+                        </button>
+                        <% } else { %>
+                        <div class="code-placeholder" id="codePlaceholder">
+                            <i class="bi bi-key text-3xl text-accent-400 block mb-3"></i>
+                            <p class="text-gray-400 text-sm mb-4">کد باشگاه شما هنوز ساخته نشده است</p>
+                            <button type="button" onclick="generateClubCode()" class="btn-generate mx-auto" id="generateBtnFirst">
+                                <i class="bi bi-magic"></i>
+                                <span>ساخت کد باشگاه</span>
+                            </button>
+                        </div>
+                        <div class="code-display fade-in-up" id="codeDisplay" style="display: none;">
+                            <div class="flex items-center gap-3">
+                                <i class="bi bi-key text-accent-400 text-xl"></i>
+                                <span class="code-text" id="codeText"></span>
+                            </div>
+                            <button type="button" class="code-copy" onclick="copyCode()" title="کپی کد">
+                                <i class="bi bi-clipboard"></i>
+                            </button>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2 flex items-center gap-1" id="codeHint" style="display: none;">
+                            <i class="bi bi-info-circle"></i>
+                            برای تغییر کد، دکمه ساخت کد جدید را بزنید
+                        </p>
+                        <button type="button" onclick="generateClubCode()" class="btn-generate mt-3" id="regenerateBtn" style="display: none;">
+                            <i class="bi bi-arrow-repeat"></i>
+                            <span>ساخت کد جدید</span>
+                        </button>
+                        <% } %>
+                        <p class="error-text" id="clubCodeError"></p>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-primary w-full py-4 rounded-2xl text-white font-extrabold text-base flex items-center justify-center gap-2" id="submitBtn">
+                <i class="bi bi-check-lg text-lg"></i>
+                <span>ذخیره تنظیمات</span>
+            </button>
+        </form>
+    </main>
+
+    <!-- ========== LOGOUT MODAL ========== -->
+    <div class="modal-overlay" id="logoutModal">
+        <div class="modal-dialog text-center">
+            <div class="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5">
+                <i class="bi bi-box-arrow-right text-red-400 text-3xl"></i>
+            </div>
+            <h3 class="text-xl font-extrabold text-white mb-2">خروج از حساب</h3>
+            <p class="text-gray-400 text-sm mb-8">آیا مطمئن هستید که می‌خواهید خارج شوید؟</p>
+            <div class="flex gap-3 justify-center">
+                <button onclick="closeModal('logoutModal')" class="px-6 py-2.5 rounded-xl text-gray-300 font-semibold text-sm bg-white/5 border border-white/10 hover:bg-white/10 transition">انصراف</button>
+                <a href="/auth/logout" class="px-6 py-2.5 rounded-xl text-white font-semibold text-sm bg-red-600 hover:bg-red-500 transition shadow-lg shadow-red-900/30 no-underline">خروج</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast"></div>
+
+    <script>
+        // ====== Skeleton Loading ======
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('headerSkeleton').style.display = 'none';
+                document.getElementById('formSkeleton').style.display = 'none';
+                document.getElementById('headerContent').style.display = 'block';
+                document.getElementById('settingsForm').style.display = 'block';
+                updateCounter('clubName', 'clubNameCounter', 24);
+                updateCounter('clubAddress', 'clubAddressCounter', 128);
+                // ذخیره مقادیر اولیه
+                originalFormData = getFormData();
+            }, 500);
+        });
+
+        // ====== State ======
+        let originalFormData = {};
+
+        function getFormData() {
+            return {
+                clubName: document.getElementById('clubName').value.trim(),
+                clubPhone: document.getElementById('clubPhone').value.trim(),
+                clubEmail: document.getElementById('clubEmail').value.trim(),
+                clubAddress: document.getElementById('clubAddress').value.trim(),
+                clubCode: document.getElementById('clubCodeHidden').value.trim()
+            };
+        }
+
+        function hasChanges() {
+            const current = getFormData();
+            return JSON.stringify(current) !== JSON.stringify(originalFormData);
+        }
+
+        // ====== Counter ======
+        function updateCounter(inputId, counterId, maxLength) {
+            const input = document.getElementById(inputId);
+            const counter = document.getElementById(counterId);
+            if (!input || !counter) return;
+            const len = input.value.length;
+            counter.textContent = `${len} / ${maxLength}`;
+            counter.classList.remove('warning', 'danger');
+            if (len >= maxLength) counter.classList.add('danger');
+            else if (len >= maxLength - 10) counter.classList.add('warning');
+        }
+
+        // ====== Dropdown ======
+        function toggleDropdown(e) {
+            e.stopPropagation();
+            const menu = document.getElementById('dropdownMenu');
+            const caret = document.getElementById('dropdownCaret');
+            menu?.classList.toggle('active');
+            if (caret) {
+                const icon = caret.querySelector('i');
+                if (icon) icon.style.transform = menu?.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
+            }
+        }
+        function closeDropdown() {
+            const menu = document.getElementById('dropdownMenu');
+            const caret = document.getElementById('dropdownCaret');
+            if (menu) {
+                menu.classList.remove('active');
+                if (caret) {
+                    const icon = caret.querySelector('i');
+                    if (icon) icon.style.transform = 'rotate(0deg)';
+                }
+            }
+        }
+
+        // ====== Mega Menu ======
+        function toggleMegaMenu() {
+            const menu = document.getElementById('megaMenu');
+            const caret = document.getElementById('megaCaret');
+            menu?.classList.toggle('active');
+            if (caret) caret.style.transform = menu?.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
+        }
+        function closeMegaMenu() {
+            const menu = document.getElementById('megaMenu');
+            const caret = document.getElementById('megaCaret');
+            if (menu) {
+                menu.classList.remove('active');
+                if (caret) caret.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // ====== Sidebar ======
+        function openSidebar() {
+            document.getElementById('sidebar').classList.add('open');
+            document.getElementById('sidebarOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // ====== Modals ======
+        window.openModal = (id) => document.getElementById(id)?.classList.add('active');
+        window.closeModal = (id) => document.getElementById(id)?.classList.remove('active');
+        function openLogoutModal() {
+            closeDropdown();
+            closeMegaMenu();
+            closeSidebar();
+            openModal('logoutModal');
+        }
+
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === this) this.classList.remove('active');
+            });
+        });
+
+        // ====== Global click handlers ======
+        document.addEventListener('click', (e) => {
+            const userDropdown = document.getElementById('userDropdown');
+            if (userDropdown && !userDropdown.contains(e.target)) closeDropdown();
+
+            const megaMenu = document.getElementById('megaMenu');
+            const megaBtn = document.getElementById('megaMenuBtn');
+            if (megaMenu && megaBtn && !megaMenu.contains(e.target) && !megaBtn.contains(e.target)) {
+                closeMegaMenu();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeDropdown();
+                closeMegaMenu();
+                closeSidebar();
+                document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+            }
+        });
+
+        // ====== Input listeners ======
+        document.getElementById('clubName')?.addEventListener('input', function() {
+            updateCounter('clubName', 'clubNameCounter', 24);
+        });
+        document.getElementById('clubAddress')?.addEventListener('input', function() {
+            updateCounter('clubAddress', 'clubAddressCounter', 128);
+        });
+
+        // ====== Toast ======
+        function toast(msg, type) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.style.display = 'block';
+            if (type === 'error') {
+                t.style.background = 'rgba(127,29,29,0.95)';
+                t.style.borderColor = 'rgba(239,68,68,0.4)';
+                t.style.color = '#fca5a5';
+            } else if (type === 'success') {
+                t.style.background = 'rgba(6,78,59,0.95)';
+                t.style.borderColor = 'rgba(16,185,129,0.4)';
+                t.style.color = '#6ee7b7';
+            } else {
+                t.style.background = 'rgba(20,20,31,0.95)';
+                t.style.borderColor = 'rgba(139,92,246,0.4)';
+                t.style.color = '#fff';
+            }
+            clearTimeout(t._t);
+            t._t = setTimeout(() => t.style.display = 'none', 3000);
+        }
+
+        // ====== Generate Random Code ======
+        function generateRandomCode(clubName, username) {
+            const clubPart = clubName
+                .replace(/[^a-zA-Z0-9آ-ی]/g, '')
+                .replace(/[\s]/g, '')
+                .substring(0, 3)
+                .toUpperCase() || 'CLB';
+            const userPart = username
+                .replace(/[^a-zA-Z0-9]/g, '')
+                .substring(0, 3)
+                .toUpperCase() || 'USR';
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            let randomPart = '';
+            for (let i = 0; i < 6; i++) {
+                randomPart += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return `${clubPart}-${userPart}-${randomPart}`;
+        }
+
+        // ====== Generate Club Code ======
+        function generateClubCode() {
+            const clubNameInput = document.getElementById('clubName');
+            const clubCodeHidden = document.getElementById('clubCodeHidden');
+            const codePlaceholder = document.getElementById('codePlaceholder');
+            const codeDisplay = document.getElementById('codeDisplay');
+            const codeText = document.getElementById('codeText');
+            const codeHint = document.getElementById('codeHint');
+            const generateBtnFirst = document.getElementById('generateBtnFirst');
+            const generateBtn = document.getElementById('generateBtn');
+            const regenerateBtn = document.getElementById('regenerateBtn');
+
+            const clubName = clubNameInput.value.trim() || 'باشگاه من';
+            const username = '<%- (user && user.username) ? user.username : "user" %>';
+            const code = generateRandomCode(clubName, username);
+
+            clubCodeHidden.value = code;
+            codeText.textContent = code;
+
+            if (codePlaceholder) codePlaceholder.style.display = 'none';
+            codeDisplay.style.display = 'flex';
+            if (codeHint) codeHint.style.display = 'flex';
+            if (regenerateBtn) regenerateBtn.style.display = 'inline-flex';
+            if (generateBtnFirst) generateBtnFirst.style.display = 'none';
+            if (generateBtn) generateBtn.style.display = 'none';
+
+            codeDisplay.classList.remove('fade-in-up');
+            void codeDisplay.offsetWidth;
+            codeDisplay.classList.add('fade-in-up');
+
+            toast('کد باشگاه با موفقیت ساخته شد', 'success');
+        }
+
+        // ====== Copy Code ======
+        function copyCode() {
+            const codeText = document.getElementById('codeText').textContent;
+            const copyBtn = document.querySelector('.code-copy');
+            const icon = copyBtn.querySelector('i');
+
+            navigator.clipboard.writeText(codeText).then(() => {
+                copyBtn.classList.add('copied');
+                icon.className = 'bi bi-check-lg';
+                toast('کد در کلیپ‌بورد کپی شد', 'success');
+                setTimeout(() => {
+                    copyBtn.classList.remove('copied');
+                    icon.className = 'bi bi-clipboard';
+                }, 2000);
+            }).catch(() => {
+                toast('خطا در کپی کردن کد', 'error');
+            });
+        }
+
+        // ====== Clear Errors ======
+        function clearErrors() {
+            document.querySelectorAll('.error-text').forEach(el => el.classList.remove('show'));
+            document.querySelectorAll('.input-field.error').forEach(el => el.classList.remove('error'));
+        }
+        function showError(fieldId, message) {
+            const field = document.getElementById(fieldId);
+            const errorEl = document.getElementById(fieldId + 'Error');
+            if (field) field.classList.add('error');
+            if (errorEl) { errorEl.textContent = message; errorEl.classList.add('show'); }
+        }
+
+        // ====== Form Submit ======
+        document.getElementById('settingsForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            clearErrors();
+
+            // بررسی تغییرات
+            if (!hasChanges()) {
+                toast('هیچ تغییری برای ذخیره وجود ندارد', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('submitBtn');
+            const originalHTML = btn.innerHTML;
+            const clubCode = document.getElementById('clubCodeHidden').value.trim();
+
+            if (!clubCode) {
+                showError('clubCode', 'لطفاً ابتدا کد باشگاه را بسازید');
+                toast('لطفاً کد باشگاه را بسازید', 'error');
+                return;
+            }
+            if (!/^[a-zA-Z0-9\-_ا-ی]{3,30}$/.test(clubCode)) {
+                showError('clubCode', 'کد باشگاه نامعتبر است');
+                toast('کد باشگاه فقط باید شامل حروف انگلیسی، اعداد و خط تیره باشد', 'error');
+                return;
+            }
+
+            const email = document.getElementById('clubEmail').value.trim();
+            if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                showError('clubEmail', 'ایمیل نامعتبر است');
+                toast('لطفاً ایمیل معتبر وارد کنید', 'error');
+                return;
+            }
+
+            const phone = document.getElementById('clubPhone').value.trim();
+            if (phone && !/^09\d{9}$/.test(phone)) {
+                showError('clubPhone', 'شماره تماس نامعتبر است (مثال: 09123456789)');
+                toast('لطفاً شماره تماس معتبر وارد کنید', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<span style="width:20px;height:20px;border:2px solid rgba(255,255,255,0.2);border-top-color:#fff;border-radius:50%;animation:spin 0.6s linear infinite;display:inline-block;"></span><span>در حال ذخیره...</span>';
+
+            try {
+                const formData = new FormData(this);
+                const data = Object.fromEntries(formData);
+                const res = await fetch('/settings?_method=PUT', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+
+                if (result.success) {
+                    toast(result.message || 'تنظیمات با موفقیت ذخیره شد', 'success');
+                    // به‌روزرسانی مقادیر اولیه بعد از ذخیره موفق
+                    originalFormData = getFormData();
+                    if (result.data?.clubName) document.getElementById('clubName').value = result.data.clubName;
+                    if (result.data?.clubCode) {
+                        document.getElementById('clubCodeHidden').value = result.data.clubCode;
+                        document.getElementById('codeText').textContent = result.data.clubCode;
+                    }
+                    // بازتنظیم مقادیر اولیه با داده‌های جدید
+                    originalFormData = getFormData();
+                } else {
+                    if (result.errors && Array.isArray(result.errors)) {
+                        result.errors.forEach(err => {
+                            if (err.includes('نام باشگاه')) showError('clubName', err);
+                            else if (err.includes('شماره تماس')) showError('clubPhone', err);
+                            else if (err.includes('ایمیل')) showError('clubEmail', err);
+                            else if (err.includes('آدرس')) showError('clubAddress', err);
+                            else if (err.includes('کد باشگاه')) showError('clubCode', err);
+                            else toast(err, 'error');
+                        });
+                    }
+                    toast(result.message || 'خطا', 'error');
+                }
+            } catch (err) {
+                toast('خطا در ارتباط با سرور', 'error');
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = originalHTML;
+        });
+    </script>
+</body>
+</html>
