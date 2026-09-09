@@ -5,14 +5,14 @@ const rateLimit = require("express-rate-limit");
 const configureSecurity = (app) => {
   app.use(
     helmet({
-      hsts:
-        process.env.NODE_ENV === "production"
-          ? {
-              maxAge: 2592000,
-              includeSubDomains: true,
-              preload: true,
-            }
-          : false,
+      hsts: false,
+      // process.env.NODE_ENV === "production"
+      //   ? {
+      //       maxAge: 2592000,
+      //       includeSubDomains: true,
+      //       preload: true,
+      //     }
+      //   : false,
 
       contentSecurityPolicy: {
         directives: {
