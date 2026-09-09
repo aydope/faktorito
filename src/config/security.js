@@ -15,6 +15,7 @@ const configureSecurity = (app) => {
           : false,
 
       contentSecurityPolicy: {
+        useDefaults: true,
         directives: {
           defaultSrc: ["'self'"],
           scriptSrc: [
@@ -30,6 +31,8 @@ const configureSecurity = (app) => {
           imgSrc: ["'self'", "data:", "https:"],
           fontSrc: ["'self'", "https://cdn.jsdelivr.net"],
           connectSrc: ["'self'"],
+          scriptSrcAttr: ["'unsafe-inline'"],
+          styleSrcAttr: ["'unsafe-inline'"],
         },
       },
       crossOriginEmbedderPolicy: false,
