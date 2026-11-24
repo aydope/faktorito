@@ -18,26 +18,62 @@
                     },
                     colors: {
                         ink: {
-                            950: '#050508', 900: '#0c0c14', 800: '#14141f', 700: '#1c1c2a',
-                            600: '#28283a', 500: '#36364c', 400: '#4a4a63',
+                            950: '#050508',
+                            900: '#0c0c14',
+                            800: '#14141f',
+                            700: '#1c1c2a',
+                            600: '#28283a',
+                            500: '#36364c',
+                            400: '#4a4a63',
                         },
                         accent: {
-                            400: '#a78bfa', 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9', 800: '#5b21b6', 900: '#4c1d95',
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            800: '#5b21b6',
+                            900: '#4c1d95',
                         },
-                        gold: { 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309' },
-                        success: { 300: '#6ee7b7', 400: '#34d399', 500: '#10b981', 600: '#059669' },
+                        gold: {
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            700: '#b45309',
+                        },
+                        success: {
+                            300: '#6ee7b7',
+                            400: '#34d399',
+                            500: '#10b981',
+                            600: '#059669',
+                        },
                     },
                     boxShadow: {
                         'glow': '0 0 32px rgba(124, 58, 237, 0.35)',
                         'glow-lg': '0 8px 40px rgba(124, 58, 237, 0.45)',
                         'card': '0 10px 40px -10px rgba(0, 0, 0, 0.4)',
                     },
-                    borderRadius: { 'xl': '12px', '2xl': '16px', '3xl': '24px' },
+                    borderRadius: {
+                        'xl': '12px',
+                        '2xl': '16px',
+                        '3xl': '24px',
+                    },
                     keyframes: {
-                        shimmer: { '0%': { backgroundPosition: '200% 0' }, '100%': { backgroundPosition: '-200% 0' } },
-                        toastIn: { '0%': { opacity: '0', transform: 'translateX(-50%) translateY(8px)' }, '100%': { opacity: '1', transform: 'translateX(-50%) translateY(0)' } },
-                        spin: { '0%': { transform: 'rotate(0deg)' }, '100%': { transform: 'rotate(360deg)' } },
-                        slideIn: { '0%': { transform: 'translateX(110%)' }, '100%': { transform: 'translateX(0)' } },
+                        shimmer: {
+                            '0%': { backgroundPosition: '200% 0' },
+                            '100%': { backgroundPosition: '-200% 0' },
+                        },
+                        toastIn: {
+                            '0%': { opacity: '0', transform: 'translateX(-50%) translateY(8px)' },
+                            '100%': { opacity: '1', transform: 'translateX(-50%) translateY(0)' },
+                        },
+                        spin: {
+                            '0%': { transform: 'rotate(0deg)' },
+                            '100%': { transform: 'rotate(360deg)' },
+                        },
+                        slideIn: {
+                            '0%': { transform: 'translateX(110%)' },
+                            '100%': { transform: 'translateX(0)' },
+                        },
                     },
                     animation: {
                         shimmer: 'shimmer 1.8s infinite',
@@ -57,6 +93,7 @@
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
             background: #050508;
             color: #d1d5db;
@@ -67,10 +104,24 @@
             scroll-behavior: smooth;
             min-height: 100vh;
         }
-        ::-webkit-scrollbar { width: 4px; height: 4px; }
-        ::-webkit-scrollbar-track { background: #050508; }
-        ::-webkit-scrollbar-thumb { background: #1c1c2a; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #28283a; }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #050508;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #1c1c2a;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #28283a;
+        }
 
         .grid-bg {
             background-image:
@@ -111,19 +162,29 @@
             box-shadow: 0 8px 30px -8px rgba(124, 58, 237, 0.4);
             border: 1px solid rgba(139, 92, 246, 0.3);
         }
+
         .btn-primary:hover {
             background: #8b5cf6;
             box-shadow: 0 12px 40px -8px rgba(139, 92, 246, 0.5);
             transform: translateY(-2px);
         }
-        .btn-primary:active { transform: scale(0.97); }
-        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        .btn-primary:active {
+            transform: scale(0.97);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
 
         .btn-submit {
             background: #059669;
             box-shadow: 0 8px 30px -8px rgba(5, 150, 105, 0.4);
             border: 1px solid rgba(16, 185, 129, 0.3);
         }
+
         .btn-submit:hover {
             background: #10b981;
             box-shadow: 0 12px 40px -8px rgba(16, 185, 129, 0.5);
@@ -145,6 +206,7 @@
             white-space: nowrap;
             flex-shrink: 0;
         }
+
         .btn-generate:hover {
             background: rgba(139, 92, 246, 0.15);
             border-color: rgba(139, 92, 246, 0.4);
@@ -165,6 +227,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
+
         .btn-add-option:hover {
             background: rgba(16, 185, 129, 0.15);
             border-color: rgba(16, 185, 129, 0.4);
@@ -172,103 +235,306 @@
         }
 
         .nav-link {
-            color: #9ca3af; font-size: 14px; font-weight: 500;
-            padding: 8px 16px; border-radius: 10px;
-            transition: all 0.25s ease; text-decoration: none;
-            display: flex; align-items: center; gap: 8px;
-            border: 1px solid transparent; background: transparent;
+            color: #9ca3af;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 10px;
+            transition: all 0.25s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid transparent;
+            background: transparent;
         }
-        .nav-link:hover { color: #fff; background: rgba(255,255,255,0.04); }
-        .nav-link.active { color: #c4b5fd; background: rgba(139,92,246,0.08); border-color: rgba(139,92,246,0.2); }
-        .nav-link i { font-size: 16px; }
+
+        .nav-link:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .nav-link.active {
+            color: #c4b5fd;
+            background: rgba(139, 92, 246, 0.08);
+            border-color: rgba(139, 92, 246, 0.2);
+        }
+
+        .nav-link i {
+            font-size: 16px;
+        }
 
         .dropdown-trigger {
-            display: flex; align-items: center; gap: 10px; padding: 4px 12px 4px 6px;
-            background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 50px; cursor: pointer; transition: all 0.3s ease; color: #d1d5db;
-            font-weight: 500; font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 4px 12px 4px 6px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #d1d5db;
+            font-weight: 500;
+            font-size: 14px;
         }
-        .dropdown-trigger:hover { background: rgba(255, 255, 255, 0.05); border-color: rgba(139, 92, 246, 0.4); }
+
+        .dropdown-trigger:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(139, 92, 246, 0.4);
+        }
+
         .avatar {
-            width: 34px; height: 34px; border-radius: 50%;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
             background: linear-gradient(135deg, #7c3aed, #a78bfa);
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 800; font-size: 14px; color: #fff; flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+            color: #fff;
+            flex-shrink: 0;
         }
+
         .dropdown-menu {
-            position: absolute; top: calc(100% + 10px); left: 0; min-width: 260px;
-            background: #14141f; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px;
-            padding: 10px; box-shadow: 0 25px 50px -15px rgba(0, 0, 0, 0.6);
-            opacity: 0; visibility: hidden; transform: translateY(-8px) scale(0.97);
-            transition: all 0.25s cubic-bezier(0.23, 1, 0.32, 1); z-index: 100;
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 0;
+            min-width: 260px;
+            background: #14141f;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 10px;
+            box-shadow: 0 25px 50px -15px rgba(0, 0, 0, 0.6);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-8px) scale(0.97);
+            transition: all 0.25s cubic-bezier(0.23, 1, 0.32, 1);
+            z-index: 100;
         }
-        .dropdown-menu.active { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
+
+        .dropdown-menu.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
         .dropdown-item {
-            display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 10px;
-            color: #9ca3af; font-size: 14px; font-weight: 500; transition: all 0.2s ease;
-            cursor: pointer; text-decoration: none; background: none; border: none; width: 100%; text-align: right;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            color: #9ca3af;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            text-decoration: none;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: right;
         }
-        .dropdown-item:hover { background: rgba(139, 92, 246, 0.08); color: #c4b5fd; }
-        .dropdown-item i { font-size: 17px; width: 20px; text-align: center; }
-        .dropdown-item.danger:hover { background: rgba(220, 38, 38, 0.12); color: #f87171; }
-        .dropdown-divider { height: 1px; background: rgba(255, 255, 255, 0.05); margin: 6px 8px; }
+
+        .dropdown-item:hover {
+            background: rgba(139, 92, 246, 0.08);
+            color: #c4b5fd;
+        }
+
+        .dropdown-item i {
+            font-size: 17px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .dropdown-item.danger:hover {
+            background: rgba(220, 38, 38, 0.12);
+            color: #f87171;
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.05);
+            margin: 6px 8px;
+        }
 
         .mega-menu {
-            position: fixed; top: 80px; right: 50%; transform: translateX(50%) translateY(-8px);
-            width: min(90%, 500px); background: #14141f; border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 20px; padding: 16px; box-shadow: 0 30px 60px rgba(0,0,0,0.6);
-            opacity: 0; visibility: hidden; transition: all 0.3s cubic-bezier(0.23,1,0.32,1); z-index: 200;
+            position: fixed;
+            top: 80px;
+            right: 50%;
+            transform: translateX(50%) translateY(-8px);
+            width: min(90%, 500px);
+            background: #14141f;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 16px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            z-index: 200;
         }
-        .mega-menu.active { opacity: 1; visibility: visible; transform: translateX(50%) translateY(0); }
-        .mega-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+
+        .mega-menu.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(50%) translateY(0);
+        }
+
+        .mega-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px;
+        }
+
         .mega-item {
-            display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 12px;
-            transition: all 0.2s ease; text-decoration: none; color: #9ca3af;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: #9ca3af;
         }
-        .mega-item:hover { background: rgba(139,92,246,0.06); color: #fff; }
-        .mega-item i { font-size: 20px; width: 24px; text-align: center; color: #a78bfa; }
-        .mega-item .mega-title { font-size: 14px; font-weight: 700; color: #e5e7eb; }
-        .mega-item .mega-desc { font-size: 11px; color: #6b7280; }
+
+        .mega-item:hover {
+            background: rgba(139, 92, 246, 0.06);
+            color: #fff;
+        }
+
+        .mega-item i {
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
+            color: #a78bfa;
+        }
+
+        .mega-item .mega-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #e5e7eb;
+        }
+
+        .mega-item .mega-desc {
+            font-size: 11px;
+            color: #6b7280;
+        }
 
         .sidebar {
-            position: fixed; top: 0; right: 0; bottom: 0; width: 85%; max-width: 320px;
-            background: #0c0c14; border-left: 1px solid rgba(255,255,255,0.06); z-index: 300;
-            padding: 20px; overflow-y: auto; transform: translateX(110%);
-            transition: transform 0.4s cubic-bezier(0.23,1,0.32,1);
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 85%;
+            max-width: 320px;
+            background: #0c0c14;
+            border-left: 1px solid rgba(255, 255, 255, 0.06);
+            z-index: 300;
+            padding: 20px;
+            overflow-y: auto;
+            transform: translateX(110%);
+            transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
         }
-        .sidebar.open { transform: translateX(0); }
+
+        .sidebar.open {
+            transform: translateX(0);
+        }
+
         .sidebar-overlay {
-            position: fixed; inset: 0; background: rgba(5,5,8,0.7); backdrop-filter: blur(4px);
-            z-index: 290; opacity: 0; visibility: hidden; transition: all 0.3s ease;
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 5, 8, 0.7);
+            backdrop-filter: blur(4px);
+            z-index: 290;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
         }
-        .sidebar-overlay.active { opacity: 1; visibility: visible; }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
 
         .sidebar-link {
-            display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 12px;
-            color: #9ca3af; font-size: 14px; font-weight: 500; transition: all 0.2s ease;
-            text-decoration: none; margin-bottom: 2px; border: 1px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 12px;
+            color: #9ca3af;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            margin-bottom: 2px;
+            border: 1px solid transparent;
         }
-        .sidebar-link i { font-size: 18px; width: 22px; text-align: center; }
-        .sidebar-link:hover { background: rgba(255,255,255,0.04); color: #fff; }
-        .sidebar-link.active { background: rgba(139,92,246,0.08); color: #c4b5fd; border-color: rgba(139,92,246,0.2); }
-        .sidebar-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 12px 0; }
+
+        .sidebar-link i {
+            font-size: 18px;
+            width: 22px;
+            text-align: center;
+        }
+
+        .sidebar-link:hover {
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+        }
+
+        .sidebar-link.active {
+            background: rgba(139, 92, 246, 0.08);
+            color: #c4b5fd;
+            border-color: rgba(139, 92, 246, 0.2);
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.06);
+            margin: 12px 0;
+        }
 
         .input-field {
-            width: 100%; padding: 12px 14px;
-            background: #0c0c14; border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 12px; color: #fff; font-size: 14px;
-            transition: all 0.3s ease; outline: none;
+            width: 100%;
+            padding: 12px 14px;
+            background: #0c0c14;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            outline: none;
         }
-        .input-field:focus { border-color: rgba(139,92,246,0.4); box-shadow: 0 0 0 3px rgba(139,92,246,0.05); }
-        .input-field::placeholder { color: #4a4a63; }
-        .input-field.error { border-color: rgba(239,68,68,0.4); box-shadow: 0 0 0 3px rgba(239,68,68,0.05); }
-        textarea.input-field { resize: vertical; min-height: 80px; }
+
+        .input-field:focus {
+            border-color: rgba(139, 92, 246, 0.4);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.05);
+        }
+
+        .input-field::placeholder {
+            color: #4a4a63;
+        }
+
+        .input-field.error {
+            border-color: rgba(239, 68, 68, 0.4);
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.05);
+        }
+
+        textarea.input-field {
+            resize: vertical;
+            min-height: 80px;
+        }
 
         /* Input alignment styles */
         .input-left {
             text-align: left !important;
             direction: ltr !important;
         }
+
         .input-center {
             text-align: center !important;
             direction: ltr !important;
@@ -291,6 +557,7 @@
             padding: 3px;
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
+
         .pill-btn {
             padding: 7px 18px;
             border-radius: 11px;
@@ -303,6 +570,7 @@
             transition: all 0.2s ease;
             font-family: 'Sahel', sans-serif !important;
         }
+
         .pill-btn.active {
             background: #7c3aed;
             color: #fff;
@@ -321,16 +589,19 @@
             font-weight: 600;
             color: #d1d5db;
         }
+
         .chip.option-chip {
             background: rgba(16, 185, 129, 0.06);
             border-color: rgba(16, 185, 129, 0.15);
             color: #6ee7b7;
         }
+
         .chip.discount-chip {
             background: rgba(239, 68, 68, 0.06);
             border-color: rgba(239, 68, 68, 0.15);
             color: #fca5a5;
         }
+
         .chip .chip-remove {
             cursor: pointer;
             opacity: 0.5;
@@ -338,103 +609,255 @@
             transition: all 0.2s ease;
             line-height: 1;
         }
-        .chip .chip-remove:hover { opacity: 1; color: #ef4444; }
 
-        .custom-select { position: relative; width: 100%; }
-        .custom-select-trigger {
-            width: 100%; padding: 13px 16px;
-            background: #0c0c14; border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 14px; color: #fff; cursor: pointer;
-            display: flex; align-items: center; justify-content: space-between;
-            transition: all 0.3s ease; font-size: 14px; font-weight: 500;
+        .chip .chip-remove:hover {
+            opacity: 1;
+            color: #ef4444;
         }
-        .custom-select-trigger:hover { border-color: rgba(139, 92, 246, 0.3); }
+
+        .custom-select {
+            position: relative;
+            width: 100%;
+        }
+
+        .custom-select-trigger {
+            width: 100%;
+            padding: 13px 16px;
+            background: #0c0c14;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .custom-select-trigger:hover {
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+
         .custom-select-trigger.active {
             border-color: rgba(139, 92, 246, 0.5);
             box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.05);
         }
-        .custom-select-trigger .placeholder { color: #4a4a63; }
-        .custom-select-trigger .selected-text { display: flex; align-items: center; gap: 10px; }
-        .custom-select-trigger .selected-text .plan-name { font-weight: 700; color: #e2e8f0; }
-        .custom-select-trigger .selected-text .plan-price { font-weight: 700; color: #a78bfa; font-size: 13px; }
-        .custom-select-trigger.error { border-color: rgba(239, 68, 68, 0.4); box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.05); }
+
+        .custom-select-trigger .placeholder {
+            color: #4a4a63;
+        }
+
+        .custom-select-trigger .selected-text {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .custom-select-trigger .selected-text .plan-name {
+            font-weight: 700;
+            color: #e2e8f0;
+        }
+
+        .custom-select-trigger .selected-text .plan-price {
+            font-weight: 700;
+            color: #a78bfa;
+            font-size: 13px;
+        }
+
+        .custom-select-trigger.error {
+            border-color: rgba(239, 68, 68, 0.4);
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.05);
+        }
 
         .custom-options {
-            position: absolute; top: calc(100% + 8px); left: 0; right: 0;
-            background: #14141f; border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 14px; overflow: hidden; z-index: 50;
-            opacity: 0; visibility: hidden; transform: translateY(-8px) scale(0.98);
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            background: #14141f;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            overflow: hidden;
+            z-index: 50;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-8px) scale(0.98);
             transition: all 0.25s cubic-bezier(0.23, 1, 0.32, 1);
-            max-height: 300px; overflow-y: auto; padding: 6px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 6px;
             box-shadow: 0 25px 50px -15px rgba(0, 0, 0, 0.6);
         }
-        .custom-options::-webkit-scrollbar { width: 4px; }
-        .custom-options::-webkit-scrollbar-thumb { background: #28283a; border-radius: 2px; }
+
+        .custom-options::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .custom-options::-webkit-scrollbar-thumb {
+            background: #28283a;
+            border-radius: 2px;
+        }
+
         .custom-select.active .custom-options {
-            opacity: 1; visibility: visible; transform: translateY(0) scale(1);
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
         }
 
         .custom-option {
-            padding: 14px 16px; cursor: pointer; transition: all 0.2s ease;
-            border-radius: 10px; margin-bottom: 2px;
-            display: flex; align-items: center; gap: 14px;
+            padding: 14px 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-radius: 10px;
+            margin-bottom: 2px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
             border: 1px solid transparent;
         }
-        .custom-option:last-child { margin-bottom: 0; }
-        .custom-option:hover { background: rgba(139, 92, 246, 0.05); border-color: rgba(139, 92, 246, 0.15); }
-        .custom-option.selected { background: rgba(139, 92, 246, 0.1); border-color: rgba(139, 92, 246, 0.3); }
-        .custom-option .option-dot {
-            width: 10px; height: 10px; border-radius: 50%;
-            flex-shrink: 0; background: #36364c; transition: all 0.2s ease;
+
+        .custom-option:last-child {
+            margin-bottom: 0;
         }
+
+        .custom-option:hover {
+            background: rgba(139, 92, 246, 0.05);
+            border-color: rgba(139, 92, 246, 0.15);
+        }
+
+        .custom-option.selected {
+            background: rgba(139, 92, 246, 0.1);
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+
+        .custom-option .option-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            background: #36364c;
+            transition: all 0.2s ease;
+        }
+
         .custom-option.selected .option-dot {
             background: #a78bfa;
             box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.2);
         }
-        .custom-option .option-info { flex: 1; min-width: 0; }
-        .custom-option .option-info .option-name { font-weight: 700; font-size: 14px; color: #e2e8f0; margin-bottom: 2px; }
-        .custom-option .option-info .option-desc { font-size: 11px; color: #4a4a63; }
-        .custom-option .option-price {
-            font-weight: 800; font-size: 14px; color: #a78bfa;
-            background: rgba(139, 92, 246, 0.1); padding: 6px 12px;
-            border-radius: 8px; white-space: nowrap; flex-shrink: 0;
-            display: flex; align-items: baseline; gap: 3px;
+
+        .custom-option .option-info {
+            flex: 1;
+            min-width: 0;
         }
-        .custom-option .option-price .toman { font-size: 10px; font-weight: 500; opacity: 0.7; }
+
+        .custom-option .option-info .option-name {
+            font-weight: 700;
+            font-size: 14px;
+            color: #e2e8f0;
+            margin-bottom: 2px;
+        }
+
+        .custom-option .option-info .option-desc {
+            font-size: 11px;
+            color: #4a4a63;
+        }
+
+        .custom-option .option-price {
+            font-weight: 800;
+            font-size: 14px;
+            color: #a78bfa;
+            background: rgba(139, 92, 246, 0.1);
+            padding: 6px 12px;
+            border-radius: 8px;
+            white-space: nowrap;
+            flex-shrink: 0;
+            display: flex;
+            align-items: baseline;
+            gap: 3px;
+        }
+
+        .custom-option .option-price .toman {
+            font-size: 10px;
+            font-weight: 500;
+            opacity: 0.7;
+        }
 
         .modal-overlay {
-            position: fixed; inset: 0; background: rgba(5, 5, 8, 0.85);
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 400; opacity: 0; visibility: hidden; transition: all 0.3s ease;
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 5, 8, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 400;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
         }
-        .modal-overlay.active { opacity: 1; visibility: visible; }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
         .modal-dialog {
-            background: #14141f; border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 20px; padding: 28px; max-width: 420px; width: 90%;
+            background: #14141f;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 28px;
+            max-width: 420px;
+            width: 90%;
             box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
-            transform: scale(0.92) translateY(16px); transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform: scale(0.92) translateY(16px);
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        .modal-overlay.active .modal-dialog { transform: scale(1) translateY(0); }
+
+        .modal-overlay.active .modal-dialog {
+            transform: scale(1) translateY(0);
+        }
 
         .toast {
-            position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-            background: rgba(20,20,31,0.95); backdrop-filter: blur(12px);
-            color: #fff; padding: 12px 24px; border-radius: 50px;
-            font-size: 13px; font-weight: 600; z-index: 500;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-            border: 1px solid rgba(139,92,246,0.3);
-            display: none; animation: toastIn 0.3s ease;
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(20, 20, 31, 0.95);
+            backdrop-filter: blur(12px);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 600;
+            z-index: 500;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            display: none;
+            animation: toastIn 0.3s ease;
         }
 
         .skeleton {
             background: linear-gradient(90deg, rgba(124, 58, 237, 0.1) 0%, rgba(139, 92, 246, 0.2) 50%, rgba(124, 58, 237, 0.1) 100%);
-            background-size: 200% 100%; animation: shimmer 1.8s infinite; border-radius: 6px;
+            background-size: 200% 100%;
+            animation: shimmer 1.8s infinite;
+            border-radius: 6px;
         }
 
-        .counter { font-size: 11px; color: #6b7280; transition: color 0.3s ease; }
-        .counter.warning { color: #fcd34d; }
-        .counter.danger { color: #fca5a5; }
+        .counter {
+            font-size: 11px;
+            color: #6b7280;
+            transition: color 0.3s ease;
+        }
+
+        .counter.warning {
+            color: #fcd34d;
+        }
+
+        .counter.danger {
+            color: #fca5a5;
+        }
 
         /* Member ID - New Design */
         .member-id-input-group {
@@ -443,11 +866,13 @@
             align-items: center;
             max-width: 400px;
         }
+
         .member-id-input-box {
             position: relative;
             flex: 1;
             min-width: 0;
         }
+
         .member-id-input-box .input-field {
             padding-left: 48px;
             font-weight: 600;
@@ -456,11 +881,13 @@
             background: #0f0f1a;
             border-color: rgba(139, 92, 246, 0.15);
         }
+
         .member-id-input-box .input-field:focus {
             border-color: rgba(139, 92, 246, 0.5);
             box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
             background: #0c0c14;
         }
+
         .member-id-prefix {
             position: absolute;
             left: 16px;
@@ -472,9 +899,11 @@
             pointer-events: none;
             letter-spacing: 0.5px;
         }
+
         .member-id-input-box .input-field:focus + .member-id-prefix {
             color: #c4b5fd;
         }
+
         .btn-generate-id {
             display: inline-flex;
             align-items: center;
@@ -494,6 +923,7 @@
             overflow: hidden;
             height: 48px;
         }
+
         .btn-generate-id::before {
             content: '';
             position: absolute;
@@ -502,6 +932,7 @@
             opacity: 0;
             transition: opacity 0.3s ease;
         }
+
         .btn-generate-id:hover {
             background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(124, 58, 237, 0.15));
             border-color: rgba(167, 139, 250, 0.5);
@@ -509,32 +940,39 @@
             box-shadow: 0 8px 25px -5px rgba(124, 58, 237, 0.35);
             transform: translateY(-2px);
         }
+
         .btn-generate-id:hover::before {
             opacity: 1;
         }
+
         .btn-generate-id:active {
             transform: translateY(0);
             box-shadow: 0 4px 12px -2px rgba(124, 58, 237, 0.25);
         }
+
         .btn-generate-id i {
             font-size: 18px;
             transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
             position: relative;
             z-index: 1;
         }
+
         .btn-generate-id:hover i {
             transform: rotate(360deg) scale(1.1);
         }
+
         .btn-generate-id span {
             position: relative;
             z-index: 1;
         }
+
         .btn-generate-id:disabled {
             opacity: 0.5;
             cursor: not-allowed;
             transform: none !important;
             box-shadow: none !important;
         }
+
         .btn-generate-id .countdown {
             position: relative;
             z-index: 1;
@@ -554,6 +992,7 @@
             padding: 20px;
             transition: all 0.3s ease;
         }
+
         .dynamic-section:hover {
             border-color: rgba(255, 255, 255, 0.08);
         }
@@ -564,15 +1003,18 @@
             align-items: flex-end;
             flex-wrap: wrap;
         }
+
         .input-group {
             flex: 1;
             min-width: 150px;
             position: relative;
         }
+
         .input-group.small {
             flex: 0 0 140px;
             min-width: 120px;
         }
+
         .input-label {
             display: block;
             font-size: 11px;
@@ -585,11 +1027,13 @@
         .input-with-suffix {
             position: relative;
         }
+
         .input-with-suffix .input-field {
             padding-left: 50px;
             text-align: left;
             direction: ltr;
         }
+
         .input-suffix {
             position: absolute;
             left: 14px;
@@ -601,6 +1045,7 @@
             pointer-events: none;
             transition: color 0.3s ease;
         }
+
         .input-with-suffix .input-field:focus + .input-suffix {
             color: #a78bfa;
         }
@@ -619,11 +1064,13 @@
             flex-shrink: 0;
             border: 1px solid;
         }
+
         .add-btn-option {
             background: rgba(16, 185, 129, 0.08);
             border-color: rgba(16, 185, 129, 0.2);
             color: #6ee7b7;
         }
+
         .add-btn-option:hover {
             background: rgba(16, 185, 129, 0.15);
             border-color: rgba(16, 185, 129, 0.35);
@@ -631,11 +1078,13 @@
             box-shadow: 0 8px 25px -5px rgba(16, 185, 129, 0.3);
             transform: translateY(-1px);
         }
+
         .add-btn-discount {
             background: rgba(239, 68, 68, 0.08);
             border-color: rgba(239, 68, 68, 0.2);
             color: #fca5a5;
         }
+
         .add-btn-discount:hover {
             background: rgba(239, 68, 68, 0.15);
             border-color: rgba(239, 68, 68, 0.35);
@@ -652,6 +1101,7 @@
             min-height: 36px;
             align-items: center;
         }
+
         .empty-state {
             font-size: 11px;
             color: #4a4a63;
@@ -660,6 +1110,7 @@
             align-items: center;
             gap: 6px;
         }
+
         .empty-state i {
             font-size: 14px;
             opacity: 0.5;
@@ -679,21 +1130,25 @@
             transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
             animation: slideIn 0.3s cubic-bezier(0.23, 1, 0.32, 1);
         }
+
         .chip:hover {
             border-color: rgba(255, 255, 255, 0.15);
             transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
+
         .chip.option-chip {
             background: rgba(16, 185, 129, 0.08);
             border-color: rgba(16, 185, 129, 0.2);
             color: #6ee7b7;
         }
+
         .chip.discount-chip {
             background: rgba(239, 68, 68, 0.08);
             border-color: rgba(239, 68, 68, 0.2);
             color: #fca5a5;
         }
+
         .chip .chip-remove {
             cursor: pointer;
             opacity: 0.4;
@@ -707,6 +1162,7 @@
             height: 20px;
             border-radius: 50%;
         }
+
         .chip .chip-remove:hover {
             opacity: 1;
             background: rgba(239, 68, 68, 0.2);
@@ -723,134 +1179,198 @@
             transition: height 0.2s ease;
         }
 
-        @media (min-width: 769px) {
-            .mobile-only { display: none !important; }
+        /* ===== Custom Select (period) ===== */
+        .cs-wrap {
+            position: relative;
         }
+
+        .cs-trigger {
+            width: 100%;
+            padding: 12px 14px;
+            background: #0c0c14;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 14px;
+            text-align: right;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            outline: none;
+            font-family: 'Sahel', sans-serif !important;
+        }
+
+        .cs-trigger:hover {
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+
+        .cs-trigger.open {
+            border-color: rgba(139, 92, 246, 0.5);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.08);
+        }
+
+        .cs-trigger.error {
+            border-color: rgba(239, 68, 68, 0.4);
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.05);
+        }
+
+        .cs-trigger i {
+            color: #6b7280;
+            font-size: 12px;
+            transition: transform 0.25s ease;
+        }
+
+        .cs-trigger.open i {
+            transform: rotate(180deg);
+            color: #a78bfa;
+        }
+
+        .cs-menu {
+            position: absolute;
+            top: calc(100% + 6px);
+            right: 0;
+            left: 0;
+            background: #14141f;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 6px;
+            z-index: 50;
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-6px);
+            transition: all 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+            max-height: 260px;
+            overflow-y: auto;
+        }
+
+        .cs-menu.open {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .cs-option {
+            padding: 9px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #9ca3af;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .cs-option:hover {
+            background: rgba(139, 92, 246, 0.08);
+            color: #c4b5fd;
+        }
+
+        .cs-option.selected {
+            background: rgba(139, 92, 246, 0.12);
+            color: #c4b5fd;
+            font-weight: 600;
+        }
+
+        .cs-option.selected::after {
+            content: '\F26E';
+            font-family: 'bootstrap-icons';
+            font-size: 12px;
+            color: #a78bfa;
+        }
+
+        /* ===== Custom Checkbox ===== */
+        .custom-checkbox {
+            position: relative;
+            display: inline-flex;
+            align-items: flex-start;
+            gap: 10px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .custom-checkbox input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .custom-checkbox .check-box {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+            margin-top: 1px;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: 6px;
+            background: #0f0f1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.25s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+        }
+
+        .custom-checkbox .check-box i {
+            font-size: 12px;
+            color: #fff;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .custom-checkbox:hover .check-box {
+            border-color: rgba(139, 92, 246, 0.5);
+            background: rgba(139, 92, 246, 0.05);
+        }
+
+        .custom-checkbox input:focus-visible ~ .check-box {
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.25);
+            border-color: rgba(139, 92, 246, 0.6);
+        }
+
+        .custom-checkbox input:checked ~ .check-box {
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
+            border-color: #8b5cf6;
+            box-shadow: 0 4px 12px -2px rgba(124, 58, 237, 0.5);
+        }
+
+        .custom-checkbox input:checked ~ .check-box i {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .custom-checkbox input:checked ~ .check-label {
+            color: #c4b5fd;
+        }
+
+        .custom-checkbox .check-label {
+            font-size: 14px;
+            color: #d1d5db;
+            line-height: 1.7;
+            transition: color 0.25s ease;
+        }
+
+        @media (min-width: 769px) {
+            .mobile-only {
+                display: none !important;
+            }
+        }
+
         @media (max-width: 768px) {
-            .desktop-only { display: none !important; }
+            .desktop-only {
+                display: none !important;
+            }
         }
     </style>
 </head>
 <body class="antialiased bg-[#050508] grid-bg">
 
-    <!-- ========== SIDEBAR (Mobile) ========== -->
-    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
-    <div class="sidebar" id="sidebar">
-        <div class="flex items-center justify-between mb-6 pb-4 border-b border-white/5">
-            <a href="/dashboard" class="flex items-center gap-2.5 no-underline">
-                <div class="w-9 h-9 bg-gradient-to-br from-accent-700 to-accent-500 rounded-xl flex items-center justify-center text-white font-extrabold text-lg">ف</div>
-                <span class="font-extrabold text-xl text-white">فاکتوریتو</span>
-            </a>
-            <button onclick="closeSidebar()" class="btn-logout"><i class="bi bi-x-lg"></i></button>
-        </div>
-
-        <div class="space-y-1">
-            <div class="text-xs font-bold text-gray-500 px-3 mb-2">منوی اصلی</div>
-            <a href="/dashboard" class="sidebar-link"><i class="bi bi-speedometer2"></i> داشبورد</a>
-            <a href="/invoices" class="sidebar-link active"><i class="bi bi-receipt"></i> فاکتورها</a>
-            <a href="/plans" class="sidebar-link"><i class="bi bi-collection"></i> پلن‌ها</a>
-            <a href="/profile" class="sidebar-link"><i class="bi bi-person"></i> پروفایل</a>
-        </div>
-
-        <div class="sidebar-divider"></div>
-        <a href="/settings" class="sidebar-link"><i class="bi bi-gear"></i> تنظیمات</a>
-        <button onclick="openLogoutModal(); closeSidebar();" class="sidebar-link w-full text-red-400 hover:text-red-300 hover:bg-red-500/5"><i class="bi bi-box-arrow-right"></i> خروج از حساب</button>
-    </div>
-
-    <!-- ========== HEADER ========== -->
-    <header class="fixed top-0 right-0 left-0 z-50 px-4 md:px-6 py-4">
-        <div class="max-w-5xl mx-auto glass-header rounded-2xl px-4 md:px-5 py-2.5 flex items-center justify-between">
-            <a href="/dashboard" class="flex items-center gap-2.5 no-underline shrink-0 group">
-                <div class="w-9 h-9 bg-gradient-to-br from-accent-700 to-accent-500 rounded-xl flex items-center justify-center text-white font-extrabold text-lg shadow-glow group-hover:shadow-glow-lg transition-all">ف</div>
-                <span class="font-extrabold text-xl md:text-2xl text-white tracking-tight group-hover:text-accent-400 transition-colors">فاکتوریتو</span>
-            </a>
-
-            <div class="hidden md:flex items-center gap-1 desktop-only">
-                <a href="/dashboard" class="nav-link"><i class="bi bi-speedometer2"></i> داشبورد</a>
-                <button onclick="toggleMegaMenu()" class="nav-link" id="megaMenuBtn">
-                    <i class="bi bi-grid-1x2"></i> بیشتر
-                    <i class="bi bi-chevron-down text-[10px]" id="megaCaret"></i>
-                </button>
-            </div>
-
-            <div class="flex items-center gap-2.5">
-                <div class="relative" id="userDropdown">
-                    <button class="dropdown-trigger" onclick="toggleDropdown(event)" aria-label="منوی کاربری">
-                        <div class="avatar">
-                            <%= (user && user.username) ? user.username.charAt(0).toUpperCase() : 'U' %>
-                        </div>
-                        <span class="hidden sm:block max-w-[90px] truncate text-sm">
-                            <%= (user && user.username) ? user.username : 'کاربر' %>
-                        </span>
-                        <span class="hidden sm:inline-flex items-center justify-center transition-transform duration-300 text-[10px] text-gray-500" id="dropdownCaret">
-                            <i class="bi bi-chevron-down"></i>
-                        </span>
-                    </button>
-
-                    <div class="dropdown-menu" id="dropdownMenu">
-                        <div class="px-4 py-3">
-                            <div class="flex items-center gap-3 mb-3">
-                                <div class="avatar w-11 h-11 text-base">
-                                    <%= (user && user.username) ? user.username.charAt(0).toUpperCase() : 'U' %>
-                                </div>
-                                <div>
-                                    <div class="text-sm font-bold text-white"><%= (user && user.username) ? user.username : 'کاربر' %></div>
-                                    <div class="text-xs text-gray-500"><%= (user && user.email) ? user.email : '' %></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="dropdown-divider"></div>
-                        <a href="/dashboard" class="dropdown-item"><i class="bi bi-speedometer2"></i> داشبورد</a>
-                        <a href="/profile" class="dropdown-item"><i class="bi bi-person"></i> پروفایل</a>
-                        <a href="/invoices" class="dropdown-item"><i class="bi bi-receipt"></i> فاکتورهای من</a>
-                        <a href="/plans" class="dropdown-item"><i class="bi bi-collection"></i> پلن‌ها</a>
-                        <div class="dropdown-divider"></div>
-                        <button onclick="openLogoutModal(); closeDropdown();" class="dropdown-item w-full danger">
-                            <i class="bi bi-box-arrow-right"></i> خروج از حساب
-                        </button>
-                    </div>
-                </div>
-
-                <button onclick="openSidebar()" class="btn-logout mobile-only md:hidden" aria-label="منو"><i class="bi bi-list"></i></button>
-            </div>
-        </div>
-
-        <!-- MEGA MENU -->
-        <div class="max-w-5xl mx-auto relative">
-            <div class="mega-menu" id="megaMenu">
-                <div class="mega-grid">
-                    <a href="/invoices" class="mega-item">
-                        <i class="bi bi-receipt"></i>
-                        <div>
-                            <div class="mega-title">فاکتورها</div>
-                            <div class="mega-desc">مدیریت فاکتورهای صادر شده</div>
-                        </div>
-                    </a>
-                    <a href="/plans" class="mega-item">
-                        <i class="bi bi-collection"></i>
-                        <div>
-                            <div class="mega-title">پلن‌ها</div>
-                            <div class="mega-desc">مدیریت پلن‌های عضویت</div>
-                        </div>
-                    </a>
-                    <a href="/profile" class="mega-item">
-                        <i class="bi bi-person"></i>
-                        <div>
-                            <div class="mega-title">پروفایل</div>
-                            <div class="mega-desc">اطلاعات حساب کاربری</div>
-                        </div>
-                    </a>
-                    <a href="/settings" class="mega-item">
-                        <i class="bi bi-gear"></i>
-                        <div>
-                            <div class="mega-title">تنظیمات</div>
-                            <div class="mega-desc">تنظیمات حساب و برنامه</div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </header>
+<%- include('partials/shell') %>
 
     <!-- ========== MAIN CONTENT ========== -->
     <main class="max-w-4xl mx-auto px-4 pt-28 pb-16 relative z-10">
@@ -955,6 +1475,31 @@
                         <div class="section-icon bg-accent-700/10 text-accent-400"><i class="bi bi-person-badge"></i></div>
                         <h2 class="text-lg font-extrabold text-white">اطلاعات عضو</h2>
                     </div>
+                    <!-- Saved-member picker: assigns the invoice directly to an existing member -->
+                    <div class="mb-5 relative" id="memberPicker">
+                        <label class="block text-xs font-semibold text-gray-400 mb-1.5">انتخاب از اعضای ثبت‌شده</label>
+                        <input type="text" id="memberSearch" class="input-field" autocomplete="off"
+                               placeholder="جستجوی نام، شماره تلفن یا کد عضویت...">
+                        <div id="memberResults" class="hidden absolute z-30 w-full mt-1 rounded-xl border border-white/10 bg-ink-800 shadow-soft overflow-hidden"></div>
+                        <div id="memberChip" class="hidden mt-3 flex items-center justify-between gap-3 rounded-xl border border-accent-700/30 bg-accent-700/10 px-4 py-3">
+                            <div class="text-sm text-white">
+                                <i class="bi bi-person-check text-accent-400"></i>
+                                <span id="memberChipText"></span>
+                            </div>
+                            <button type="button" id="memberClear" class="text-xs text-gray-400 hover:text-white">
+                                <i class="bi bi-x-lg"></i> حذف انتخاب
+                            </button>
+                        </div>
+                        <input type="hidden" name="memberRef" id="memberRef" value="">
+                        <% if (typeof preselectedMember !== 'undefined' && preselectedMember) { %>
+                        <div id="preselectedMember" class="hidden"
+                             data-id="<%= preselectedMember._id %>"
+                             data-name="<%= preselectedMember.name %>"
+                             data-phone="<%= preselectedMember.phone || '' %>"
+                             data-code="<%= preselectedMember.code %>"></div>
+                        <% } %>
+                    </div>
+
                     <div class="grid md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-semibold text-gray-400 mb-1.5">نام و نام خانوادگی</label>
@@ -963,7 +1508,7 @@
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-400 mb-1.5">شماره تماس</label>
-                            <input type="text" name="memberPhone" id="memberPhone" class="input-field input-left" placeholder="۰۹۱۲۳۴۵۶۷۸۹">
+                            <input type="text" name="memberPhone" id="memberPhone" class="input-field input-left" placeholder="09123456789">
                             <div class="input-error" id="memberPhoneError"></div>
                         </div>
                         <div class="md:col-span-2">
@@ -980,6 +1525,11 @@
                             </div>
                             <div class="input-error" id="memberIdError"></div>
                         </div>
+                        <label class="custom-checkbox md:col-span-2" id="saveAsMemberWrap">
+                            <input type="checkbox" id="saveAsMember">
+                            <span class="check-box"><i class="bi bi-check-lg"></i></span>
+                            <span class="check-label">ذخیره این فرد به‌عنوان عضو جدید (با کد عضویت خودکار)</span>
+                        </label>
                     </div>
                 </div>
 
@@ -1003,7 +1553,9 @@
                                 <div class="option-dot"></div>
                                 <div class="option-info">
                                     <div class="option-name"><%= p.name %></div>
-                                    <% if (p.description) { %><div class="option-desc"><%= p.description %></div><% } %>
+                                    <% if (p.description) { %>
+                                    <div class="option-desc"><%= p.description %></div>
+                                    <% } %>
                                 </div>
                                 <div class="option-price"><%= p.price.toLocaleString("fa-IR-u-nu-latn") %> <span class="toman">تومان</span></div>
                             </div>
@@ -1024,6 +1576,27 @@
                     <% } %>
 
                     <input type="hidden" name="planId" id="planId" required>
+
+                    <div style="margin-top:16px">
+                        <label style="display:block;font-size:12px;font-weight:600;color:#9ca3af;margin-bottom:6px">دوره‌ی اشتراک این فاکتور</label>
+                        <div class="cs-wrap" id="periodWrap">
+                            <button type="button" class="cs-trigger" id="periodTrigger" aria-haspopup="listbox" aria-expanded="false">
+                                <span id="periodLabel">ماهانه (تمدید 1 ماه)</span>
+                                <i class="bi bi-chevron-down"></i>
+                            </button>
+                            <div class="cs-menu" id="periodMenu" role="listbox">
+                                <div class="cs-option" role="option" data-value="0">بدون تمدید اشتراک (جلسه‌ای / فروش)</div>
+                                <div class="cs-option selected" role="option" data-value="1">ماهانه (تمدید 1 ماه)</div>
+                                <div class="cs-option" role="option" data-value="2">2 ماهه</div>
+                                <div class="cs-option" role="option" data-value="3">3 ماهه</div>
+                                <div class="cs-option" role="option" data-value="4">4 ماهه</div>
+                                <div class="cs-option" role="option" data-value="6">6 ماهه</div>
+                                <div class="cs-option" role="option" data-value="12">سالانه</div>
+                            </div>
+                            <input type="hidden" id="periodMonths" value="1">
+                        </div>
+                        <p style="font-size:11px;color:#6b7280;margin-top:6px">بعد از ثبت پرداخت، اشتراک عضو به همین اندازه تمدید می‌شود. پلن‌ها خودشان زمان ندارند.</p>
+                    </div>
                 </div>
 
                 <!-- Additional Options -->
@@ -1045,7 +1618,7 @@
                             <div class="input-group small">
                                 <label class="input-label">قیمت</label>
                                 <div class="input-with-suffix">
-                                    <input type="text" id="optionPrice" class="input-field" placeholder="۰" oninput="formatPrice(this)">
+                                    <input type="text" id="optionPrice" class="input-field" placeholder="0" oninput="formatPrice(this)">
                                     <span class="input-suffix">تومان</span>
                                 </div>
                             </div>
@@ -1080,7 +1653,7 @@
                             <div class="input-group small">
                                 <label class="input-label" id="discLabel">مبلغ</label>
                                 <div class="input-with-suffix">
-                                    <input type="text" id="discVal" class="input-field" placeholder="۰" oninput="formatPrice(this)">
+                                    <input type="text" id="discVal" class="input-field" placeholder="0" oninput="formatPrice(this)">
                                     <span class="input-suffix" id="discSuffix">تومان</span>
                                 </div>
                             </div>
@@ -1118,20 +1691,20 @@
                     <div class="space-y-2">
                         <div class="flex justify-between py-1 text-sm">
                             <span class="text-gray-400">پلن</span>
-                            <span id="sPlan" class="font-bold text-white">—</span>
+                            <span id="sPlan" class="font-bold text-white">-</span>
                         </div>
                         <div class="flex justify-between py-1 text-sm hidden" id="sOptionRow">
                             <span class="text-gray-400">آپشن‌های اضافه</span>
-                            <span id="sOption" class="font-bold text-emerald-400">—</span>
+                            <span id="sOption" class="font-bold text-emerald-400">-</span>
                         </div>
                         <div class="flex justify-between py-1 text-sm hidden" id="sDiscRow">
                             <span class="text-red-400">تخفیف</span>
-                            <span id="sDisc" class="font-bold text-red-400">—</span>
+                            <span id="sDisc" class="font-bold text-red-400">-</span>
                         </div>
                         <div class="h-px bg-white/5 my-3"></div>
                         <div class="flex justify-between text-lg font-extrabold">
                             <span class="text-white">قابل پرداخت</span>
-                            <span id="sTotal" class="text-accent-400">۰ تومان</span>
+                            <span id="sTotal" class="text-accent-400">0 تومان</span>
                         </div>
                     </div>
                 </div>
@@ -1178,6 +1751,7 @@
                 if (icon) icon.style.transform = menu?.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
             }
         }
+
         function closeDropdown() {
             const menu = document.getElementById('dropdownMenu');
             const caret = document.getElementById('dropdownCaret');
@@ -1197,6 +1771,7 @@
             menu?.classList.toggle('active');
             if (caret) caret.style.transform = menu?.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
         }
+
         function closeMegaMenu() {
             const menu = document.getElementById('megaMenu');
             const caret = document.getElementById('megaCaret');
@@ -1212,6 +1787,7 @@
             document.getElementById('sidebarOverlay').classList.add('active');
             document.body.style.overflow = 'hidden';
         }
+
         function closeSidebar() {
             document.getElementById('sidebar').classList.remove('open');
             document.getElementById('sidebarOverlay').classList.remove('active');
@@ -1221,6 +1797,7 @@
         // ====== Modals ======
         window.openModal = (id) => document.getElementById(id)?.classList.add('active');
         window.closeModal = (id) => document.getElementById(id)?.classList.remove('active');
+
         function openLogoutModal() {
             closeDropdown();
             closeMegaMenu();
@@ -1265,6 +1842,7 @@
             const t = document.getElementById('toast');
             t.textContent = msg;
             t.style.display = 'block';
+
             if (type === 'error') {
                 t.style.background = 'rgba(127,29,29,0.95)';
                 t.style.borderColor = 'rgba(239,68,68,0.4)';
@@ -1278,16 +1856,26 @@
                 t.style.borderColor = 'rgba(139,92,246,0.4)';
                 t.style.color = '#fff';
             }
+
             clearTimeout(t._t);
             t._t = setTimeout(() => t.style.display = 'none', 3000);
         }
 
         // ====== Helpers ======
-        function fmt(n) { return parseInt(n).toLocaleString("fa-IR-u-nu-latn"); }
-        function unfmt(s) { return parseInt(s.replace(/,/g, '')) || 0; }
+        function fmt(n) {
+            return parseInt(n).toLocaleString("fa-IR-u-nu-latn");
+        }
+
+        function unfmt(s) {
+            return parseInt(s.replace(/,/g, '')) || 0;
+        }
+
         function formatPrice(el) {
             let v = el.value.replace(/,/g, '');
-            if (v === '' || isNaN(v)) { el.value = ''; return; }
+            if (v === '' || isNaN(v)) {
+                el.value = '';
+                return;
+            }
             el.value = fmt(parseInt(v));
             refresh();
         }
@@ -1302,7 +1890,6 @@
             const btn = document.getElementById('generateBtn');
             const input = document.getElementById('memberId');
 
-            // تولید کد یکتا
             const timestamp = Date.now().toString(36).toUpperCase();
             const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase();
             const userPart = '<%= (user && user._id) ? user._id.toString().slice(-4).toUpperCase() : "USER" %>';
@@ -1310,7 +1897,6 @@
 
             input.value = uniqueId;
 
-            // فعال کردن cooldown
             memberIdCooldown = true;
             btn.disabled = true;
 
@@ -1344,7 +1930,6 @@
             textarea.style.height = 'auto';
             textarea.style.height = textarea.scrollHeight + 'px';
 
-            // به‌روزرسانی شمارنده
             updateNoteCounter();
         }
 
@@ -1353,7 +1938,9 @@
             const counter = document.getElementById('noteCounter');
             const maxLength = 64;
             const currentLength = note.value.length;
+
             counter.textContent = `${currentLength} / ${maxLength}`;
+
             const remaining = maxLength - currentLength;
             counter.classList.remove('warning', 'danger');
             if (remaining <= 0) counter.classList.add('danger');
@@ -1380,11 +1967,13 @@
             document.querySelectorAll('.custom-option').forEach(o => o.classList.remove('selected'));
             opt.classList.add('selected');
             planPrice = parseInt(opt.dataset.price);
+
             const d = document.getElementById('planDropdown');
             if (d) {
                 d.classList.remove('active');
                 document.getElementById('dropdownArrow').style.transform = 'rotate(0)';
             }
+
             document.getElementById('planIdError').textContent = '';
             document.getElementById('planTrigger').classList.remove('error');
             refresh();
@@ -1398,7 +1987,7 @@
             const dT = discs.reduce((s, d) => s + (d.type === 'percent' ? Math.floor((planPrice + oT) * d.val / 100) : d.val), 0);
             const f = Math.max(0, planPrice + oT - dT);
 
-            document.getElementById('sPlan').textContent = planPrice ? fmt(planPrice) + ' تومان' : '—';
+            document.getElementById('sPlan').textContent = planPrice ? fmt(planPrice) + ' تومان' : '-';
             document.getElementById('sOptionRow').classList.toggle('hidden', oT === 0);
             document.getElementById('sOption').textContent = '+' + fmt(oT) + ' تومان';
             document.getElementById('sDiscRow').classList.toggle('hidden', dT === 0);
@@ -1407,9 +1996,11 @@
 
             const h = document.getElementById('hiddenInputs');
             h.innerHTML = '';
+
             options.forEach((o, i) => {
-                h.innerHTML += `<input type="hidden" name="cafeItems[${i}][name]" value="${o.name}"><input type="hidden" name="cafeItems[${i}][price]" value="${o.price}">`;
+                h.innerHTML += `<input type="hidden" name="items[${i}][name]" value="${o.name}"><input type="hidden" name="items[${i}][price]" value="${o.price}">`;
             });
+
             discs.forEach((d, i) => {
                 h.innerHTML += `<input type="hidden" name="discounts[${i}][description]" value="${d.desc}"><input type="hidden" name="discounts[${i}][type]" value="${d.type}"><input type="hidden" name="discounts[${i}][value]" value="${d.val}">`;
             });
@@ -1421,15 +2012,21 @@
             btn.classList.add('active');
             document.getElementById('discLabel').textContent = t === 'percent' ? 'درصد' : 'مبلغ';
             document.getElementById('discSuffix').textContent = t === 'percent' ? '٪' : 'تومان';
-            document.getElementById('discVal').placeholder = '۰';
+            document.getElementById('discVal').placeholder = '0';
             document.getElementById('discVal').value = '';
         }
 
         function addOption() {
             const n = document.getElementById('optionName').value.trim();
             const p = unfmt(document.getElementById('optionPrice').value);
-            if (!n) { toast('نام آپشن را وارد کنید', 'error'); return; }
-            if (!p || p <= 0) { toast('قیمت معتبر وارد کنید', 'error'); return; }
+            if (!n) {
+                toast('نام آپشن را وارد کنید', 'error');
+                return;
+            }
+            if (!p || p <= 0) {
+                toast('قیمت معتبر وارد کنید', 'error');
+                return;
+            }
             options.push({ id: Date.now(), name: n, price: p });
             document.getElementById('optionName').value = '';
             document.getElementById('optionPrice').value = '';
@@ -1439,9 +2036,18 @@
         function addDisc() {
             const d = document.getElementById('discDesc').value.trim();
             const v = unfmt(document.getElementById('discVal').value);
-            if (!d) { toast('توضیح تخفیف را وارد کنید', 'error'); return; }
-            if (!v || v <= 0) { toast(discType === 'percent' ? 'درصد معتبر وارد کنید' : 'مبلغ معتبر وارد کنید', 'error'); return; }
-            if (discType === 'percent' && v > 100) { toast('حداکثر ۱۰۰٪', 'error'); return; }
+            if (!d) {
+                toast('توضیح تخفیف را وارد کنید', 'error');
+                return;
+            }
+            if (!v || v <= 0) {
+                toast(discType === 'percent' ? 'درصد معتبر وارد کنید' : 'مبلغ معتبر وارد کنید', 'error');
+                return;
+            }
+            if (discType === 'percent' && v > 100) {
+                toast('حداکثر 100٪', 'error');
+                return;
+            }
             discs.push({ id: Date.now(), desc: d, val: v, type: discType });
             document.getElementById('discDesc').value = '';
             document.getElementById('discVal').value = '';
@@ -1477,8 +2083,15 @@
             refresh();
         }
 
-        function removeOption(id) { options = options.filter(o => o.id !== id); render(); }
-        function removeDisc(id) { discs = discs.filter(d => d.id !== id); render(); }
+        function removeOption(id) {
+            options = options.filter(o => o.id !== id);
+            render();
+        }
+
+        function removeDisc(id) {
+            discs = discs.filter(d => d.id !== id);
+            render();
+        }
 
         // ====== Clear Errors ======
         function clearErrors() {
@@ -1493,6 +2106,7 @@
         function scrollToError(fieldId) {
             const inputEl = document.getElementById(fieldId);
             const triggerEl = document.getElementById('planTrigger');
+
             if (inputEl) {
                 const rect = inputEl.getBoundingClientRect();
                 const absoluteTop = rect.top + window.pageYOffset;
@@ -1512,6 +2126,7 @@
         function showErrors(result) {
             clearErrors();
             let firstErrorField = null;
+
             if (result.validationErrors && typeof result.validationErrors === 'object') {
                 const fieldMap = {
                     'memberName': 'memberName',
@@ -1520,30 +2135,36 @@
                     'planId': 'planId',
                     'note': 'note'
                 };
+
                 for (const [field, message] of Object.entries(result.validationErrors)) {
                     const fieldId = fieldMap[field] || field;
                     const errorEl = document.getElementById(`${fieldId}Error`);
                     const inputEl = document.getElementById(fieldId);
                     const triggerEl = document.getElementById('planTrigger');
+
                     if (errorEl) errorEl.textContent = message;
                     if (inputEl) inputEl.classList.add('error');
                     if (field === 'planId' && triggerEl) triggerEl.classList.add('error');
                     if (!firstErrorField) firstErrorField = fieldId;
+
                     toast(message, 'error');
                 }
+
                 if (firstErrorField) {
                     scrollToError(firstErrorField);
                 }
                 return;
             }
+
             if (result.errors && Array.isArray(result.errors)) {
                 result.errors.forEach(err => toast(err, 'error'));
                 const ge = document.getElementById('globalError');
-                ge.textContent = result.errors.join(' • ');
+                ge.textContent = result.errors.join(', ');
                 ge.classList.remove('hidden');
                 scrollToError('memberName');
                 return;
             }
+
             if (result.message) {
                 const ge = document.getElementById('globalError');
                 ge.textContent = result.message;
@@ -1573,7 +2194,7 @@
             btn.disabled = true;
 
             try {
-                const cafeItems = options.map(o => ({
+                const extraItems = options.map(o => ({
                     name: o.name,
                     price: o.price
                 }));
@@ -1588,13 +2209,15 @@
                     memberName: document.getElementById('memberName').value,
                     memberPhone: document.getElementById('memberPhone').value || '',
                     memberId: document.getElementById('memberId').value || '',
+                    memberRef: document.getElementById('memberRef').value || '',
+                    saveAsMember: !document.getElementById('memberRef').value &&
+                        document.getElementById('saveAsMember').checked,
                     planId: planId,
-                    cafeItems: cafeItems,
+                    periodMonths: Number((document.getElementById('periodMonths') || {}).value || 0),
+                    items: extraItems,
                     discounts: discounts,
                     note: document.getElementById('note').value || ''
                 };
-
-                console.log('Sending data:', data);
 
                 const res = await fetch('/invoices', {
                     method: 'POST',
@@ -1619,8 +2242,162 @@
             btn.disabled = false;
         });
 
+        // ====== Saved-member picker ======
+        const STATE_LABELS = {
+            none: 'بدون اشتراک',
+            active: 'فعال',
+            expiring: 'رو به پایان',
+            expired: 'منقضی',
+            frozen: 'منجمد',
+            inactive: 'غیرفعال'
+        };
+        let memberSearchTimer = null;
+
+        function lockMemberFields(locked) {
+            ['memberName', 'memberPhone'].forEach(id => {
+                document.getElementById(id).readOnly = locked;
+            });
+            const gen = document.getElementById('generateBtn');
+            if (gen) gen.disabled = locked;
+            document.getElementById('saveAsMemberWrap').classList.toggle('hidden', locked);
+        }
+
+        function selectMember(m) {
+            document.getElementById('memberRef').value = m._id;
+            document.getElementById('memberName').value = m.name;
+            document.getElementById('memberPhone').value = m.phone || '';
+            document.getElementById('memberId').value = m.code;
+            document.getElementById('saveAsMember').checked = false;
+            document.getElementById('memberChipText').textContent = m.name + ', ' + m.code;
+            document.getElementById('memberChip').classList.remove('hidden');
+            document.getElementById('memberResults').classList.add('hidden');
+            document.getElementById('memberSearch').value = '';
+            lockMemberFields(true);
+        }
+
+        function clearMember() {
+            document.getElementById('memberRef').value = '';
+            ['memberName', 'memberPhone', 'memberId'].forEach(id => {
+                document.getElementById(id).value = '';
+            });
+            document.getElementById('memberChip').classList.add('hidden');
+            lockMemberFields(false);
+        }
+
+        function renderMemberResults(members) {
+            const box = document.getElementById('memberResults');
+            box.replaceChildren();
+
+            if (!members.length) {
+                const empty = document.createElement('div');
+                empty.className = 'px-4 py-3 text-sm text-gray-500';
+                empty.textContent = 'عضوی پیدا نشد';
+                box.appendChild(empty);
+            }
+
+            members.forEach(m => {
+                const row = document.createElement('button');
+                row.type = 'button';
+                row.className = 'w-full text-right px-4 py-3 flex items-center justify-between gap-3 hover:bg-white/5';
+
+                const left = document.createElement('span');
+                left.className = 'text-sm text-white';
+                left.textContent = m.name + ', ' + m.code;
+
+                const right = document.createElement('span');
+                right.className = 'text-xs text-gray-500';
+                right.textContent = STATE_LABELS[m.state] || '';
+
+                row.append(left, right);
+                row.addEventListener('click', () => selectMember(m));
+                box.appendChild(row);
+            });
+
+            box.classList.remove('hidden');
+        }
+
+        async function searchMembers(q) {
+            try {
+                const res = await fetch('/members/search?q=' + encodeURIComponent(q), {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                });
+                const data = await res.json();
+                if (data.success) renderMemberResults(data.members);
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function initMemberPicker() {
+            const input = document.getElementById('memberSearch');
+
+            input.addEventListener('input', () => {
+                clearTimeout(memberSearchTimer);
+                memberSearchTimer = setTimeout(() => searchMembers(input.value.trim()), 250);
+            });
+
+            input.addEventListener('focus', () => searchMembers(input.value.trim()));
+            document.getElementById('memberClear').addEventListener('click', clearMember);
+
+            document.addEventListener('click', e => {
+                if (!document.getElementById('memberPicker').contains(e.target)) {
+                    document.getElementById('memberResults').classList.add('hidden');
+                }
+            });
+
+            const pre = document.getElementById('preselectedMember');
+            if (pre) {
+                selectMember({
+                    _id: pre.dataset.id,
+                    name: pre.dataset.name,
+                    phone: pre.dataset.phone,
+                    code: pre.dataset.code
+                });
+            }
+        }
+
+        // ====== Custom Select (period) ======
+        (function () {
+            const trigger = document.getElementById('periodTrigger');
+            const menu = document.getElementById('periodMenu');
+            const label = document.getElementById('periodLabel');
+            const hidden = document.getElementById('periodMonths');
+            if (!trigger) return;
+
+            function toggle(open) {
+                menu.classList.toggle('open', open);
+                trigger.classList.toggle('open', open);
+                trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+            }
+
+            trigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggle(!menu.classList.contains('open'));
+            });
+
+            menu.querySelectorAll('.cs-option').forEach(opt => {
+                opt.addEventListener('click', () => {
+                    menu.querySelectorAll('.cs-option').forEach(o => o.classList.remove('selected'));
+                    opt.classList.add('selected');
+                    label.textContent = opt.textContent.trim();
+                    hidden.value = opt.dataset.value;
+                    toggle(false);
+                });
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!document.getElementById('periodWrap').contains(e.target)) toggle(false);
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') toggle(false);
+            });
+        })();
+
         // ====== Init ======
         document.addEventListener('DOMContentLoaded', () => {
+            initMemberPicker();
+
             setTimeout(() => {
                 document.getElementById('skeletonLoader').classList.add('hidden');
                 document.getElementById('formContent').classList.remove('hidden');

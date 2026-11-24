@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="<%= sheet.theme %>">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title><%= title %></title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/sahel-font@v3.4.0/dist/font-face.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+  <%- include('partials/invoice-sheet-css') %>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Sahel', 'Vazirmatn', system-ui, sans-serif;
+    }
+
+    body {
+      padding: 18px 12px 30px;
+      background: #07060f;
+    }
+
+    html[data-theme="midnight"] body {
+      background: #030712;
+    }
+
+    html[data-theme="mono"] body {
+      background: #ececef;
+    }
+
+    html[data-theme="luxe"] body {
+      background: #050506 radial-gradient(700px 360px at 80% -10%, rgba(232, 200, 114, 0.18), transparent 60%);
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <%- include('partials/invoice-sheet', { sheet }) %>
+  </main>
+</body>
+</html>

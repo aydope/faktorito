@@ -14,38 +14,67 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        'sahel': ['Sahel', 'Vazirmatn', 'system-ui', 'sans-serif'],
+                        'sahel': ['Sahel', 'Vazirmatn', 'system-ui', 'sans-serif']
                     },
                     colors: {
                         ink: {
-                            950: '#050508', 900: '#0c0c14', 800: '#14141f', 700: '#1c1c2a',
-                            600: '#28283a', 500: '#36364c', 400: '#4a4a63',
+                            950: '#050508',
+                            900: '#0c0c14',
+                            800: '#14141f',
+                            700: '#1c1c2a',
+                            600: '#28283a',
+                            500: '#36364c',
+                            400: '#4a4a63'
                         },
                         accent: {
-                            400: '#a78bfa', 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9', 800: '#5b21b6', 900: '#4c1d95',
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            800: '#5b21b6',
+                            900: '#4c1d95'
                         },
-                        gold: { 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309' },
-                        success: { 300: '#6ee7b7', 400: '#34d399', 500: '#10b981', 600: '#059669' },
+                        gold: {
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            700: '#b45309'
+                        },
+                        success: {
+                            300: '#6ee7b7',
+                            400: '#34d399',
+                            500: '#10b981',
+                            600: '#059669'
+                        },
                     },
                     boxShadow: {
                         'glow': '0 0 32px rgba(124, 58, 237, 0.35)',
                         'glow-lg': '0 8px 40px rgba(124, 58, 237, 0.45)',
                         'card': '0 10px 40px -10px rgba(0, 0, 0, 0.4)',
                     },
-                    borderRadius: { 'xl': '12px', '2xl': '16px', '3xl': '24px' },
+                    borderRadius: {
+                        'xl': '12px',
+                        '2xl': '16px',
+                        '3xl': '24px'
+                    },
                     keyframes: {
-                        shimmer: { '0%': { backgroundPosition: '200% 0' }, '100%': { backgroundPosition: '-200% 0' } },
-                        toastIn: { '0%': { opacity: '0', transform: 'translateX(-50%) translateY(8px)' }, '100%': { opacity: '1', transform: 'translateX(-50%) translateY(0)' } },
-                        spin: { '0%': { transform: 'rotate(0deg)' }, '100%': { transform: 'rotate(360deg)' } },
-                        slideIn: { '0%': { transform: 'translateX(110%)' }, '100%': { transform: 'translateX(0)' } },
-                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                        shimmer: {
+                            '0%': { backgroundPosition: '200% 0' },
+                            '100%': { backgroundPosition: '-200% 0' }
+                        },
+                        toastIn: {
+                            '0%': { opacity: '0', transform: 'translateX(-50%) translateY(8px)' },
+                            '100%': { opacity: '1', transform: 'translateX(-50%) translateY(0)' }
+                        },
+                        spin: {
+                            '0%': { transform: 'rotate(0deg)' },
+                            '100%': { transform: 'rotate(360deg)' }
+                        },
                     },
                     animation: {
                         shimmer: 'shimmer 1.8s infinite',
                         toastIn: 'toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
                         spin: 'spin 0.6s linear infinite',
-                        slideIn: 'slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-                        fadeIn: 'fadeIn 0.3s ease',
                     },
                 }
             }
@@ -59,6 +88,7 @@
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
             background: #050508;
             color: #d1d5db;
@@ -69,10 +99,24 @@
             scroll-behavior: smooth;
             min-height: 100vh;
         }
-        ::-webkit-scrollbar { width: 4px; height: 4px; }
-        ::-webkit-scrollbar-track { background: #050508; }
-        ::-webkit-scrollbar-thumb { background: #1c1c2a; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #28283a; }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #050508;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #1c1c2a;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #28283a;
+        }
 
         .grid-bg {
             background-image:
@@ -81,63 +125,32 @@
             background-size: 60px 60px;
         }
 
-        .glass-header {
-            background: rgba(12, 12, 20, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.4);
-        }
-
         .card {
             background: #0c0c14;
             border: 1px solid rgba(255, 255, 255, 0.03);
-            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-        }
-
-        .plan-row {
-            background: #0c0c14;
-            border: 1px solid rgba(255, 255, 255, 0.03);
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-            position: relative;
-            overflow: hidden;
-        }
-        .plan-row::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 3px;
-            height: 100%;
-            background: linear-gradient(180deg, #7c3aed, #a78bfa);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        .plan-row:hover {
-            border-color: rgba(139, 92, 246, 0.2);
-            background: #10101a;
-            transform: translateY(-2px);
-            box-shadow: 0 12px 30px -12px rgba(0,0,0,0.5);
-        }
-        .plan-row:hover::before {
-            opacity: 1;
         }
 
         .btn-primary {
             position: relative;
             overflow: hidden;
             transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-            background: #7c3aed;
-            box-shadow: 0 8px 30px -8px rgba(124, 58, 237, 0.4);
-            border: 1px solid rgba(139, 92, 246, 0.3);
+            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+            box-shadow:
+                0 8px 30px -8px rgba(124, 58, 237, 0.45),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.4);
         }
+
         .btn-primary:hover {
-            background: #8b5cf6;
-            box-shadow: 0 12px 40px -8px rgba(139, 92, 246, 0.5);
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            box-shadow:
+                0 12px 40px -8px rgba(139, 92, 246, 0.55),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
             transform: translateY(-2px);
         }
+
         .btn-primary:active {
-            transform: scale(0.97);
+            transform: translateY(0) scale(0.98);
         }
 
         .nav-link {
@@ -152,114 +165,558 @@
             align-items: center;
             gap: 8px;
             border: 1px solid transparent;
-            background: transparent;
         }
-        .nav-link:hover { color: #fff; background: rgba(255,255,255,0.04); }
-        .nav-link.active { color: #c4b5fd; background: rgba(139,92,246,0.08); border-color: rgba(139,92,246,0.2); }
-        .nav-link i { font-size: 16px; }
+
+        .nav-link:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .nav-link.active {
+            color: #c4b5fd;
+            background: rgba(139, 92, 246, 0.08);
+            border-color: rgba(139, 92, 246, 0.2);
+        }
+
+        .nav-link i {
+            font-size: 16px;
+        }
 
         .dropdown-trigger {
-            display: flex; align-items: center; gap: 10px; padding: 4px 12px 4px 6px;
-            background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 50px; cursor: pointer; transition: all 0.3s ease; color: #d1d5db;
-            font-weight: 500; font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 4px 12px 4px 6px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #d1d5db;
+            font-weight: 500;
+            font-size: 14px;
         }
-        .dropdown-trigger:hover { background: rgba(255, 255, 255, 0.05); border-color: rgba(139, 92, 246, 0.4); }
+
+        .dropdown-trigger:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(139, 92, 246, 0.4);
+        }
+
         .avatar {
-            width: 34px; height: 34px; border-radius: 50%;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
             background: linear-gradient(135deg, #7c3aed, #a78bfa);
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 800; font-size: 14px; color: #fff; flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+            color: #fff;
+            flex-shrink: 0;
         }
+
         .dropdown-menu {
-            position: absolute; top: calc(100% + 10px); left: 0; min-width: 260px;
-            background: #14141f; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px;
-            padding: 10px; box-shadow: 0 25px 50px -15px rgba(0, 0, 0, 0.6);
-            opacity: 0; visibility: hidden; transform: translateY(-8px) scale(0.97);
-            transition: all 0.25s cubic-bezier(0.23, 1, 0.32, 1); z-index: 100;
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 0;
+            min-width: 260px;
+            background: #14141f;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 10px;
+            box-shadow: 0 25px 50px -15px rgba(0, 0, 0, 0.6);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-8px) scale(0.97);
+            transition: all 0.25s cubic-bezier(0.23, 1, 0.32, 1);
+            z-index: 100;
         }
-        .dropdown-menu.active { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
+
+        .dropdown-menu.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
         .dropdown-item {
-            display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 10px;
-            color: #9ca3af; font-size: 14px; font-weight: 500; transition: all 0.2s ease;
-            cursor: pointer; text-decoration: none; background: none; border: none; width: 100%; text-align: right;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            color: #9ca3af;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            text-decoration: none;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: right;
         }
-        .dropdown-item:hover { background: rgba(139, 92, 246, 0.08); color: #c4b5fd; }
-        .dropdown-item i { font-size: 17px; width: 20px; text-align: center; }
-        .dropdown-item.danger:hover { background: rgba(220, 38, 38, 0.12); color: #f87171; }
-        .dropdown-divider { height: 1px; background: rgba(255, 255, 255, 0.05); margin: 6px 8px; }
+
+        .dropdown-item:hover {
+            background: rgba(139, 92, 246, 0.08);
+            color: #c4b5fd;
+        }
+
+        .dropdown-item i {
+            font-size: 17px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .dropdown-item.danger:hover {
+            background: rgba(220, 38, 38, 0.12);
+            color: #f87171;
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.05);
+            margin: 6px 8px;
+        }
 
         .mega-menu {
-            position: fixed; top: 80px; right: 50%; transform: translateX(50%) translateY(-8px);
-            width: min(90%, 500px); background: #14141f; border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 20px; padding: 16px; box-shadow: 0 30px 60px rgba(0,0,0,0.6);
-            opacity: 0; visibility: hidden; transition: all 0.3s cubic-bezier(0.23,1,0.32,1); z-index: 200;
+            position: fixed;
+            top: 80px;
+            right: 50%;
+            transform: translateX(50%) translateY(-8px);
+            width: min(90%, 500px);
+            background: #14141f;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 16px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            z-index: 200;
         }
-        .mega-menu.active { opacity: 1; visibility: visible; transform: translateX(50%) translateY(0); }
-        .mega-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+
+        .mega-menu.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(50%) translateY(0);
+        }
+
+        .mega-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px;
+        }
+
         .mega-item {
-            display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 12px;
-            transition: all 0.2s ease; text-decoration: none; color: #9ca3af;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: #9ca3af;
         }
-        .mega-item:hover { background: rgba(139,92,246,0.06); color: #fff; }
-        .mega-item i { font-size: 20px; width: 24px; text-align: center; color: #a78bfa; }
-        .mega-item .mega-title { font-size: 14px; font-weight: 700; color: #e5e7eb; }
-        .mega-item .mega-desc { font-size: 11px; color: #6b7280; }
+
+        .mega-item:hover {
+            background: rgba(139, 92, 246, 0.06);
+            color: #fff;
+        }
+
+        .mega-item i {
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
+            color: #a78bfa;
+        }
+
+        .mega-item .mega-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #e5e7eb;
+        }
+
+        .mega-item .mega-desc {
+            font-size: 11px;
+            color: #6b7280;
+        }
 
         .sidebar {
-            position: fixed; top: 0; right: 0; bottom: 0; width: 85%; max-width: 320px;
-            background: #0c0c14; border-left: 1px solid rgba(255,255,255,0.06); z-index: 300;
-            padding: 20px; overflow-y: auto; transform: translateX(110%);
-            transition: transform 0.4s cubic-bezier(0.23,1,0.32,1);
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 85%;
+            max-width: 320px;
+            background: #0c0c14;
+            border-left: 1px solid rgba(255, 255, 255, 0.06);
+            z-index: 300;
+            padding: 20px;
+            overflow-y: auto;
+            transform: translateX(110%);
+            transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
         }
-        .sidebar.open { transform: translateX(0); }
+
+        .sidebar.open {
+            transform: translateX(0);
+        }
+
         .sidebar-overlay {
-            position: fixed; inset: 0; background: rgba(5,5,8,0.7); backdrop-filter: blur(4px);
-            z-index: 290; opacity: 0; visibility: hidden; transition: all 0.3s ease;
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 5, 8, 0.7);
+            backdrop-filter: blur(4px);
+            z-index: 290;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
         }
-        .sidebar-overlay.active { opacity: 1; visibility: visible; }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
 
         .sidebar-link {
-            display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 12px;
-            color: #9ca3af; font-size: 14px; font-weight: 500; transition: all 0.2s ease;
-            text-decoration: none; margin-bottom: 2px; border: 1px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 12px;
+            color: #9ca3af;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            margin-bottom: 2px;
+            border: 1px solid transparent;
         }
-        .sidebar-link i { font-size: 18px; width: 22px; text-align: center; }
-        .sidebar-link:hover { background: rgba(255,255,255,0.04); color: #fff; }
-        .sidebar-link.active { background: rgba(139,92,246,0.08); color: #c4b5fd; border-color: rgba(139,92,246,0.2); }
-        .sidebar-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 12px 0; }
 
-        .status-badge {
-            display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px;
-            border-radius: 20px; font-size: 11px; font-weight: 600;
+        .sidebar-link i {
+            font-size: 18px;
+            width: 22px;
+            text-align: center;
         }
-        .status-active { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); color: #6ee7b7; }
-        .status-inactive { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: #fca5a5; }
 
-        .action-btn {
-            width: 36px; height: 36px; border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            transition: all 0.2s ease; cursor: pointer;
-            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
-            color: #6b7280; font-size: 14px; outline: none;
+        .sidebar-link:hover {
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
         }
-        .action-btn:hover { background: rgba(139,92,246,0.08); border-color: rgba(139,92,246,0.3); color: #a78bfa; }
-        .action-btn.toggle-active:hover { background: rgba(239,68,68,0.08); border-color: rgba(239,68,68,0.3); color: #fca5a5; }
-        .action-btn.toggle-inactive:hover { background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.3); color: #6ee7b7; }
-        .action-btn.delete:hover { background: rgba(239,68,68,0.08); border-color: rgba(239,68,68,0.3); color: #fca5a5; }
 
+        .sidebar-link.active {
+            background: rgba(139, 92, 246, 0.08);
+            color: #c4b5fd;
+            border-color: rgba(139, 92, 246, 0.2);
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.06);
+            margin: 12px 0;
+        }
+
+        /* ===== Page header ===== */
+        .page-header {
+            position: relative;
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.08) 0%, rgba(139, 92, 246, 0.03) 100%);
+            border: 1px solid rgba(139, 92, 246, 0.12);
+            border-radius: 20px;
+            padding: 24px 28px;
+            margin-bottom: 28px;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -60%;
+            left: -10%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .page-header-icon {
+            width: 48px;
+            height: 48px;
+            flex-shrink: 0;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: #fff;
+            box-shadow: 0 8px 24px -8px rgba(124, 58, 237, 0.6);
+        }
+
+        .plan-limit-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #9ca3af;
+            white-space: nowrap;
+            height: 40px;
+            box-sizing: border-box;
+        }
+
+        .plan-limit-badge .count {
+            color: #fff;
+            font-size: 14px;
+            font-weight: 900;
+        }
+
+        .plan-limit-badge .divider {
+            width: 1px;
+            height: 14px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .plan-limit-badge.warning {
+            border-color: rgba(245, 158, 11, 0.25);
+            background: rgba(245, 158, 11, 0.06);
+        }
+
+        .plan-limit-badge.warning .count {
+            color: #fcd34d;
+        }
+
+        .plan-limit-badge.danger {
+            border-color: rgba(239, 68, 68, 0.25);
+            background: rgba(239, 68, 68, 0.06);
+        }
+
+        .plan-limit-badge.danger .count {
+            color: #fca5a5;
+        }
+
+        /* ===== Plan card ===== */
+        .plan-card {
+            position: relative;
+            background: linear-gradient(180deg, #0f0f1a 0%, #0c0c14 100%);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 18px;
+            padding: 20px 22px;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            overflow: hidden;
+        }
+
+        .plan-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #7c3aed, #a78bfa);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .plan-card:hover {
+            border-color: rgba(139, 92, 246, 0.2);
+            background: #10101a;
+            transform: translateY(-2px);
+            box-shadow: 0 14px 34px -14px rgba(0, 0, 0, 0.6);
+        }
+
+        .plan-card:hover::before {
+            opacity: 1;
+        }
+
+        .plan-card.is-inactive {
+            opacity: 0.72;
+        }
+
+        .plan-card.is-inactive:hover {
+            opacity: 0.9;
+        }
+
+        .plan-icon {
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 19px;
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.18) 0%, rgba(167, 139, 250, 0.1) 100%);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            color: #c4b5fd;
+        }
+
+        .plan-card.is-inactive .plan-icon {
+            background: rgba(107, 114, 128, 0.1);
+            border-color: rgba(107, 114, 128, 0.2);
+            color: #9ca3af;
+        }
+
+        .plan-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 9px;
+            border-radius: 6px;
+            font-size: 10.5px;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+            white-space: nowrap;
+        }
+
+        .plan-status.active {
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.22);
+            color: #6ee7b7;
+        }
+
+        .plan-status.inactive {
+            background: rgba(107, 114, 128, 0.08);
+            border: 1px solid rgba(107, 114, 128, 0.22);
+            color: #9ca3af;
+        }
+
+        .plan-status i {
+            font-size: 8px;
+        }
+
+        .plan-price-line {
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+            margin-top: 8px;
+            direction: rtl;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .plan-price-value {
+            font-size: 22px;
+            font-weight: 900;
+            color: #fff;
+            letter-spacing: -0.4px;
+            line-height: 1.1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .plan-price-currency {
+            font-size: 11px;
+            font-weight: 600;
+            color: #6b7280;
+            flex-shrink: 0;
+        }
+
+        .plan-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .plan-action-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #9ca3af;
+            cursor: pointer;
+            transition: all 0.22s ease;
+        }
+
+        .plan-action-btn:hover {
+            background: rgba(139, 92, 246, 0.1);
+            border-color: rgba(139, 92, 246, 0.3);
+            color: #c4b5fd;
+            transform: translateY(-1px);
+        }
+
+        .plan-action-btn.danger:hover {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+        }
+
+        .plan-action-btn.toggle-on {
+            color: #6ee7b7;
+            background: rgba(16, 185, 129, 0.08);
+            border-color: rgba(16, 185, 129, 0.2);
+        }
+
+        .plan-action-btn.toggle-on:hover {
+            background: rgba(16, 185, 129, 0.15);
+            border-color: rgba(16, 185, 129, 0.35);
+            color: #a7f3d0;
+        }
+
+        .plan-action-btn.toggle-off {
+            color: #fca5a5;
+            background: rgba(239, 68, 68, 0.06);
+            border-color: rgba(239, 68, 68, 0.15);
+        }
+
+        .plan-action-btn.toggle-off:hover {
+            background: rgba(239, 68, 68, 0.12);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #fecaca;
+        }
+
+        .plan-action-btn.is-loading {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        /* ===== Modal ===== */
         .input-field {
-            width: 100%; padding: 12px 14px;
-            background: #0c0c14; border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 12px; color: #fff; font-size: 14px;
-            transition: all 0.3s ease; outline: none;
+            width: 100%;
+            padding: 12px 14px;
+            background: #0c0c14;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            outline: none;
         }
-        .input-field:focus { border-color: rgba(139,92,246,0.4); box-shadow: 0 0 0 3px rgba(139,92,246,0.05); }
-        .input-field::placeholder { color: #4a4a63; }
-        .input-field.error { border-color: rgba(239,68,68,0.4); box-shadow: 0 0 0 3px rgba(239,68,68,0.05); }
 
-        .error-text { font-size: 11px; color: #fca5a5; margin-top: 4px; display: none; }
-        .error-text.show { display: block; }
+        .input-field:focus {
+            border-color: rgba(139, 92, 246, 0.4);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.05);
+        }
+
+        .input-field::placeholder {
+            color: #4a4a63;
+        }
+
+        .input-field.error {
+            border-color: rgba(239, 68, 68, 0.4);
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.05);
+        }
+
+        .error-text {
+            font-size: 11px;
+            color: #fca5a5;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .error-text.show {
+            display: block;
+        }
 
         .field-hint {
             display: flex;
@@ -269,49 +726,75 @@
             color: #6b7280;
             margin-bottom: 4px;
         }
+
         .field-hint i {
             font-size: 11px;
             color: #a78bfa;
         }
 
         .modal-overlay {
-            position: fixed; inset: 0; background: rgba(5, 5, 8, 0.85);
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 400; opacity: 0; visibility: hidden; transition: all 0.3s ease;
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 5, 8, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 400;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            padding: 16px;
         }
-        .modal-overlay.active { opacity: 1; visibility: visible; }
-        .modal-dialog {
-            background: #14141f; border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 20px; padding: 28px; max-width: 440px; width: 90%;
-            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
-            transform: scale(0.92) translateY(16px); transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-            max-height: 90vh; overflow-y: auto;
-        }
-        .modal-overlay.active .modal-dialog { transform: scale(1) translateY(0); }
 
-        .plan-limit-badge {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 6px 16px; border-radius: 50px;
-            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
-            font-size: 13px; font-weight: 600; color: #9ca3af;
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
         }
-        .plan-limit-badge.warning { border-color: rgba(245,158,11,0.2); color: #fcd34d; }
-        .plan-limit-badge.danger { border-color: rgba(239,68,68,0.2); color: #fca5a5; }
+
+        .modal-dialog {
+            background: #14141f;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 28px;
+            max-width: 440px;
+            width: 100%;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
+            transform: scale(0.92) translateY(16px);
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-overlay.active .modal-dialog {
+            transform: scale(1) translateY(0);
+        }
 
         .toast {
-            position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-            background: rgba(20,20,31,0.95); backdrop-filter: blur(12px);
-            color: #fff; padding: 12px 24px; border-radius: 50px;
-            font-size: 13px; font-weight: 600; z-index: 500;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-            border: 1px solid rgba(139,92,246,0.3);
-            display: none; animation: toastIn 0.3s ease;
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(20, 20, 31, 0.95);
+            backdrop-filter: blur(12px);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 600;
+            z-index: 500;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            display: none;
+            animation: toastIn 0.3s ease;
         }
 
         .skeleton {
             background: linear-gradient(90deg, rgba(124, 58, 237, 0.1) 0%, rgba(139, 92, 246, 0.2) 50%, rgba(124, 58, 237, 0.1) 100%);
-            background-size: 200% 100%; animation: shimmer 1.8s infinite; border-radius: 6px;
+            background-size: 200% 100%;
+            animation: shimmer 1.8s infinite;
+            border-radius: 6px;
         }
 
         .counter {
@@ -319,156 +802,197 @@
             color: #6b7280;
             transition: color 0.3s ease;
         }
-        .counter.warning { color: #fcd34d; }
-        .counter.danger { color: #fca5a5; }
+
+        .counter.warning {
+            color: #fcd34d;
+        }
+
+        .counter.danger {
+            color: #fca5a5;
+        }
+
+        /* ===== Mobile ===== */
+        @media (max-width: 640px) {
+            .page-header {
+                padding: 18px 16px;
+                border-radius: 16px;
+                margin-bottom: 20px;
+            }
+
+            .page-header::before {
+                width: 200px;
+                height: 200px;
+            }
+
+            .page-header-top {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 14px;
+            }
+
+            .page-header-icon {
+                width: 42px;
+                height: 42px;
+                font-size: 18px;
+                border-radius: 12px;
+            }
+
+            .page-header h1 {
+                font-size: 17px !important;
+                line-height: 1.3;
+                margin-bottom: 2px;
+            }
+
+            .page-header p {
+                font-size: 11.5px !important;
+                line-height: 1.5;
+            }
+
+            .page-header-actions {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                width: 100%;
+            }
+
+            .page-header-actions .plan-limit-badge {
+                flex: 0 0 auto;
+                padding: 8px 12px;
+                font-size: 11.5px;
+                height: 38px;
+            }
+
+            .page-header-actions .plan-limit-badge .count {
+                font-size: 13px;
+            }
+
+            .page-header-actions .btn-primary {
+                flex: 1;
+                justify-content: center;
+                padding: 10px 14px;
+                font-size: 13px;
+                height: 38px;
+            }
+
+            .plan-card {
+                padding: 16px;
+                border-radius: 14px;
+            }
+
+            .plan-card-top {
+                display: flex;
+                align-items: flex-start;
+                gap: 12px;
+                width: 100%;
+                margin-bottom: 12px;
+            }
+
+            .plan-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 17px;
+                border-radius: 11px;
+                flex-shrink: 0;
+            }
+
+            .plan-card-info {
+                flex: 1;
+                min-width: 0;
+            }
+
+            .plan-card-info .plan-name-row {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                flex-wrap: wrap;
+                margin-bottom: 2px;
+            }
+
+            .plan-card-info h3 {
+                font-size: 14.5px;
+                line-height: 1.3;
+            }
+
+            .plan-status {
+                font-size: 9.5px;
+                padding: 2px 7px;
+            }
+
+            .plan-card-info .plan-desc {
+                font-size: 11px;
+                color: #6b7280;
+                margin-bottom: 8px;
+                line-height: 1.6;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+
+            .plan-price-row {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 10px;
+                padding: 10px 12px;
+                background: rgba(139, 92, 246, 0.04);
+                border: 1px solid rgba(139, 92, 246, 0.1);
+                border-radius: 10px;
+                margin-bottom: 12px;
+            }
+
+            .plan-price-row .plan-price-label {
+                font-size: 10.5px;
+                color: #6b7280;
+                font-weight: 600;
+            }
+
+            .plan-price-row .plan-price-line {
+                margin-top: 0;
+                gap: 4px;
+            }
+
+            .plan-price-row .plan-price-value {
+                font-size: 17px;
+            }
+
+            .plan-price-row .plan-price-currency {
+                font-size: 10.5px;
+            }
+
+            .plan-actions {
+                width: 100%;
+                gap: 6px;
+                margin-top: 0;
+            }
+
+            .plan-action-btn {
+                flex: 1;
+                width: auto;
+                height: 38px;
+                border-radius: 9px;
+                font-size: 14px;
+            }
+        }
 
         @media (min-width: 769px) {
-            .mobile-only { display: none !important; }
+            .mobile-only {
+                display: none !important;
+            }
         }
+
         @media (max-width: 768px) {
-            .desktop-only { display: none !important; }
+            .desktop-only {
+                display: none !important;
+            }
         }
     </style>
 </head>
 <body class="antialiased bg-[#050508] grid-bg">
 
-    <!-- ========== SIDEBAR (Mobile) ========== -->
-    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
-    <div class="sidebar" id="sidebar">
-        <div class="flex items-center justify-between mb-6 pb-4 border-b border-white/5">
-            <a href="/dashboard" class="flex items-center gap-2.5 no-underline">
-                <div class="w-9 h-9 bg-gradient-to-br from-accent-700 to-accent-500 rounded-xl flex items-center justify-center text-white font-extrabold text-lg">ف</div>
-                <span class="font-extrabold text-xl text-white">فاکتوریتو</span>
-            </a>
-            <button onclick="closeSidebar()" class="action-btn"><i class="bi bi-x-lg"></i></button>
-        </div>
+<%- include('partials/shell') %>
 
-        <div class="space-y-1">
-            <div class="text-xs font-bold text-gray-500 px-3 mb-2">منوی اصلی</div>
-            <a href="/dashboard" class="sidebar-link"><i class="bi bi-speedometer2"></i> داشبورد</a>
-            <a href="/invoices" class="sidebar-link"><i class="bi bi-receipt"></i> فاکتورها</a>
-            <a href="/plans" class="sidebar-link active"><i class="bi bi-collection"></i> پلن‌ها</a>
-            <a href="/profile" class="sidebar-link"><i class="bi bi-person"></i> پروفایل</a>
-            <a href="/settings" class="sidebar-link"><i class="bi bi-gear"></i> تنظیمات</a>
-            <% if (user.role && ["admin", "moderator"].includes(user.role)) { %>
-            <a href="/admin/dashboard" class="sidebar-link"><i class="bi bi-shield"></i> مدیریت سیستم</a>
-            <% } %>
-        </div>
-
-        <div class="sidebar-divider"></div>
-        <button onclick="openLogoutModal(); closeSidebar();" class="sidebar-link w-full text-red-400 hover:text-red-300 hover:bg-red-500/5"><i class="bi bi-box-arrow-right"></i> خروج از حساب</button>
-    </div>
-
-    <!-- ========== HEADER ========== -->
-    <header class="fixed top-0 right-0 left-0 z-50 px-4 md:px-6 py-4">
-        <div class="max-w-5xl mx-auto glass-header rounded-2xl px-4 md:px-5 py-2.5 flex items-center justify-between">
-            <a href="/dashboard" class="flex items-center gap-2.5 no-underline shrink-0 group">
-                <div class="w-9 h-9 bg-gradient-to-br from-accent-700 to-accent-500 rounded-xl flex items-center justify-center text-white font-extrabold text-lg shadow-glow group-hover:shadow-glow-lg transition-all">ف</div>
-                <span class="font-extrabold text-xl md:text-2xl text-white tracking-tight group-hover:text-accent-400 transition-colors">فاکتوریتو</span>
-            </a>
-
-            <div class="hidden md:flex items-center gap-1 desktop-only">
-                <a href="/dashboard" class="nav-link"><i class="bi bi-speedometer2"></i> داشبورد</a>
-                <a href="/plans" class="nav-link active"><i class="bi bi-collection"></i> پلن‌ها</a>
-                <button onclick="toggleMegaMenu()" class="nav-link" id="megaMenuBtn">
-                    <i class="bi bi-grid-1x2"></i> بیشتر
-                    <i class="bi bi-chevron-down text-[10px]" id="megaCaret"></i>
-                </button>
-            </div>
-
-            <div class="flex items-center gap-2.5">
-                <% if (typeof plans !== 'undefined' && plans.length < 7) { %>
-                <button onclick="openAddModal()" class="btn-primary hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-xl text-white font-semibold text-sm">
-                    <i class="bi bi-plus-lg"></i> پلن جدید
-                </button>
-                <% } %>
-
-                <div class="relative" id="userDropdown">
-                    <button class="dropdown-trigger" onclick="toggleDropdown(event)" aria-label="منوی کاربری">
-                        <div class="avatar">
-                            <%= user ? user.username.charAt(0).toUpperCase() : 'U' %>
-                        </div>
-                        <span class="hidden sm:block max-w-[90px] truncate text-sm">
-                            <%= user ? user.username : 'کاربر' %>
-                        </span>
-                        <span class="hidden sm:inline-flex items-center justify-center transition-transform duration-300 text-[10px] text-gray-500" id="dropdownCaret">
-                            <i class="bi bi-chevron-down"></i>
-                        </span>
-                    </button>
-
-                    <div class="dropdown-menu" id="dropdownMenu">
-                        <div class="px-4 py-3">
-                            <div class="flex items-center gap-3 mb-3">
-                                <div class="avatar w-11 h-11 text-base">
-                                    <%= user ? user.username.charAt(0).toUpperCase() : 'U' %>
-                                </div>
-                                <div>
-                                    <div class="text-sm font-bold text-white"><%= user ? user.username : 'کاربر' %></div>
-                                    <div class="text-xs text-gray-500"><%= user ? user.email : '' %></div>
-                                </div>
-                            </div>
-                            <% if (user && user.clubName) { %>
-                            <div class="bg-accent-700/10 border border-accent-700/20 rounded-lg px-3 py-2 text-xs text-accent-400 flex items-center gap-2">
-                                <i class="bi bi-building"></i> <%= user.clubName %>
-                            </div>
-                            <% } %>
-                        </div>
-                        <div class="dropdown-divider"></div>
-                        <a href="/dashboard" class="dropdown-item"><i class="bi bi-speedometer2"></i> داشبورد</a>
-                        <a href="/profile" class="dropdown-item"><i class="bi bi-person"></i> پروفایل</a>
-                        <a href="/invoices" class="dropdown-item"><i class="bi bi-receipt"></i> فاکتورهای من</a>
-                        <a href="/settings" class="dropdown-item"><i class="bi bi-gear"></i> تنظیمات</a>
-                        <div class="dropdown-divider"></div>
-                        <button onclick="openLogoutModal(); closeDropdown();" class="dropdown-item w-full danger">
-                            <i class="bi bi-box-arrow-right"></i> خروج از حساب
-                        </button>
-                    </div>
-                </div>
-
-                <button onclick="openSidebar()" class="action-btn mobile-only md:hidden" aria-label="منو"><i class="bi bi-list"></i></button>
-            </div>
-        </div>
-
-        <!-- MEGA MENU -->
-        <div class="max-w-5xl mx-auto relative">
-            <div class="mega-menu" id="megaMenu">
-                <div class="mega-grid">
-                    <a href="/invoices" class="mega-item">
-                        <i class="bi bi-receipt"></i>
-                        <div>
-                            <div class="mega-title">فاکتورها</div>
-                            <div class="mega-desc">مدیریت فاکتورهای صادر شده</div>
-                        </div>
-                    </a>
-                    <a href="/profile" class="mega-item">
-                        <i class="bi bi-person"></i>
-                        <div>
-                            <div class="mega-title">پروفایل</div>
-                            <div class="mega-desc">اطلاعات حساب کاربری</div>
-                        </div>
-                    </a>
-                    <a href="/settings" class="mega-item">
-                        <i class="bi bi-gear"></i>
-                        <div>
-                            <div class="mega-title">تنظیمات</div>
-                            <div class="mega-desc">ترجیحات و امنیت</div>
-                        </div>
-                    </a>
-                    <% if (user.role && ["admin", "moderator"].includes(user.role)) { %>
-                    <a href="/admin/dashboard" class="mega-item">
-                        <i class="bi bi-shield"></i>
-                        <div>
-                            <div class="mega-title">مدیریت سیستم</div>
-                            <div class="mega-desc">کنترل کامل</div>
-                        </div>
-                    </a>
-                    <% } %>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- ========== MAIN CONTENT ========== -->
     <main class="max-w-5xl mx-auto px-4 pt-28 pb-16 relative z-10">
 
         <%
@@ -479,92 +1003,195 @@
             else if (planCount >= 5) limitClass = 'warning';
         %>
 
-        <!-- Header -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-8">
-            <div>
-                <h1 class="text-3xl md:text-4xl font-black text-white tracking-tight mb-1">مدیریت پلن‌ها</h1>
-                <p class="text-gray-500 text-sm">پلن‌های عضویت باشگاه خود را مدیریت کنید</p>
-            </div>
-            <div class="flex items-center gap-3">
-                <div class="plan-limit-badge <%= limitClass %>">
-                    <i class="bi bi-tags"></i>
-                    <span class="font-black text-white"><%= planCount %></span>
-                    <span class="text-gray-500">از <%= maxPlans %></span>
+        <!-- ===== Page header ===== -->
+        <div class="page-header">
+            <div class="relative z-10">
+                <!-- Desktop -->
+                <div class="hidden sm:flex sm:items-center sm:justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="page-header-icon">
+                            <i class="bi bi-tags-fill"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-2xl md:text-3xl font-black text-white tracking-tight leading-tight">مدیریت پلن‌ها</h1>
+                            <p class="text-gray-400 text-xs md:text-sm mt-1">پلن‌های عضویت باشگاه خود را ایجاد و مدیریت کنید</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                        <div class="plan-limit-badge <%= limitClass %>">
+                            <i class="bi bi-layers"></i>
+                            <span class="count"><%= planCount %></span>
+                            <span class="divider"></span>
+                            <span>از <%= maxPlans %></span>
+                        </div>
+                        <% if (planCount < maxPlans) { %>
+                        <button onclick="openAddModal()" class="btn-primary inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-white font-bold text-sm">
+                            <i class="bi bi-plus-lg"></i>
+                            <span>پلن جدید</span>
+                        </button>
+                        <% } %>
+                    </div>
                 </div>
-                <% if (planCount < maxPlans) { %>
-                <button onclick="openAddModal()" class="btn-primary md:hidden inline-flex items-center gap-2 px-4 py-2 rounded-xl text-white font-semibold text-sm">
-                    <i class="bi bi-plus-lg"></i> پلن جدید
-                </button>
-                <% } %>
+
+                <!-- Mobile -->
+                <div class="sm:hidden">
+                    <div class="page-header-top">
+                        <div class="page-header-icon">
+                            <i class="bi bi-tags-fill"></i>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <h1 class="text-2xl font-black text-white tracking-tight leading-tight">مدیریت پلن‌ها</h1>
+                            <p class="text-gray-400 text-xs mt-1">پلن‌های عضویت را مدیریت کنید</p>
+                        </div>
+                    </div>
+                    <div class="page-header-actions">
+                        <div class="plan-limit-badge <%= limitClass %>">
+                            <i class="bi bi-layers"></i>
+                            <span class="count"><%= planCount %></span>
+                            <span class="divider"></span>
+                            <span>از <%= maxPlans %></span>
+                        </div>
+                        <% if (planCount < maxPlans) { %>
+                        <button onclick="openAddModal()" class="btn-primary inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-white font-bold text-sm">
+                            <i class="bi bi-plus-lg"></i>
+                            <span>پلن جدید</span>
+                        </button>
+                        <% } %>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Success Message -->
         <% if (typeof success !== 'undefined' && success) { %>
         <div class="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-4 mb-6 text-emerald-400 text-sm flex items-center gap-2">
             <i class="bi bi-check-circle"></i> <%= success %>
         </div>
         <% } %>
 
-        <!-- Skeleton Loading for Plans -->
+        <!-- Skeleton -->
         <div id="plansSkeleton" class="space-y-3">
             <% for (let i = 0; i < 3; i++) { %>
-            <div class="plan-row rounded-2xl p-5 md:p-6">
-                <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+            <div class="plan-card">
+                <div class="hidden sm:flex items-center gap-4">
+                    <div class="skeleton" style="width:44px;height:44px;border-radius:12px;flex-shrink:0;"></div>
                     <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-3 mb-3">
-                            <div class="skeleton h-6 w-32 rounded"></div>
-                            <div class="skeleton h-6 w-16 rounded-full"></div>
-                        </div>
-                        <div class="skeleton h-4 w-48 rounded mb-3"></div>
-                        <div class="flex items-baseline gap-2">
-                            <div class="skeleton h-8 w-28 rounded"></div>
-                            <div class="skeleton h-4 w-12 rounded"></div>
+                        <div class="skeleton h-5 w-32 rounded mb-2"></div>
+                        <div class="skeleton h-4 w-48 rounded"></div>
+                    </div>
+                    <div class="flex gap-2">
+                        <div class="skeleton w-9 h-9 rounded-lg"></div>
+                        <div class="skeleton w-9 h-9 rounded-lg"></div>
+                        <div class="skeleton w-9 h-9 rounded-lg"></div>
+                    </div>
+                </div>
+                <div class="sm:hidden">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="skeleton" style="width:40px;height:40px;border-radius:11px;flex-shrink:0;"></div>
+                        <div class="flex-1">
+                            <div class="skeleton h-4 w-32 rounded mb-2"></div>
+                            <div class="skeleton h-3 w-24 rounded"></div>
                         </div>
                     </div>
-                    <div class="flex items-center gap-1.5 shrink-0">
-                        <div class="skeleton w-9 h-9 rounded-lg"></div>
-                        <div class="skeleton w-9 h-9 rounded-lg"></div>
-                        <div class="skeleton w-9 h-9 rounded-lg"></div>
+                    <div class="skeleton h-10 w-full rounded-lg mb-3"></div>
+                    <div class="flex gap-2">
+                        <div class="skeleton flex-1 h-9 rounded-lg"></div>
+                        <div class="skeleton flex-1 h-9 rounded-lg"></div>
+                        <div class="skeleton flex-1 h-9 rounded-lg"></div>
                     </div>
                 </div>
             </div>
             <% } %>
         </div>
 
-        <!-- Plans List (Hidden) -->
+        <!-- Plans list -->
         <div id="plansContent" class="space-y-3" style="display: none;">
             <% if (planCount > 0) { %>
                 <% plans.forEach(function(plan) { %>
-                <div class="plan-row rounded-2xl p-5 md:p-6">
-                    <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+                <div class="plan-card <%= plan.isActive ? '' : 'is-inactive' %>" data-plan-id="<%= plan._id %>" data-plan-active="<%= plan.isActive ? '1' : '0' %>">
+                    <!-- Desktop -->
+                    <div class="hidden sm:flex sm:items-center gap-4">
+                        <div class="plan-icon" data-plan-icon>
+                            <i class="bi bi-award<%= plan.isActive ? '-fill' : '' %>"></i>
+                        </div>
                         <div class="flex-1 min-w-0">
-                            <div class="flex items-center gap-3 mb-2 flex-wrap">
-                                <h3 class="text-lg font-extrabold text-white truncate"><%= plan.name %></h3>
-                                <span class="status-badge <%= plan.isActive ? 'status-active' : 'status-inactive' %>">
-                                    <i class="bi <%= plan.isActive ? 'bi-check-circle-fill' : 'bi-x-circle-fill' %> text-[10px]"></i>
-                                    <%= plan.isActive ? 'فعال' : 'غیرفعال' %>
+                            <div class="flex items-center gap-2 flex-wrap mb-1">
+                                <h3 class="text-base font-extrabold text-white truncate"><%= plan.name %></h3>
+                                <span class="plan-status <%= plan.isActive ? 'active' : 'inactive' %>" data-plan-status>
+                                    <i class="bi bi-circle-fill"></i>
+                                    <span data-plan-status-text><%= plan.isActive ? 'فعال' : 'غیرفعال' %></span>
                                 </span>
                             </div>
                             <% if (plan.description) { %>
-                            <p class="text-xs text-gray-500 mb-3 truncate"><%= plan.description %></p>
+                            <p class="text-xs text-gray-500 truncate mb-2"><%= plan.description %></p>
                             <% } %>
-                            <div class="flex items-baseline gap-1.5">
-                                <span class="text-2xl font-black text-accent-400">
-                                    <%= plan.price.toLocaleString("fa-IR-u-nu-latn") %>
-                                </span>
-                                <span class="text-xs text-gray-500">تومان</span>
+                            <div class="plan-price-line">
+                                <span class="plan-price-value"><%= plan.price.toLocaleString("fa-IR-u-nu-latn") %></span>
+                                <span class="plan-price-currency">تومان</span>
                             </div>
                         </div>
-
-                        <div class="flex items-center gap-1.5 shrink-0">
-                            <button onclick="openEditModal('<%= plan._id %>', '<%- plan.name %>', +'<%= plan.price %>', '<%- plan.description || `` %>')" class="action-btn" title="ویرایش">
+                        <div class="plan-actions">
+                            <button type="button" onclick="openEditModal(this)"
+                                    data-id="<%= plan._id %>" data-name="<%= plan.name %>"
+                                    data-price="<%= plan.price %>" data-desc="<%= plan.description || '' %>"
+                                    class="plan-action-btn" title="ویرایش">
                                 <i class="bi bi-pencil"></i>
                             </button>
-                            <button onclick="togglePlan('<%= plan._id %>')" class="action-btn <%= plan.isActive ? 'toggle-active' : 'toggle-inactive' %>" title="<%= plan.isActive ? 'غیرفعال کردن' : 'فعال کردن' %>">
-                                <i class="bi <%= plan.isActive ? 'bi-toggle-on' : 'bi-toggle-off' %>"></i>
+                            <button type="button" onclick="togglePlan(this, '<%= plan._id %>')"
+                                    data-toggle-btn
+                                    class="plan-action-btn <%= plan.isActive ? 'toggle-on' : 'toggle-off' %>"
+                                    title="<%= plan.isActive ? 'غیرفعال کردن' : 'فعال کردن' %>">
+                                <i class="bi <%= plan.isActive ? 'bi-toggle-on' : 'bi-toggle-off' %>" data-toggle-icon></i>
                             </button>
-                            <button onclick="openDeleteModal('<%= plan._id %>', '<%- plan.name %>')" class="action-btn delete" title="حذف">
+                            <button type="button" onclick="openDeleteModal(this)"
+                                    data-id="<%= plan._id %>" data-name="<%= plan.name %>"
+                                    class="plan-action-btn danger" title="حذف">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Mobile -->
+                    <div class="sm:hidden">
+                        <div class="plan-card-top">
+                            <div class="plan-icon" data-plan-icon>
+                                <i class="bi bi-award<%= plan.isActive ? '-fill' : '' %>"></i>
+                            </div>
+                            <div class="plan-card-info">
+                                <div class="plan-name-row">
+                                    <h3 class="font-extrabold text-white truncate"><%= plan.name %></h3>
+                                    <span class="plan-status <%= plan.isActive ? 'active' : 'inactive' %>" data-plan-status>
+                                        <i class="bi bi-circle-fill"></i>
+                                        <span data-plan-status-text><%= plan.isActive ? 'فعال' : 'غیرفعال' %></span>
+                                    </span>
+                                </div>
+                                <% if (plan.description) { %>
+                                <p class="plan-desc"><%= plan.description %></p>
+                                <% } %>
+                            </div>
+                        </div>
+                        <div class="plan-price-row">
+                            <span class="plan-price-label">قیمت</span>
+                            <div class="plan-price-line">
+                                <span class="plan-price-value"><%= plan.price.toLocaleString("fa-IR-u-nu-latn") %></span>
+                                <span class="plan-price-currency">تومان</span>
+                            </div>
+                        </div>
+                        <div class="plan-actions">
+                            <button type="button" onclick="openEditModal(this)"
+                                    data-id="<%= plan._id %>" data-name="<%= plan.name %>"
+                                    data-price="<%= plan.price %>" data-desc="<%= plan.description || '' %>"
+                                    class="plan-action-btn" title="ویرایش">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button type="button" onclick="togglePlan(this, '<%= plan._id %>')"
+                                    data-toggle-btn
+                                    class="plan-action-btn <%= plan.isActive ? 'toggle-on' : 'toggle-off' %>"
+                                    title="<%= plan.isActive ? 'غیرفعال کردن' : 'فعال کردن' %>">
+                                <i class="bi <%= plan.isActive ? 'bi-toggle-on' : 'bi-toggle-off' %>" data-toggle-icon></i>
+                            </button>
+                            <button type="button" onclick="openDeleteModal(this)"
+                                    data-id="<%= plan._id %>" data-name="<%= plan.name %>"
+                                    class="plan-action-btn danger" title="حذف">
                                 <i class="bi bi-trash"></i>
                             </button>
                         </div>
@@ -572,14 +1199,14 @@
                 </div>
                 <% }); %>
             <% } else { %>
-                <div class="card rounded-3xl py-20 text-center">
-                    <div class="w-16 h-16 bg-accent-700/10 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-accent-700/20">
+                <div class="card rounded-3xl py-16 px-6 text-center">
+                    <div class="w-16 h-16 bg-accent-700/10 rounded-2xl flex items-center justify-center mx-auto mb-5 border border-accent-700/20">
                         <i class="bi bi-tags text-3xl text-accent-400"></i>
                     </div>
                     <h3 class="text-lg font-bold text-white mb-2">هیچ پلنی تعریف نشده</h3>
-                    <p class="text-gray-500 text-sm mb-8">پلن‌های عضویت باشگاه خود را ایجاد کنید</p>
+                    <p class="text-gray-500 text-sm mb-6">پلن‌های عضویت باشگاه خود را ایجاد کنید</p>
                     <% if (planCount < maxPlans) { %>
-                    <button onclick="openAddModal()" class="btn-primary inline-flex items-center gap-2 px-8 py-3.5 rounded-2xl text-white font-bold text-sm">
+                    <button onclick="openAddModal()" class="btn-primary inline-flex items-center gap-2 px-6 py-3 rounded-2xl text-white font-bold text-sm w-full sm:w-auto justify-center">
                         <i class="bi bi-plus-lg"></i> ایجاد اولین پلن
                     </button>
                     <% } %>
@@ -602,7 +1229,7 @@
                     </div>
                     <div class="field-hint">
                         <i class="bi bi-info-circle"></i>
-                        <span>بین ۲ تا ۲۴ کاراکتر</span>
+                        <span>بین 2 تا 24 کاراکتر</span>
                     </div>
                     <input type="text" id="planName" class="input-field" placeholder="مثلاً: عضویت طلایی" maxlength="24" minlength="2" required>
                     <p class="error-text" id="planNameError"></p>
@@ -614,7 +1241,7 @@
                     </div>
                     <div class="field-hint">
                         <i class="bi bi-info-circle"></i>
-                        <span>حداکثر ۱۰۰,۰۰۰,۰۰۰ تومان</span>
+                        <span>حداکثر 100,000,000 تومان</span>
                     </div>
                     <input type="text" id="planPrice" style="direction: ltr;" class="input-field text-left" placeholder="0" oninput="formatPlanPrice(this)" required>
                     <p class="error-text" id="planPriceError"></p>
@@ -627,7 +1254,7 @@
                     </div>
                     <div class="field-hint">
                         <i class="bi bi-info-circle"></i>
-                        <span>حداکثر ۱۲۸ کاراکتر</span>
+                        <span>حداکثر 128 کاراکتر</span>
                     </div>
                     <textarea id="planDesc" rows="3" class="input-field resize-none" placeholder="توضیحات اختیاری..." maxlength="128"></textarea>
                     <p class="error-text" id="planDescError"></p>
@@ -673,11 +1300,9 @@
         </div>
     </div>
 
-    <!-- Toast -->
     <div id="toast" class="toast"></div>
 
     <script>
-        // ====== Skeleton Loading ======
         window.addEventListener('load', function() {
             setTimeout(function() {
                 document.getElementById('plansSkeleton').style.display = 'none';
@@ -685,32 +1310,35 @@
             }, 500);
         });
 
-        // ====== Counters ======
         function updateCounter(inputId, counterId, maxLength) {
             const input = document.getElementById(inputId);
             const counter = document.getElementById(counterId);
             if (!input || !counter) return;
+
             const len = input.value.length;
             counter.textContent = `${len} / ${maxLength}`;
             counter.classList.remove('warning', 'danger');
+
             if (len >= maxLength) counter.classList.add('danger');
             else if (len >= maxLength - 10) counter.classList.add('warning');
         }
 
-        // ====== Dropdown ======
         function toggleDropdown(e) {
             e.stopPropagation();
             const menu = document.getElementById('dropdownMenu');
             const caret = document.getElementById('dropdownCaret');
             menu?.classList.toggle('active');
+
             if (caret) {
                 const icon = caret.querySelector('i');
                 if (icon) icon.style.transform = menu?.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
             }
         }
+
         function closeDropdown() {
             const menu = document.getElementById('dropdownMenu');
             const caret = document.getElementById('dropdownCaret');
+
             if (menu) {
                 menu.classList.remove('active');
                 if (caret) {
@@ -720,37 +1348,38 @@
             }
         }
 
-        // ====== Mega Menu ======
         function toggleMegaMenu() {
             const menu = document.getElementById('megaMenu');
             const caret = document.getElementById('megaCaret');
             menu?.classList.toggle('active');
             if (caret) caret.style.transform = menu?.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
         }
+
         function closeMegaMenu() {
             const menu = document.getElementById('megaMenu');
             const caret = document.getElementById('megaCaret');
+
             if (menu) {
                 menu.classList.remove('active');
                 if (caret) caret.style.transform = 'rotate(0deg)';
             }
         }
 
-        // ====== Sidebar ======
         function openSidebar() {
             document.getElementById('sidebar').classList.add('open');
             document.getElementById('sidebarOverlay').classList.add('active');
             document.body.style.overflow = 'hidden';
         }
+
         function closeSidebar() {
             document.getElementById('sidebar').classList.remove('open');
             document.getElementById('sidebarOverlay').classList.remove('active');
             document.body.style.overflow = '';
         }
 
-        // ====== Modals ======
         window.openModal = (id) => document.getElementById(id)?.classList.add('active');
         window.closeModal = (id) => document.getElementById(id)?.classList.remove('active');
+
         function openLogoutModal() {
             closeDropdown();
             closeMegaMenu();
@@ -764,7 +1393,6 @@
             });
         });
 
-        // ====== Global click handlers ======
         document.addEventListener('click', (e) => {
             const userDropdown = document.getElementById('userDropdown');
             if (userDropdown && !userDropdown.contains(e.target)) closeDropdown();
@@ -785,11 +1413,11 @@
             }
         });
 
-        // ====== Toast ======
         function toast(msg, type) {
             const t = document.getElementById('toast');
             t.textContent = msg;
             t.style.display = 'block';
+
             if (type === 'error') {
                 t.style.background = 'rgba(127,29,29,0.95)';
                 t.style.borderColor = 'rgba(239,68,68,0.4)';
@@ -803,16 +1431,26 @@
                 t.style.borderColor = 'rgba(139,92,246,0.4)';
                 t.style.color = '#fff';
             }
+
             clearTimeout(t._t);
             t._t = setTimeout(() => t.style.display = 'none', 3000);
         }
 
-        // ====== Format ======
-        function fmt(n) { return parseInt(n).toLocaleString("fa-IR-u-nu-latn"); }
-        function unfmt(s) { return parseInt(s.replace(/,/g, '')) || 0; }
+        function fmt(n) {
+            return parseInt(n).toLocaleString("fa-IR-u-nu-latn");
+        }
+
+        function unfmt(s) {
+            return parseInt(s.replace(/,/g, '')) || 0;
+        }
+
         function formatPlanPrice(el) {
             let v = el.value.replace(/,/g, '');
-            if (v === '' || isNaN(v)) { el.value = ''; return; }
+            if (v === '' || isNaN(v)) {
+                el.value = '';
+                return;
+            }
+
             const num = parseInt(v);
             if (num > 100000000) {
                 el.value = fmt(100000000);
@@ -821,7 +1459,6 @@
             }
         }
 
-        // ====== Clear Errors ======
         function clearErrors() {
             document.querySelectorAll('.error-text').forEach(el => {
                 el.textContent = '';
@@ -829,74 +1466,87 @@
             });
             document.querySelectorAll('.input-field.error').forEach(el => el.classList.remove('error'));
         }
+
         function showError(fieldId, message) {
             const field = document.getElementById(fieldId);
             const errorEl = document.getElementById(fieldId + 'Error');
+
             if (field) field.classList.add('error');
-            if (errorEl) { errorEl.textContent = message; errorEl.classList.add('show'); }
+            if (errorEl) {
+                errorEl.textContent = message;
+                errorEl.classList.add('show');
+            }
         }
 
-        // ====== Add/Edit ======
         function openAddModal() {
-            const planCount = document.querySelectorAll('.plan-row').length;
-            if (planCount >= 7) { toast('حداکثر ۷ پلن می‌توانید ایجاد کنید', 'error'); return; }
+            const planCount = document.querySelectorAll('#plansContent .plan-card').length;
+            if (planCount >= 7) {
+                toast('حداکثر 7 پلن می‌توانید ایجاد کنید', 'error');
+                return;
+            }
+
             clearErrors();
             document.getElementById('planId').value = '';
             document.getElementById('planName').value = '';
             document.getElementById('planPrice').value = '';
             document.getElementById('planDesc').value = '';
             document.getElementById('planModalTitle').textContent = 'پلن جدید';
+
             updateCounter('planName', 'planNameCounter', 24);
             updateCounter('planDesc', 'planDescCounter', 128);
+
             openModal('planModal');
         }
 
-        function openEditModal(id, name, price, desc) {
+        function openEditModal(btn) {
+            const { id, name, price, desc } = btn.dataset;
+
             clearErrors();
             document.getElementById('planId').value = id;
             document.getElementById('planName').value = name;
-            document.getElementById('planPrice').value = fmt(price);
+            document.getElementById('planPrice').value = fmt(Number(price));
             document.getElementById('planDesc').value = desc || '';
             document.getElementById('planModalTitle').textContent = 'ویرایش پلن';
+
             updateCounter('planName', 'planNameCounter', 24);
             updateCounter('planDesc', 'planDescCounter', 128);
+
             openModal('planModal');
         }
 
-        // ====== Form Submit ======
+        let hasError = false;
+
         document.getElementById('planForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             clearErrors();
+            hasError = false;
+
             const id = document.getElementById('planId').value;
             const name = document.getElementById('planName').value.trim();
             const price = unfmt(document.getElementById('planPrice').value);
             const description = document.getElementById('planDesc').value.trim();
-            let hasError = false;
 
-            // Name validation: 2 to 24 characters
             if (!name) {
                 showError('planName', 'نام پلن الزامی است');
                 hasError = true;
             } else if (name.length < 2) {
-                showError('planName', 'نام پلن باید حداقل ۲ کاراکتر باشد');
+                showError('planName', 'نام پلن باید حداقل 2 کاراکتر باشد');
                 hasError = true;
             } else if (name.length > 24) {
-                showError('planName', 'نام پلن باید حداکثر ۲۴ کاراکتر باشد');
+                showError('planName', 'نام پلن باید حداکثر 24 کاراکتر باشد');
                 hasError = true;
             }
 
-            // Price validation: max 100,000,000
             if (!price || price <= 0) {
                 showError('planPrice', 'قیمت معتبر وارد کنید');
                 hasError = true;
             } else if (price > 100000000) {
-                showError('planPrice', 'قیمت نمی‌تواند بیشتر از ۱۰۰,۰۰۰,۰۰۰ تومان باشد');
+                showError('planPrice', 'قیمت نمی‌تواند بیشتر از 100,000,000 تومان باشد');
                 hasError = true;
             }
 
-            // Description validation: max 128 characters
             if (description.length > 128) {
-                showError('planDesc', 'توضیحات باید حداکثر ۱۲۸ کاراکتر باشد');
+                showError('planDesc', 'توضیحات باید حداکثر 128 کاراکتر باشد');
                 hasError = true;
             }
 
@@ -905,6 +1555,7 @@
             const url = id ? `/plans/${id}` : '/plans';
             const method = id ? 'PUT' : 'POST';
             const btn = document.getElementById('planSubmitBtn');
+
             btn.disabled = true;
             btn.innerHTML = '<span style="width:20px;height:20px;border:2px solid rgba(255,255,255,0.2);border-top-color:#fff;border-radius:50%;animation:spin 0.6s linear infinite;display:inline-block;"></span> در حال ذخیره...';
 
@@ -914,7 +1565,9 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name, price, description })
                 });
+
                 const result = await res.json();
+
                 if (result.success) {
                     toast(result.message, 'success');
                     closeModal('planModal');
@@ -931,37 +1584,77 @@
             } catch (err) {
                 toast('خطا در ارتباط با سرور', 'error');
             }
+
             btn.disabled = false;
             btn.innerHTML = '<span>ذخیره</span>';
         });
 
-        // ====== Input listeners for counters ======
         document.getElementById('planName')?.addEventListener('input', function() {
             updateCounter('planName', 'planNameCounter', 24);
         });
+
         document.getElementById('planDesc')?.addEventListener('input', function() {
             updateCounter('planDesc', 'planDescCounter', 128);
         });
 
-        // ====== Toggle ======
-        async function togglePlan(id) {
+        // ===== Toggle without reload =====
+        async function togglePlan(btn, id) {
+            const card = btn.closest('.plan-card');
+            if (!card || btn.classList.contains('is-loading')) return;
+
+            btn.classList.add('is-loading');
+
             try {
                 const res = await fetch(`/plans/${id}/toggle`, { method: 'PATCH' });
                 const result = await res.json();
-                if (result.success) {
-                    toast(result.message, 'success');
-                    setTimeout(() => location.reload(), 500);
-                } else {
+
+                if (!result.success) {
                     toast(result.message || 'خطا', 'error');
+                    btn.classList.remove('is-loading');
+                    return;
                 }
+
+                const wasActive = card.dataset.planActive === '1';
+                const isActive = !wasActive;
+                card.dataset.planActive = isActive ? '1' : '0';
+
+                // Card opacity (is-inactive)
+                card.classList.toggle('is-inactive', !isActive);
+
+                // Update every toggle button inside this card (mobile + desktop)
+                card.querySelectorAll('[data-toggle-btn]').forEach(b => {
+                    b.classList.remove('toggle-on', 'toggle-off');
+                    b.classList.add(isActive ? 'toggle-on' : 'toggle-off');
+                    b.title = isActive ? 'غیرفعال کردن' : 'فعال کردن';
+                    const icon = b.querySelector('[data-toggle-icon]');
+                    if (icon) icon.className = 'bi ' + (isActive ? 'bi-toggle-on' : 'bi-toggle-off');
+                });
+
+                // Update status badge text
+                card.querySelectorAll('[data-plan-status]').forEach(badge => {
+                    badge.classList.remove('active', 'inactive');
+                    badge.classList.add(isActive ? 'active' : 'inactive');
+                    const txt = badge.querySelector('[data-plan-status-text]');
+                    if (txt) txt.textContent = isActive ? 'فعال' : 'غیرفعال';
+                });
+
+                // Update plan icon (filled vs outline)
+                card.querySelectorAll('[data-plan-icon] i').forEach(icon => {
+                    icon.className = 'bi ' + (isActive ? 'bi-award-fill' : 'bi-award');
+                });
+
+                toast(result.message || (isActive ? 'پلن فعال شد' : 'پلن غیرفعال شد'), 'success');
+                btn.classList.remove('is-loading');
             } catch (err) {
                 toast('خطا در ارتباط با سرور', 'error');
+                btn.classList.remove('is-loading');
             }
         }
 
-        // ====== Delete ======
         let deleteId = null;
-        function openDeleteModal(id, name) {
+
+        function openDeleteModal(btn) {
+            const { id, name } = btn.dataset;
             deleteId = id;
             document.getElementById('deleteMsg').textContent = `آیا از حذف پلن "${name}" اطمینان دارید؟ این عمل قابل بازگشت نیست.`;
             openModal('deleteModal');
@@ -969,12 +1662,15 @@
 
         document.getElementById('deleteConfirmBtn').addEventListener('click', async function() {
             if (!deleteId) return;
+
             const btn = this;
             btn.disabled = true;
             btn.textContent = '...';
+
             try {
                 const res = await fetch(`/plans/${deleteId}`, { method: 'DELETE' });
                 const result = await res.json();
+
                 if (result.success) {
                     toast(result.message, 'success');
                     closeModal('deleteModal');
@@ -986,6 +1682,7 @@
             } catch (err) {
                 toast('خطا در ارتباط با سرور', 'error');
             }
+
             btn.disabled = false;
             btn.textContent = 'حذف';
             deleteId = null;

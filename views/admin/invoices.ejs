@@ -3,11 +3,15 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#050508" />
+    <meta name="color-scheme" content="dark" />
     <title>مدیریت فاکتورها | فاکتوریتو</title>
 
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/sahel-font@v3.4.0/dist/font-face.css" />
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
 
     <script>
         tailwind.config = {
@@ -31,7 +35,7 @@
                             500: '#8b5cf6',
                             600: '#7c3aed',
                             700: '#6d28d9',
-                        }
+                        },
                     },
                 }
             }
@@ -39,49 +43,454 @@
     </script>
 
     <style>
-        * {
+        :root {
+            --color-bg: #050508;
+            --color-surface: #0f0f1a;
+            --color-surface-elevated: #14141f;
+            --color-border: rgba(167, 139, 250, 0.06);
+            --color-border-strong: rgba(167, 139, 250, 0.15);
+            --color-accent: #a78bfa;
+            --color-accent-strong: #7c3aed;
+            --color-accent-soft: rgba(167, 139, 250, 0.06);
+            --color-accent-soft-hover: rgba(167, 139, 250, 0.12);
+            --color-text-primary: #e5e7eb;
+            --color-text-secondary: #9ca3af;
+            --color-text-muted: #6b7280;
+            --color-danger: #f87171;
+            --color-danger-soft: rgba(239, 68, 68, 0.06);
+            --color-danger-soft-hover: rgba(239, 68, 68, 0.12);
+            --color-success: #34d399;
+            --color-success-soft: rgba(52, 211, 153, 0.08);
+            --color-warning: #fbbf24;
+            --color-warning-soft: rgba(251, 191, 36, 0.08);
+
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+
+            --duration-fast: 150ms;
+            --duration-base: 250ms;
+            --duration-slow: 400ms;
+            --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        *,
+        *::before,
+        *::after {
             font-family: 'Sahel', 'Vazirmatn', system-ui, sans-serif !important;
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        html {
+            -webkit-text-size-adjust: 100%;
+            text-rendering: optimizeLegibility;
+        }
+
         body {
-            background: #050508;
-            color: #d1d5db;
+            background: var(--color-bg);
+            color: var(--color-text-secondary);
             line-height: 1.8;
             font-weight: 400;
             overflow-x: hidden;
-            scroll-behavior: smooth;
+            min-height: 100dvh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: #050508; }
-        ::-webkit-scrollbar-thumb { background: #1a1a2e; border-radius: 10px; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--color-bg); }
+        ::-webkit-scrollbar-thumb { background: var(--color-surface); border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #2a2a46; }
 
-        .glass-nav {
-            background: rgba(10, 10, 18, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(167, 139, 250, 0.08);
-            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.6);
+        :focus-visible {
+            outline: 2px solid var(--color-accent);
+            outline-offset: 2px;
+            border-radius: 6px;
         }
 
-        .nav-link {
-            color: #9ca3af;
+        /* ===== Skip Link ===== */
+        .skip-link {
+            position: absolute;
+            top: -100px;
+            right: 16px;
+            background: var(--color-accent-strong);
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: var(--radius-md);
+            z-index: 9999;
+            text-decoration: none;
+            font-weight: 700;
+            transition: top var(--duration-fast) ease;
+        }
+
+        .skip-link:focus {
+            top: 16px;
+            outline: 2px solid var(--color-accent);
+            outline-offset: 2px;
+        }
+
+        /* ===== Sidebar Overlay ===== */
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 5, 8, 0.6);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 90;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity var(--duration-slow) var(--ease-out),
+                        visibility var(--duration-slow) var(--ease-out);
+        }
+
+        .sidebar-overlay--active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        /* ===== Sidebar ===== */
+        .sidebar {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            bottom: 16px;
+            width: 280px;
+            max-width: calc(100vw - 32px);
+            background: rgba(10, 10, 18, 0.98);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--color-border-strong);
+            border-radius: 24px;
+            box-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.85);
+            z-index: 110;
+            padding: 20px;
+            overflow-y: auto;
+            transform: translateX(calc(100% + 32px));
+            visibility: hidden;
+            pointer-events: none;
+            transition: transform var(--duration-slow) var(--ease-out),
+                        visibility var(--duration-slow) var(--ease-out);
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            will-change: transform;
+            contain: layout style;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            display: none;
+            width: 0;
+        }
+
+        .sidebar--open {
+            transform: translateX(0);
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        @media (max-width: 480px) {
+            .sidebar {
+                top: 12px;
+                right: 12px;
+                bottom: 12px;
+                width: calc(100vw - 24px);
+                max-width: 280px;
+            }
+        }
+
+        .sidebar__header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--color-border);
+            margin-bottom: 20px;
+        }
+
+        .sidebar__brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .sidebar__logo {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--color-accent-strong), var(--color-accent));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 800;
+            font-size: 16px;
+            box-shadow: 0 4px 16px rgba(124, 58, 237, 0.3);
+            flex-shrink: 0;
+        }
+
+        .sidebar__title {
+            font-weight: 800;
+            font-size: 18px;
+            color: #fff;
+        }
+
+        .sidebar__close {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: var(--color-text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color var(--duration-fast) ease,
+                        color var(--duration-fast) ease;
+            font-size: 18px;
+            flex-shrink: 0;
+            font-family: inherit;
+        }
+
+        .sidebar__close:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+        }
+
+        .sidebar__nav {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .sidebar__link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            color: var(--color-text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color var(--duration-fast) ease,
+                        color var(--duration-fast) ease;
+            text-decoration: none;
+            min-height: 44px;
+            width: 100%;
+            text-align: right;
+            font-family: inherit;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .sidebar__link:hover {
+            background: var(--color-accent-soft);
+            color: #c4b5fd;
+        }
+
+        .sidebar__link--active {
+            background: rgba(167, 139, 250, 0.08);
+            color: var(--color-accent);
+        }
+
+        .sidebar__link-icon {
+            font-size: 18px;
+            width: 22px;
+            text-align: center;
+            color: var(--color-text-muted);
+            flex-shrink: 0;
+        }
+
+        .sidebar__link--active .sidebar__link-icon {
+            color: var(--color-accent);
+        }
+
+        .sidebar__link--danger {
+            color: var(--color-danger);
+        }
+
+        .sidebar__link--danger .sidebar__link-icon {
+            color: var(--color-danger);
+        }
+
+        .sidebar__divider {
+            height: 1px;
+            background: var(--color-border);
+            margin: 8px 12px;
+        }
+
+        /* ===== Navbar ===== */
+        .nav {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+            z-index: 30;
+            padding: 12px;
+        }
+
+        @media (min-width: 769px) {
+            .nav {
+                padding: 20px 24px;
+            }
+        }
+
+        .nav__container {
+            max-width: 72rem;
+            margin: 0 auto;
+            background: rgba(10, 10, 18, 0.9);
+            border: 1px solid var(--color-border-strong);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.6);
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        @media (min-width: 769px) {
+            .nav__container {
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                padding: 12px 24px;
+            }
+        }
+
+        .nav__brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            flex-shrink: 0;
+            min-width: 0;
+        }
+
+        .nav__logo {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--color-accent-strong), var(--color-accent));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 800;
+            font-size: 14px;
+            box-shadow: 0 4px 16px rgba(124, 58, 237, 0.3);
+            flex-shrink: 0;
+            transition: transform var(--duration-base) var(--ease-out);
+        }
+
+        .nav__brand:hover .nav__logo {
+            transform: scale(1.05);
+        }
+
+        @media (min-width: 769px) {
+            .nav__logo {
+                width: 36px;
+                height: 36px;
+                font-size: 16px;
+            }
+        }
+
+        .nav__title {
+            font-weight: 800;
+            font-size: 14px;
+            color: #fff;
+            letter-spacing: -0.02em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        @media (min-width: 769px) {
+            .nav__title {
+                font-size: 18px;
+            }
+        }
+
+        .nav__mobile {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        @media (min-width: 769px) {
+            .nav__mobile {
+                display: none;
+            }
+        }
+
+        .nav__icon-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            color: var(--color-text-primary);
+            cursor: pointer;
+            transition: background-color var(--duration-base) ease,
+                        color var(--duration-base) ease;
+            font-size: 18px;
+            font-family: inherit;
+        }
+
+        .nav__icon-btn:hover {
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .nav__icon-btn--danger {
+            color: var(--color-danger);
+            background: var(--color-danger-soft);
+            border-color: rgba(239, 68, 68, 0.1);
+        }
+
+        .nav__icon-btn--danger:hover {
+            background: var(--color-danger-soft-hover);
+            color: #fca5a5;
+        }
+
+        .nav__links {
+            display: none;
+            align-items: center;
+            gap: 4px;
+        }
+
+        @media (min-width: 769px) {
+            .nav__links {
+                display: flex;
+            }
+        }
+
+        .nav__link {
+            color: var(--color-text-secondary);
             font-size: 13px;
             font-weight: 600;
-            padding: 8px 16px;
+            padding: 10px 16px;
             border-radius: 10px;
-            transition: all 0.3s ease;
+            transition: color var(--duration-base) ease,
+                        background-color var(--duration-base) ease;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 8px;
             position: relative;
+            min-height: 40px;
         }
-        .nav-link::before {
+
+        .nav__link::before {
             content: '';
             position: absolute;
             right: 0;
@@ -89,43 +498,259 @@
             transform: translateY(-50%);
             width: 2px;
             height: 0;
-            background: #a78bfa;
+            background: var(--color-accent);
             border-radius: 2px;
-            transition: all 0.3s ease;
+            transition: height var(--duration-base) ease;
         }
-        .nav-link:hover {
-            color: #e5e7eb;
-            background: rgba(167, 139, 250, 0.04);
+
+        .nav__link:hover {
+            color: var(--color-text-primary);
+            background: var(--color-accent-soft);
         }
-        .nav-link.active {
-            color: #a78bfa;
-            background: rgba(167, 139, 250, 0.06);
+
+        .nav__link--active {
+            color: var(--color-accent);
+            background: var(--color-accent-soft);
         }
-        .nav-link.active::before {
+
+        .nav__link--active::before {
             height: 24px;
         }
 
-        .btn-logout {
-            display: flex;
+        .nav__divider {
+            width: 1px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.05);
+            margin: 0 8px;
+        }
+
+        .nav__logout {
+            display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 8px 16px;
-            background: rgba(239, 68, 68, 0.06);
+            padding: 10px 16px;
+            background: var(--color-danger-soft);
             border: 1px solid rgba(239, 68, 68, 0.1);
             border-radius: 10px;
-            color: #f87171;
+            color: var(--color-danger);
             font-size: 13px;
             font-weight: 600;
-            transition: all 0.3s ease;
+            transition: background-color var(--duration-base) ease,
+                        border-color var(--duration-base) ease,
+                        color var(--duration-base) ease;
             cursor: pointer;
-            text-decoration: none;
+            min-height: 40px;
+            font-family: inherit;
         }
-        .btn-logout:hover {
-            background: rgba(239, 68, 68, 0.12);
+
+        .nav__logout:hover {
+            background: var(--color-danger-soft-hover);
             border-color: rgba(239, 68, 68, 0.2);
             color: #fca5a5;
         }
 
+        /* ===== Page ===== */
+        .page {
+            max-width: 72rem;
+            margin: 0 auto;
+            padding: 76px 12px 48px;
+        }
+
+        @media (min-width: 769px) {
+            .page {
+                padding: 112px 16px 64px;
+            }
+        }
+
+        .page__header {
+            margin-bottom: 24px;
+        }
+
+        @media (min-width: 769px) {
+            .page__header {
+                margin-bottom: 40px;
+            }
+        }
+
+        .page__title {
+            font-size: 22px;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        @media (min-width: 769px) {
+            .page__title {
+                font-size: 30px;
+            }
+        }
+
+        @media (min-width: 1025px) {
+            .page__title {
+                font-size: 36px;
+            }
+        }
+
+        .page__title-accent {
+            background: linear-gradient(90deg, var(--color-accent), var(--color-accent-strong));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page__subtitle {
+            font-size: 12px;
+            color: var(--color-text-muted);
+        }
+
+        @media (min-width: 769px) {
+            .page__subtitle {
+                font-size: 14px;
+            }
+        }
+
+        /* ===== Badge ===== */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            line-height: 1.4;
+            white-space: nowrap;
+        }
+
+        .badge--accent {
+            background: var(--color-accent-soft);
+            color: var(--color-accent);
+        }
+
+        /* ===== Data Table ===== */
+        .data-table {
+            background: rgba(15, 15, 26, 0.6);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            contain: layout style;
+        }
+
+        @media (max-width: 768px) {
+            .data-table {
+                display: none;
+            }
+        }
+
+        .data-table__inner {
+            overflow-x: auto;
+        }
+
+        .data-table__table {
+            width: 100%;
+            font-size: 14px;
+        }
+
+        .data-table__head {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--color-text-muted);
+            font-size: 12px;
+        }
+
+        .data-table__th {
+            padding: 16px;
+            text-align: right;
+            font-weight: 500;
+        }
+
+        .data-table__row {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: background-color var(--duration-fast) ease;
+            content-visibility: auto;
+            contain-intrinsic-size: auto 64px;
+        }
+
+        .data-table__row:last-child {
+            border-bottom: none;
+        }
+
+        .data-table__row:hover {
+            background: rgba(167, 139, 250, 0.02);
+        }
+
+        .data-table__cell {
+            padding: 16px;
+        }
+
+        .data-table__user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .data-table__avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            background: rgba(124, 58, 237, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-accent);
+            font-weight: 800;
+            font-size: 10px;
+            flex-shrink: 0;
+            contain: layout style;
+        }
+
+        .data-table__name {
+            font-weight: 600;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .data-table__invoice-num {
+            font-family: ui-monospace, 'SF Mono', Menlo, Monaco, monospace;
+            color: var(--color-text-secondary);
+            font-size: 12px;
+            letter-spacing: 0.05em;
+        }
+
+        .data-table__email {
+            color: var(--color-text-secondary);
+            font-size: 14px;
+        }
+
+        .data-table__date {
+            color: var(--color-text-muted);
+            font-size: 12px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .data-table__amount {
+            font-weight: 700;
+            color: #fff;
+            font-size: 14px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .data-table__unit {
+            font-size: 10px;
+            color: var(--color-text-muted);
+        }
+
+        .data-table__actions {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* ===== Status Badge ===== */
         .status-badge {
             display: inline-flex;
             align-items: center;
@@ -135,259 +760,134 @@
             font-size: 11px;
             font-weight: 700;
         }
-        .status-paid {
-            background: rgba(52, 211, 153, 0.08);
+
+        .status-badge--paid {
+            background: var(--color-success-soft);
             border: 1px solid rgba(52, 211, 153, 0.15);
-            color: #34d399;
+            color: var(--color-success);
         }
-        .status-pending {
-            background: rgba(251, 191, 36, 0.08);
+
+        .status-badge--pending {
+            background: var(--color-warning-soft);
             border: 1px solid rgba(251, 191, 36, 0.15);
-            color: #fbbf24;
+            color: var(--color-warning);
         }
 
-        .badge-purple {
-            background: rgba(167, 139, 250, 0.08);
-            color: #a78bfa;
-            padding: 2px 10px;
-            border-radius: 20px;
-            font-size: 10px;
-            font-weight: 700;
+        .status-badge__dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            display: inline-block;
         }
 
-        .sidebar-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(5, 5, 8, 0.7);
-            backdrop-filter: blur(8px);
-            z-index: 60;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-        .sidebar-overlay.active {
-            opacity: 1;
-            visibility: visible;
+        @media (max-width: 768px) {
+            .status-badge {
+                font-size: 9px;
+                padding: 2px 8px;
+            }
         }
 
-        .sidebar {
-            position: fixed;
-            top: 0;
-            right: -100%;
-            width: 280px;
-            height: 100vh;
-            background: rgba(10, 10, 18, 0.95);
-            backdrop-filter: blur(20px);
-            border-left: 1px solid rgba(167, 139, 250, 0.06);
-            z-index: 70;
-            padding: 20px;
-            transition: right 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-            overflow-y: auto;
-        }
-        .sidebar.open {
-            right: 0;
+        @media (max-width: 480px) {
+            .status-badge {
+                font-size: 8px;
+                padding: 2px 6px;
+            }
         }
 
-        .sidebar-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding-bottom: 16px;
-            border-bottom: 1px solid rgba(167, 139, 250, 0.06);
-            margin-bottom: 20px;
-        }
-
-        .sidebar-logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-        }
-        .sidebar-logo .logo-box {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, #7c3aed, #a78bfa);
-            border-radius: 10px;
-            display: flex;
+        /* ===== Action Button ===== */
+        .action__btn {
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            color: #fff;
-            font-weight: 800;
-            font-size: 16px;
-            box-shadow: 0 4px 16px rgba(124, 58, 237, 0.3);
-        }
-        .sidebar-logo span {
-            font-weight: 800;
-            font-size: 18px;
-            color: #fff;
-        }
-
-        .sidebar-close {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            color: #6b7280;
+            gap: 6px;
+            padding: 8px 16px;
+            background: var(--color-accent-soft);
+            border: 1px solid var(--color-border-strong);
+            border-radius: var(--radius-md);
+            color: var(--color-accent);
+            font-size: 12px;
+            font-weight: 600;
+            transition: background-color var(--duration-fast) ease,
+                        border-color var(--duration-fast) ease,
+                        color var(--duration-fast) ease;
+            text-decoration: none;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-            font-size: 18px;
-        }
-        .sidebar-close:hover {
-            background: rgba(255, 255, 255, 0.06);
-            color: #fff;
+            font-family: inherit;
         }
 
-        .sidebar-link {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 14px;
-            border-radius: 10px;
-            color: #9ca3af;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            text-decoration: none;
-        }
-        .sidebar-link:hover {
-            background: rgba(167, 139, 250, 0.06);
+        .action__btn:hover {
+            background: rgba(167, 139, 250, 0.15);
+            border-color: rgba(167, 139, 250, 0.3);
             color: #c4b5fd;
         }
-        .sidebar-link.active {
-            background: rgba(167, 139, 250, 0.08);
-            color: #a78bfa;
-        }
-        .sidebar-link i {
-            font-size: 18px;
-            width: 22px;
-            text-align: center;
-            color: #6b7280;
-        }
-        .sidebar-link.active i {
-            color: #a78bfa;
+
+        .action__btn i {
+            font-size: 14px;
         }
 
-        .sidebar-divider {
-            height: 1px;
-            background: rgba(167, 139, 250, 0.06);
-            margin: 8px 12px;
+        .action__btn--danger {
+            background: var(--color-danger-soft);
+            border-color: rgba(239, 68, 68, 0.15);
+            color: var(--color-danger);
         }
 
-        .menu-btn {
+        .action__btn--danger:hover {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+        }
+
+        @media (max-width: 768px) {
+            .action__btn {
+                padding: 6px 12px;
+                font-size: 11px;
+                border-radius: 10px;
+            }
+
+            .action__btn i {
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .action__btn {
+                padding: 4px 10px;
+                font-size: 10px;
+                border-radius: 8px;
+            }
+
+            .action__btn i {
+                font-size: 11px;
+            }
+        }
+
+        /* ===== Invoice Cards (Mobile) ===== */
+        .invoice-cards {
             display: none;
-            align-items: center;
-            justify-content: center;
-            width: 38px;
-            height: 38px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 12px;
-            color: #d1d5db;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .menu-btn:hover {
-            background: rgba(255, 255, 255, 0.06);
+            flex-direction: column;
+            gap: 12px;
         }
 
-        .toast {
-            position: fixed;
-            bottom: 24px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #14141f;
-            color: #d1d5db;
-            padding: 12px 24px;
-            border-radius: 16px;
-            font-size: 13px;
-            font-weight: 600;
-            z-index: 1000;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            animation: toastIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        @keyframes toastIn {
-            from { opacity: 0; transform: translateX(-50%) translateY(12px); }
-            to { opacity: 1; transform: translateX(-50%) translateY(0); }
-        }
-
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(5, 5, 8, 0.85);
-            backdrop-filter: blur(10px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 200;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .modal-dialog {
-            background: #14141f;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 20px;
-            padding: 28px;
-            max-width: 420px;
-            width: 90%;
-            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
-            transform: scale(0.92) translateY(16px);
-            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .modal-overlay.active .modal-dialog {
-            transform: scale(1) translateY(0);
-        }
-
-        .loading-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(5, 5, 8, 0.5);
-            backdrop-filter: blur(4px);
-            border-radius: 16px;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-        }
-        .loading-overlay.active {
-            display: flex;
-        }
-        .loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid rgba(255, 255, 255, 0.1);
-            border-top-color: #a78bfa;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .invoices-wrapper {
-            position: relative;
-            min-height: 200px;
+        @media (max-width: 768px) {
+            .invoice-cards {
+                display: flex;
+            }
         }
 
         .invoice-card {
             background: rgba(15, 15, 26, 0.6);
-            border: 1px solid rgba(167, 139, 250, 0.06);
-            border-radius: 16px;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
             padding: 16px;
-            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            transition: border-color var(--duration-slow) var(--ease-out),
+                        transform var(--duration-slow) var(--ease-out);
             position: relative;
             overflow: hidden;
+            content-visibility: auto;
+            contain-intrinsic-size: auto 180px;
+            contain: layout style;
         }
+
         .invoice-card::before {
             content: '';
             position: absolute;
@@ -395,19 +895,21 @@
             right: 0;
             width: 3px;
             height: 100%;
-            background: linear-gradient(180deg, #7c3aed, #a78bfa);
+            background: linear-gradient(180deg, var(--color-accent-strong), var(--color-accent));
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity var(--duration-slow) ease;
         }
+
         .invoice-card:hover {
-            border-color: rgba(167, 139, 250, 0.15);
+            border-color: var(--color-border-strong);
             transform: translateY(-2px);
         }
+
         .invoice-card:hover::before {
             opacity: 1;
         }
 
-        .invoice-card .top-row {
+        .invoice-card__top {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
@@ -415,12 +917,32 @@
             margin-bottom: 10px;
         }
 
-        .invoice-card .member-info {
+        .invoice-card__info {
             flex: 1;
             min-width: 0;
         }
 
-        .invoice-card .member-info .name {
+        .invoice-card__badges {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .invoice-card__number {
+            font-family: ui-monospace, 'SF Mono', Menlo, Monaco, monospace;
+            font-size: 10px;
+            color: var(--color-text-muted);
+            letter-spacing: 0.05em;
+        }
+
+        @media (max-width: 768px) {
+            .invoice-card__number {
+                font-size: 9px;
+            }
+        }
+
+        .invoice-card__name {
             font-size: 15px;
             font-weight: 800;
             color: #fff;
@@ -428,40 +950,81 @@
             line-height: 1.3;
         }
 
-        .invoice-card .member-info .meta {
+        @media (max-width: 768px) {
+            .invoice-card__name {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .invoice-card__name {
+                font-size: 13px;
+            }
+        }
+
+        .invoice-card__meta {
             display: flex;
             flex-wrap: wrap;
             gap: 4px 10px;
             margin-top: 4px;
         }
-        .invoice-card .member-info .meta span {
+
+        .invoice-card__meta span {
             font-size: 10px;
-            color: #9ca3af;
+            color: var(--color-text-secondary);
             display: flex;
             align-items: center;
             gap: 4px;
         }
-        .invoice-card .member-info .meta span i {
+
+        .invoice-card__meta span i {
             font-size: 9px;
-            color: #6b7280;
+            color: var(--color-text-muted);
         }
 
-        .invoice-card .price-box {
+        @media (max-width: 768px) {
+            .invoice-card__meta span {
+                font-size: 9px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .invoice-card__meta span {
+                font-size: 8px;
+            }
+        }
+
+        .invoice-card__price {
             text-align: left;
             flex-shrink: 0;
         }
-        .invoice-card .price-box .amount {
+
+        .invoice-card__amount {
             font-size: 17px;
             font-weight: 900;
-            color: #a78bfa;
+            color: var(--color-accent);
             line-height: 1.2;
-        }
-        .invoice-card .price-box .unit {
-            font-size: 8px;
-            color: #6b7280;
+            font-variant-numeric: tabular-nums;
         }
 
-        .invoice-card .action-box {
+        @media (max-width: 768px) {
+            .invoice-card__amount {
+                font-size: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .invoice-card__amount {
+                font-size: 14px;
+            }
+        }
+
+        .invoice-card__unit {
+            font-size: 8px;
+            color: var(--color-text-muted);
+        }
+
+        .invoice-card__actions {
             display: flex;
             align-items: center;
             gap: 8px;
@@ -470,390 +1033,714 @@
             border-top: 1px solid rgba(255, 255, 255, 0.04);
         }
 
-        .action-box .action-btn {
+        .invoice-card__actions .action__btn {
             flex: 1;
             height: 42px;
             border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            color: #6b7280;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-decoration: none;
-            padding: 0 12px;
-        }
-        .action-box .action-btn:hover {
-            background: rgba(167, 139, 250, 0.08);
-            border-color: rgba(167, 139, 250, 0.2);
-            color: #a78bfa;
-        }
-        .action-box .action-btn i {
-            font-size: 15px;
-        }
-
-        .action-box .action-btn.delete-btn {
-            color: #f87171;
-        }
-        .action-box .action-btn.delete-btn:hover {
-            background: rgba(239, 68, 68, 0.08);
-            border-color: rgba(239, 68, 68, 0.2);
-            color: #fca5a5;
-        }
-        .action-box .action-btn.view-btn {
-            color: #a78bfa;
-        }
-        .action-box .action-btn.view-btn:hover {
-            background: rgba(167, 139, 250, 0.08);
-            border-color: rgba(167, 139, 250, 0.2);
-            color: #c4b5fd;
-        }
-
-        .desktop-table {
-            display: block;
-        }
-
-        .action-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 16px;
-            background: rgba(167, 139, 250, 0.08);
-            border: 1px solid rgba(167, 139, 250, 0.15);
-            border-radius: 12px;
-            color: #a78bfa;
-            font-size: 12px;
-            font-weight: 600;
-            transition: all 0.2s ease;
-            text-decoration: none;
-            cursor: pointer;
-        }
-        .action-badge:hover {
-            background: rgba(167, 139, 250, 0.15);
-            border-color: rgba(167, 139, 250, 0.3);
-            color: #c4b5fd;
-        }
-        .action-badge i {
-            font-size: 14px;
-        }
-        .action-badge.danger {
-            background: rgba(239, 68, 68, 0.08);
-            border-color: rgba(239, 68, 68, 0.15);
-            color: #f87171;
-        }
-        .action-badge.danger:hover {
-            background: rgba(239, 68, 68, 0.15);
-            border-color: rgba(239, 68, 68, 0.3);
-            color: #fca5a5;
         }
 
         @media (max-width: 768px) {
-            .nav-links {
-                display: none !important;
-            }
-            .menu-btn {
-                display: flex !important;
-            }
-
-            .glass-nav {
-                padding: 8px 12px !important;
-                border-radius: 16px !important;
-            }
-            .glass-nav .font-extrabold.text-xl {
-                font-size: 16px !important;
-            }
-            .glass-nav .w-9.h-9 {
-                width: 32px !important;
-                height: 32px !important;
-                font-size: 14px !important;
-            }
-
-            main {
-                padding-top: 90px !important;
-                padding-left: 12px !important;
-                padding-right: 12px !important;
-            }
-
-            .desktop-table {
-                display: none !important;
-            }
-
-            .invoice-card {
-                padding: 14px !important;
-                border-radius: 14px !important;
-            }
-
-            .invoice-card .member-info .name {
-                font-size: 14px !important;
-            }
-            .invoice-card .member-info .meta span {
-                font-size: 9px !important;
-            }
-            .invoice-card .price-box .amount {
-                font-size: 15px !important;
-            }
-
-            .action-box .action-btn {
-                font-size: 11px !important;
-                height: 38px !important;
-                border-radius: 12px !important;
-            }
-            .action-box .action-btn i {
-                font-size: 13px !important;
-            }
-
-            .status-badge {
-                font-size: 9px !important;
-                padding: 2px 8px !important;
-            }
-
-            .invoice-number {
-                font-size: 9px !important;
-                color: #6b7280 !important;
-                font-family: monospace !important;
-            }
-
-            .action-badge {
-                padding: 6px 12px !important;
-                font-size: 11px !important;
-                border-radius: 10px !important;
-            }
-            .action-badge i {
-                font-size: 12px !important;
+            .invoice-card__actions .action__btn {
+                height: 38px;
+                border-radius: 12px;
             }
         }
 
         @media (max-width: 480px) {
-            .glass-nav .font-extrabold.text-xl {
-                font-size: 14px !important;
-            }
-            .glass-nav .w-9.h-9 {
-                width: 28px !important;
-                height: 28px !important;
-                font-size: 12px !important;
-            }
-
-            main {
-                padding-top: 80px !important;
-                padding-left: 10px !important;
-                padding-right: 10px !important;
-            }
-
-            .invoice-card {
-                padding: 12px !important;
-                border-radius: 12px !important;
-            }
-
-            .invoice-card .member-info .name {
-                font-size: 13px !important;
-            }
-            .invoice-card .member-info .meta span {
-                font-size: 8px !important;
-            }
-            .invoice-card .price-box .amount {
-                font-size: 14px !important;
-            }
-
-            .action-box .action-btn {
-                font-size: 10px !important;
-                height: 34px !important;
-                border-radius: 10px !important;
-            }
-            .action-box .action-btn i {
-                font-size: 12px !important;
-            }
-
-            .action-badge {
-                padding: 4px 10px !important;
-                font-size: 10px !important;
-                border-radius: 8px !important;
-            }
-            .action-badge i {
-                font-size: 11px !important;
-            }
-        }
-
-        @media (min-width: 769px) {
-            .sidebar-overlay,
-            .sidebar,
-            .menu-btn {
-                display: none !important;
-            }
-
-            .invoice-card {
-                display: none !important;
+            .invoice-card__actions .action__btn {
+                height: 34px;
+                border-radius: 10px;
             }
         }
 
         @media (max-width: 768px) {
-            .desktop-table {
-                display: none !important;
+            .invoice-card {
+                padding: 14px;
+                border-radius: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .invoice-card {
+                padding: 12px;
+                border-radius: 12px;
+            }
+        }
+
+        /* ===== Pagination ===== */
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+
+        @media (min-width: 769px) {
+            .pagination {
+                margin-top: 32px;
+            }
+        }
+
+        .pagination__btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 32px;
+            height: 32px;
+            padding: 0 8px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--color-text-secondary);
+            transition: all var(--duration-fast) ease;
+            cursor: pointer;
+            font-family: inherit;
+            font-variant-numeric: tabular-nums;
+        }
+
+        @media (min-width: 769px) {
+            .pagination__btn {
+                min-width: 40px;
+                height: 40px;
+                padding: 0 12px;
+                font-size: 14px;
+            }
+        }
+
+        .pagination__btn:hover:not(:disabled):not(.pagination__btn--active) {
+            background: rgba(255, 255, 255, 0.05);
+            color: #e5e7eb;
+        }
+
+        .pagination__btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .pagination__btn--active {
+            background: var(--color-accent-strong);
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .pagination__btn i {
+            font-size: 14px;
+        }
+
+        @media (min-width: 769px) {
+            .pagination__btn i {
+                font-size: 18px;
+            }
+        }
+
+        .pagination__dots {
+            color: var(--color-text-muted);
+            padding: 0 4px;
+            font-size: 12px;
+            user-select: none;
+        }
+
+        @media (min-width: 769px) {
+            .pagination__dots {
+                font-size: 14px;
+            }
+        }
+
+        /* ===== Empty State ===== */
+        .empty-state {
+            padding: 48px 20px;
+            text-align: center;
+            background: rgba(15, 15, 26, 0.6);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+        }
+
+        @media (min-width: 769px) {
+            .empty-state {
+                padding: 64px 20px;
+            }
+        }
+
+        .empty-state__icon {
+            width: 64px;
+            height: 64px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 28px;
+            color: #4a4a63;
+        }
+
+        @media (min-width: 769px) {
+            .empty-state__icon {
+                width: 80px;
+                height: 80px;
+                font-size: 32px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .empty-state__icon {
+                width: 56px;
+                height: 56px;
+                font-size: 24px;
+            }
+        }
+
+        .empty-state__title {
+            font-size: 16px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        @media (min-width: 769px) {
+            .empty-state__title {
+                font-size: 18px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .empty-state__title {
+                font-size: 15px;
+            }
+        }
+
+        .empty-state__desc {
+            font-size: 12px;
+            color: var(--color-text-muted);
+        }
+
+        @media (min-width: 769px) {
+            .empty-state__desc {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .empty-state__desc {
+                font-size: 11px;
+            }
+        }
+
+        /* ===== Skeleton ===== */
+        .skeleton {
+            position: relative;
+            overflow: hidden;
+            background: rgba(167, 139, 250, 0.04);
+            border-radius: 6px;
+        }
+
+        .skeleton::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                rgba(167, 139, 250, 0.10) 50%,
+                transparent 100%
+            );
+            transform: translateX(-100%);
+            animation: skeleton-shimmer 1.6s infinite;
+        }
+
+        @keyframes skeleton-shimmer {
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        .skeleton__line {
+            height: 12px;
+            margin-bottom: 6px;
+        }
+
+        .skeleton__line--title {
+            height: 14px;
+            width: 70%;
+        }
+
+        .skeleton__line--subtitle {
+            height: 10px;
+            width: 50%;
+        }
+
+        .skeleton__line--md {
+            height: 12px;
+            width: 60%;
+        }
+
+        .skeleton__line--lg {
+            height: 14px;
+            width: 80%;
+        }
+
+        .skeleton__avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            flex-shrink: 0;
+        }
+
+        .skeleton__badge {
+            width: 60px;
+            height: 20px;
+            border-radius: 20px;
+        }
+
+        .skeleton__action {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+        }
+
+        [data-loading="true"] .js-content {
+            display: none;
+        }
+
+        [data-loading="false"] .js-content {
+            display: block;
+        }
+
+        [data-loading="true"] .js-skeleton {
+            display: block;
+        }
+
+        [data-loading="false"] .js-skeleton {
+            display: none;
+        }
+
+        /* ===== Modal ===== */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 5, 8, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity var(--duration-base) ease,
+                        visibility var(--duration-base) ease;
+            padding: 16px;
+        }
+
+        .modal--active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .modal__dialog {
+            background: var(--color-surface-elevated);
+            border: 1px solid rgba(167, 139, 250, 0.08);
+            border-radius: 24px;
+            padding: 32px 28px;
+            max-width: 440px;
+            width: 100%;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6),
+                        0 0 60px rgba(124, 58, 237, 0.05);
+            transform: scale(0.92) translateY(20px);
+            transition: transform var(--duration-slow) var(--ease-spring);
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            contain: layout style;
+            text-align: center;
+        }
+
+        .modal--active .modal__dialog {
+            transform: scale(1) translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .modal__dialog {
+                padding: 24px 20px;
+                border-radius: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .modal__dialog {
+                padding: 20px 16px;
+                border-radius: 18px;
+            }
+        }
+
+        .modal__icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 24px;
+        }
+
+        .modal__icon--red {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--color-danger);
+        }
+
+        @media (max-width: 480px) {
+            .modal__icon {
+                width: 56px;
+                height: 56px;
+                font-size: 22px;
+                border-radius: 16px;
+            }
+        }
+
+        .modal__title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        @media (max-width: 480px) {
+            .modal__title {
+                font-size: 16px;
+            }
+        }
+
+        .modal__desc {
+            font-size: 14px;
+            color: var(--color-text-secondary);
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 480px) {
+            .modal__desc {
+                font-size: 13px;
+            }
+        }
+
+        .modal__actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        @media (max-width: 480px) {
+            .modal__actions {
+                flex-direction: column-reverse;
+                gap: 8px;
+            }
+        }
+
+        .modal__btn {
+            min-height: 44px;
+            padding: 10px 24px;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: background-color var(--duration-fast) ease,
+                        border-color var(--duration-fast) ease;
+            font-family: inherit;
+        }
+
+        @media (max-width: 480px) {
+            .modal__btn {
+                width: 100%;
+                padding: 12px;
+                font-size: 13px;
+            }
+        }
+
+        .modal__btn--secondary {
+            color: var(--color-text-primary);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal__btn--secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .modal__btn--danger {
+            color: #fff;
+            background: #dc2626;
+        }
+
+        .modal__btn--danger:hover {
+            background: #ef4444;
+        }
+
+        /* ===== Spinner ===== */
+        .btn-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: btn-spin 0.6s linear infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes btn-spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ===== Toast ===== */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--color-surface-elevated);
+            color: var(--color-text-primary);
+            padding: 12px 24px;
+            border-radius: var(--radius-lg);
+            font-size: 13px;
+            font-weight: 600;
+            z-index: 1000;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            animation: toast-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-width: calc(100vw - 32px);
+        }
+
+        @keyframes toast-in {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .toast--success {
+            background: #0d2818;
+            border-color: rgba(16, 185, 129, 0.3);
+            color: #6ee7b7;
+        }
+
+        .toast--error {
+            background: #3b1010;
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+        }
+
+        /* ===== Reduced Motion ===== */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+
+            .skeleton::after {
+                animation: none;
+                opacity: 0.05;
+            }
+
+            .sidebar {
+                transition: none;
             }
         }
     </style>
 </head>
-<body class="antialiased bg-[#050508]">
+<body>
 
-    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+    <a href="#main-content" class="skip-link">پرش به محتوای اصلی</a>
 
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <a href="/admin/dashboard" class="sidebar-logo">
-                <div class="logo-box">ا</div>
-                <span>پنل ادمین</span>
+    <!-- ===== Sidebar Overlay ===== -->
+    <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
+    <!-- ===== Sidebar ===== -->
+    <aside class="sidebar" id="sidebar" aria-label="منوی ناوبری موبایل" aria-hidden="true">
+        <div class="sidebar__header">
+            <a href="/admin/dashboard" class="sidebar__brand">
+                <div class="sidebar__logo" aria-hidden="true">ا</div>
+                <span class="sidebar__title">پنل ادمین</span>
             </a>
-            <button class="sidebar-close" onclick="closeSidebar()">&times;</button>
+            <button type="button" class="sidebar__close" onclick="closeSidebar()" aria-label="بستن منو">
+                <i class="bi bi-x-lg" aria-hidden="true"></i>
+            </button>
         </div>
 
-        <div class="space-y-1">
-            <a href="/admin/dashboard" class="sidebar-link">
-                <i class="bi bi-speedometer2"></i> داشبورد
+        <nav class="sidebar__nav" aria-label="ناوبری اصلی">
+            <a href="/admin/dashboard" class="sidebar__link">
+                <i class="bi bi-speedometer2 sidebar__link-icon" aria-hidden="true"></i> داشبورد
             </a>
-            <a href="/admin/users" class="sidebar-link">
-                <i class="bi bi-people"></i> کاربران
+            <a href="/admin/users" class="sidebar__link">
+                <i class="bi bi-people sidebar__link-icon" aria-hidden="true"></i> کاربران
             </a>
-            <a href="/admin/invoices" class="sidebar-link active">
-                <i class="bi bi-receipt"></i> فاکتورها
+            <a href="/admin/invoices" class="sidebar__link sidebar__link--active" aria-current="page">
+                <i class="bi bi-receipt sidebar__link-icon" aria-hidden="true"></i> فاکتورها
             </a>
-            <a href="/admin/plans" class="sidebar-link">
-                <i class="bi bi-collection"></i> پلن‌ها
+            <a href="/admin/plans" class="sidebar__link">
+                <i class="bi bi-collection sidebar__link-icon" aria-hidden="true"></i> پلن‌ها
             </a>
-        </div>
 
-        <div class="sidebar-divider"></div>
+            <% if (user && (user.role === 'admin' || user.role === 'moderator')) { %>
+            <a href="/admin/deletion-requests" class="sidebar__link">
+                <i class="bi bi-trash3 sidebar__link-icon" aria-hidden="true"></i> درخواست‌های حذف
+            </a>
+            <% } %>
 
-        <a href="/dashboard" class="sidebar-link">
-            <i class="bi bi-globe"></i> داشبورد کاربر
-        </a>
-        <button onclick="openLogoutModal()" class="sidebar-link" style="color: #f87171; width: 100%; text-align: right; border: none; background: transparent; cursor: pointer;">
-            <i class="bi bi-box-arrow-right" style="color: #f87171;"></i> خروج
-        </button>
-    </div>
+            <div class="sidebar__divider" role="separator"></div>
 
-    <nav class="fixed top-0 right-0 left-0 z-50 px-3 md:px-6 py-3 md:py-5">
-        <div class="max-w-6xl mx-auto glass-nav rounded-2xl px-3 md:px-6 py-2 md:py-3 flex items-center justify-between">
-            <div class="flex items-center gap-2 md:gap-3">
-                <button class="menu-btn" onclick="openSidebar()">
-                    <i class="bi bi-list text-xl"></i>
+            <a href="/dashboard" class="sidebar__link">
+                <i class="bi bi-globe sidebar__link-icon" aria-hidden="true"></i> داشبورد کاربر
+            </a>
+            <button type="button" onclick="openLogoutModal()" class="sidebar__link sidebar__link--danger" aria-label="خروج از حساب کاربری">
+                <i class="bi bi-box-arrow-right sidebar__link-icon" aria-hidden="true"></i> خروج
+            </button>
+        </nav>
+    </aside>
+
+    <!-- ===== Navbar ===== -->
+    <header class="nav" role="banner">
+        <div class="nav__container">
+            <a href="/admin/dashboard" class="nav__brand">
+                <div class="nav__logo" aria-hidden="true">ا</div>
+                <span class="nav__title">پنل ادمین</span>
+            </a>
+
+            <div class="nav__mobile">
+                <button type="button" class="nav__icon-btn nav__icon-btn--danger" onclick="openLogoutModal()" aria-label="خروج از حساب کاربری">
+                    <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
                 </button>
-                <a href="/admin/dashboard" class="flex items-center gap-2 md:gap-2.5 no-underline shrink-0 group">
-                    <div class="w-8 h-8 md:w-9 md:h-9 bg-gradient-to-br from-accent-600 to-accent-400 rounded-lg flex items-center justify-center text-white font-extrabold text-sm md:text-lg transition-transform group-hover:scale-105 shadow-lg shadow-accent-600/30">
-                        ا
-                    </div>
-                    <span class="font-extrabold text-base md:text-xl lg:text-2xl text-white tracking-tight">پنل ادمین</span>
-                </a>
-            </div>
-
-            <div class="nav-links flex items-center gap-1 md:gap-1.5">
-                <a href="/admin/dashboard" class="nav-link">
-                    <i class="bi bi-speedometer2"></i> <span class="hidden sm:inline">داشبورد</span>
-                </a>
-                <a href="/admin/users" class="nav-link">
-                    <i class="bi bi-people"></i> <span class="hidden sm:inline">کاربران</span>
-                </a>
-                <a href="/admin/invoices" class="nav-link active">
-                    <i class="bi bi-receipt"></i> <span class="hidden sm:inline">فاکتورها</span>
-                </a>
-                <a href="/admin/plans" class="nav-link hidden lg:inline-flex">
-                    <i class="bi bi-collection"></i> پلن‌ها
-                </a>
-
-                <div class="w-px h-6 bg-white/5 mx-1 md:mx-2 hidden lg:block"></div>
-
-                <a href="/dashboard" class="nav-link hidden md:inline-flex">
-                    <i class="bi bi-globe"></i> <span class="hidden lg:inline">داشبورد کاربر</span>
-                </a>
-                <button onclick="openLogoutModal()" class="btn-logout">
-                    <i class="bi bi-box-arrow-right"></i>
-                    <span class="hidden sm:inline">خروج</span>
+                <button type="button" class="nav__icon-btn" onclick="openSidebar()" aria-label="باز کردن منو" aria-expanded="false" aria-controls="sidebar" id="menuBtn">
+                    <i class="bi bi-list" aria-hidden="true"></i>
                 </button>
             </div>
+
+            <nav class="nav__links" aria-label="ناوبری اصلی">
+                <a href="/admin/dashboard" class="nav__link">
+                    <i class="bi bi-speedometer2" aria-hidden="true"></i> داشبورد
+                </a>
+                <a href="/admin/users" class="nav__link">
+                    <i class="bi bi-people" aria-hidden="true"></i> کاربران
+                </a>
+                <a href="/admin/invoices" class="nav__link nav__link--active" aria-current="page">
+                    <i class="bi bi-receipt" aria-hidden="true"></i> فاکتورها
+                </a>
+                <a href="/admin/plans" class="nav__link">
+                    <i class="bi bi-collection" aria-hidden="true"></i> پلن‌ها
+                </a>
+
+                <% if (user && (user.role === 'admin' || user.role === 'moderator')) { %>
+                <a href="/admin/deletion-requests" class="nav__link">
+                    <i class="bi bi-trash3" aria-hidden="true"></i> درخواست‌های حذف
+                </a>
+                <% } %>
+
+                <div class="nav__divider" role="separator"></div>
+
+                <a href="/dashboard" class="nav__link">
+                    <i class="bi bi-globe" aria-hidden="true"></i> داشبورد کاربر
+                </a>
+                <button type="button" onclick="openLogoutModal()" class="nav__logout" aria-label="خروج از حساب کاربری">
+                    <i class="bi bi-box-arrow-right" aria-hidden="true"></i> خروج
+                </button>
+            </nav>
         </div>
-    </nav>
+    </header>
 
-    <main class="max-w-6xl mx-auto px-3 md:px-4 pt-24 md:pt-28 pb-12 md:pb-16">
-
-        <div class="mb-6 md:mb-10">
-            <h1 class="text-2xl md:text-3xl lg:text-4xl font-black text-white mb-1 md:mb-2 flex items-center gap-3">
-                <span class="bg-gradient-to-r from-accent-400 to-accent-600 bg-clip-text text-transparent">مدیریت فاکتورها</span>
-                <span class="badge-purple text-xs"><%= invoices.length %></span>
+    <!-- ===== Main ===== -->
+    <main id="main-content" class="page">
+        <header class="page__header">
+            <h1 class="page__title">
+                <span class="page__title-accent">مدیریت فاکتورها</span>
+                <span class="badge badge--accent" id="invoiceCountBadge"><%= invoices.length %></span>
             </h1>
-            <p class="text-gray-500 text-xs md:text-sm">مشاهده و مدیریت تمام فاکتورهای سیستم</p>
-        </div>
+            <p class="page__subtitle">مشاهده و مدیریت تمام فاکتورهای سیستم</p>
+        </header>
 
-        <div class="invoices-wrapper" id="invoicesWrapper">
-
-            <div class="loading-overlay" id="loadingOverlay">
-                <div class="loading-spinner"></div>
-            </div>
-
-            <div id="invoicesContainer">
-                <!-- DESKTOP TABLE -->
-                <div class="desktop-table card rounded-2xl overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-sm">
-                            <thead>
-                                <tr class="text-gray-500 text-xs border-b border-white/5">
-                                    <th class="p-4 text-right font-medium">شماره</th>
-                                    <th class="p-4 text-right font-medium">عضو</th>
-                                    <th class="p-4 text-right font-medium hidden md:table-cell">صاحب فاکتور</th>
-                                    <th class="p-4 text-right font-medium hidden lg:table-cell">پلن</th>
-                                    <th class="p-4 text-right font-medium">مبلغ</th>
-                                    <th class="p-4 text-right font-medium">وضعیت</th>
-                                    <th class="p-4 text-right font-medium hidden sm:table-cell">تاریخ</th>
-                                    <th class="p-4 text-center font-medium">عملیات</th>
+        <div id="invoicesContainer" data-loading="true" aria-busy="true">
+            <!-- Content -->
+            <div class="js-content">
+                <!-- Desktop Table -->
+                <div class="data-table">
+                    <div class="data-table__inner">
+                        <table class="data-table__table">
+                            <thead class="data-table__head">
+                                <tr>
+                                    <th class="data-table__th">شماره</th>
+                                    <th class="data-table__th">عضو</th>
+                                    <th class="data-table__th hidden md:table-cell">صاحب فاکتور</th>
+                                    <th class="data-table__th hidden lg:table-cell">پلن</th>
+                                    <th class="data-table__th">مبلغ</th>
+                                    <th class="data-table__th">وضعیت</th>
+                                    <th class="data-table__th hidden sm:table-cell">تاریخ</th>
+                                    <th class="data-table__th" style="text-align: center;">عملیات</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="invoicesTableBody">
                                 <% invoices.forEach(function(inv) { %>
-                                <tr class="table-row border-b border-white/5">
-                                    <td class="p-4">
-                                        <span class="text-xs text-gray-400 font-mono tracking-wider">#<%= inv.invoiceNumber %></span>
+                                <tr class="data-table__row" data-invoice-id="<%= inv._id %>">
+                                    <td class="data-table__cell">
+                                        <span class="data-table__invoice-num">#<%= inv.invoiceNumber %></span>
                                     </td>
-                                    <td class="p-4">
-                                        <div class="flex items-center gap-2.5">
-                                            <div class="w-7 h-7 rounded-md bg-accent-700/20 flex items-center justify-center text-accent-400 font-extrabold text-[10px]">
+                                    <td class="data-table__cell">
+                                        <div class="data-table__user">
+                                            <div class="data-table__avatar">
                                                 <%= inv.member?.name ? inv.member.name.charAt(0).toUpperCase() : '?' %>
                                             </div>
-                                            <span class="font-semibold text-white text-sm"><%= inv.member?.name || 'بدون نام' %></span>
+                                            <span class="data-table__name"><%= inv.member?.name || 'بدون نام' %></span>
                                         </div>
                                     </td>
-                                    <td class="p-4 text-gray-400 hidden md:table-cell text-sm">
-                                        <div class="flex items-center gap-1.5">
-                                            <i class="bi bi-person text-xs"></i>
-                                            <%= inv.user?.username || inv.user?.clubName || '—' %>
+                                    <td class="data-table__cell data-table__email hidden md:table-cell">
+                                        <div style="display: flex; align-items: center; gap: 6px;">
+                                            <i class="bi bi-person" style="font-size: 12px;" aria-hidden="true"></i>
+                                            <%= inv.user?.username || inv.user?.clubName || '-' %>
                                         </div>
                                     </td>
-                                    <td class="p-4 text-gray-400 hidden lg:table-cell text-sm">
-                                        <%= inv.plan?.name || '—' %>
+                                    <td class="data-table__cell data-table__email hidden lg:table-cell">
+                                        <%= inv.plan?.name || '-' %>
                                     </td>
-                                    <td class="p-4">
-                                        <div class="font-bold text-white text-sm">
+                                    <td class="data-table__cell">
+                                        <div class="data-table__amount">
                                             <%= inv.totalAmount.toLocaleString("fa-IR-u-nu-latn") %>
                                         </div>
-                                        <div class="text-[10px] text-gray-500">تومان</div>
+                                        <div class="data-table__unit">تومان</div>
                                     </td>
-                                    <td class="p-4">
-                                        <span class="status-badge <%= inv.isPaid ? 'status-paid' : 'status-pending' %>">
-                                            <span style="width: 6px; height: 6px; border-radius: 50%; display: inline-block; background: <%= inv.isPaid ? '#34d399' : '#fbbf24' %>;"></span>
+                                    <td class="data-table__cell">
+                                        <span class="status-badge status-badge--<%= inv.isPaid ? 'paid' : 'pending' %>">
+                                            <span class="status-badge__dot" style="background: <%= inv.isPaid ? '#34d399' : '#fbbf24' %>;"></span>
                                             <%= inv.isPaid ? 'پرداخت شده' : 'در انتظار' %>
                                         </span>
                                     </td>
-                                    <td class="p-4 text-gray-500 hidden sm:table-cell text-xs">
+                                    <td class="data-table__cell data-table__date hidden sm:table-cell">
                                         <%= inv.invoiceDate %>
                                     </td>
-                                    <td class="p-4">
-                                        <div class="flex items-center justify-center gap-2">
-                                            <a href="/i/<%= inv._id %>" class="action-badge">
-                                                <i class="bi bi-eye"></i>
+                                    <td class="data-table__cell">
+                                        <div class="data-table__actions">
+                                            <a href="/i/<%= inv._id %>" class="action__btn">
+                                                <i class="bi bi-eye" aria-hidden="true"></i>
                                             </a>
-                                            <button onclick="openDeleteModalDesktop('<%= inv._id %>', '<%= inv.invoiceNumber %>')" class="action-badge danger">
-                                                <i class="bi bi-trash"></i>
+                                            <button type="button" class="action__btn action__btn--danger" onclick="openDeleteModal('<%= inv._id %>', '<%= inv.invoiceNumber %>')">
+                                                <i class="bi bi-trash" aria-hidden="true"></i>
                                             </button>
                                         </div>
                                     </td>
@@ -864,498 +1751,572 @@
                     </div>
                 </div>
 
-                <!-- MOBILE CARDS -->
-                <div class="space-y-3 block md:hidden">
+                <!-- Mobile Cards -->
+                <div class="invoice-cards">
                     <% invoices.forEach(function(inv) { %>
-                    <div class="invoice-card">
-                        <div class="top-row">
-                            <div class="member-info">
-                                <div class="flex items-center gap-2 flex-wrap">
-                                    <span class="status-badge <%= inv.isPaid ? 'status-paid' : 'status-pending' %>">
-                                        <span style="width: 6px; height: 6px; border-radius: 50%; display: inline-block; background: <%= inv.isPaid ? '#34d399' : '#fbbf24' %>;"></span>
+                    <div class="invoice-card" data-invoice-id="<%= inv._id %>">
+                        <div class="invoice-card__top">
+                            <div class="invoice-card__info">
+                                <div class="invoice-card__badges">
+                                    <span class="status-badge status-badge--<%= inv.isPaid ? 'paid' : 'pending' %>">
+                                        <span class="status-badge__dot" style="background: <%= inv.isPaid ? '#34d399' : '#fbbf24' %>;"></span>
                                         <%= inv.isPaid ? 'پرداخت شده' : 'در انتظار' %>
                                     </span>
-                                    <span class="invoice-number">#<%= inv.invoiceNumber %></span>
+                                    <span class="invoice-card__number">#<%= inv.invoiceNumber %></span>
                                 </div>
-                                <div class="name"><%= inv.member?.name || 'بدون نام' %></div>
-                                <div class="meta">
-                                    <span><i class="bi bi-person"></i> <%= inv.user?.username || '—' %></span>
-                                    <span><i class="bi bi-tag"></i> <%= inv.plan?.name || '—' %></span>
-                                    <span><i class="bi bi-calendar3"></i> <%= inv.invoiceDate %></span>
+                                <div class="invoice-card__name"><%= inv.member?.name || 'بدون نام' %></div>
+                                <div class="invoice-card__meta">
+                                    <span><i class="bi bi-person" aria-hidden="true"></i> <%= inv.user?.username || '-' %></span>
+                                    <span><i class="bi bi-tag" aria-hidden="true"></i> <%= inv.plan?.name || '-' %></span>
+                                    <span><i class="bi bi-calendar3" aria-hidden="true"></i> <%= inv.invoiceDate %></span>
                                 </div>
                             </div>
-                            <div class="price-box">
-                                <div class="amount"><%= inv.totalAmount.toLocaleString("fa-IR-u-nu-latn") %></div>
-                                <div class="unit">تومان</div>
+                            <div class="invoice-card__price">
+                                <div class="invoice-card__amount"><%= inv.totalAmount.toLocaleString("fa-IR-u-nu-latn") %></div>
+                                <div class="invoice-card__unit">تومان</div>
                             </div>
                         </div>
-
-                        <div class="action-box">
-                            <a href="/i/<%= inv._id %>" class="action-btn view-btn">
-                                <i class="bi bi-eye"></i> مشاهده
+                        <div class="invoice-card__actions">
+                            <a href="/i/<%= inv._id %>" class="action__btn">
+                                <i class="bi bi-eye" aria-hidden="true"></i> مشاهده
                             </a>
-                            <button onclick="openDeleteModalDesktop('<%= inv._id %>', '<%= inv.invoiceNumber %>')" class="action-btn delete-btn">
-                                <i class="bi bi-trash"></i> حذف
+                            <button type="button" class="action__btn action__btn--danger" onclick="openDeleteModal('<%= inv._id %>', '<%= inv.invoiceNumber %>')">
+                                <i class="bi bi-trash" aria-hidden="true"></i> حذف
                             </button>
                         </div>
                     </div>
                     <% }); %>
                 </div>
             </div>
+
+            <!-- Skeleton -->
+            <div class="js-skeleton" aria-hidden="true">
+                <div class="data-table">
+                    <div class="data-table__inner">
+                        <table class="data-table__table">
+                            <thead class="data-table__head">
+                                <tr>
+                                    <th class="data-table__th">شماره</th>
+                                    <th class="data-table__th">عضو</th>
+                                    <th class="data-table__th hidden md:table-cell">صاحب فاکتور</th>
+                                    <th class="data-table__th hidden lg:table-cell">پلن</th>
+                                    <th class="data-table__th">مبلغ</th>
+                                    <th class="data-table__th">وضعیت</th>
+                                    <th class="data-table__th hidden sm:table-cell">تاریخ</th>
+                                    <th class="data-table__th" style="text-align: center;">عملیات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% for (let i = 0; i < 4; i++) { %>
+                                <tr class="data-table__row">
+                                    <td class="data-table__cell"><div class="skeleton skeleton__line" style="width: 60px;"></div></td>
+                                    <td class="data-table__cell"><div class="data-table__user"><div class="skeleton skeleton__avatar"></div><div class="skeleton skeleton__line skeleton__line--md" style="width: 80px;"></div></div></td>
+                                    <td class="data-table__cell hidden md:table-cell"><div class="skeleton skeleton__line skeleton__line--md" style="width: 100px;"></div></td>
+                                    <td class="data-table__cell hidden lg:table-cell"><div class="skeleton skeleton__line skeleton__line--md" style="width: 80px;"></div></td>
+                                    <td class="data-table__cell"><div class="skeleton skeleton__line skeleton__line--md" style="width: 80px;"></div></td>
+                                    <td class="data-table__cell"><div class="skeleton skeleton__badge"></div></td>
+                                    <td class="data-table__cell hidden sm:table-cell"><div class="skeleton skeleton__line skeleton__line--md" style="width: 80px;"></div></td>
+                                    <td class="data-table__cell"><div class="data-table__actions"><div class="skeleton skeleton__action"></div><div class="skeleton skeleton__action"></div></div></td>
+                                </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="invoice-cards" style="margin-top: 12px;">
+                    <% for (let i = 0; i < 2; i++) { %>
+                    <div class="invoice-card">
+                        <div class="invoice-card__top">
+                            <div class="invoice-card__info">
+                                <div class="invoice-card__badges">
+                                    <div class="skeleton skeleton__badge"></div>
+                                    <div class="skeleton skeleton__line" style="width: 40px;"></div>
+                                </div>
+                                <div class="skeleton skeleton__line skeleton__line--title" style="margin-top: 8px;"></div>
+                                <div class="skeleton skeleton__line skeleton__line--subtitle"></div>
+                            </div>
+                        </div>
+                        <div class="invoice-card__actions">
+                            <div class="skeleton skeleton__action" style="flex: 1;"></div>
+                            <div class="skeleton skeleton__action" style="flex: 1;"></div>
+                        </div>
+                    </div>
+                    <% } %>
+                </div>
+            </div>
         </div>
 
-        <div id="paginationContainer">
-            <% if (totalPages > 1) { %>
-            <div class="flex items-center justify-center gap-2 mt-6 md:mt-8">
-                <button onclick="loadPage(<%= currentPage - 1 %>)"
-                        class="flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all duration-200 <%= currentPage <= 1 ? 'opacity-30 pointer-events-none' : '' %>"
-                        <%= currentPage <= 1 ? 'disabled' : '' %>>
-                    <i class="bi bi-chevron-right text-sm md:text-lg"></i>
-                </button>
-
-                <%
-                    const total = totalPages;
-                    const current = currentPage;
-                    const pages = [];
-
-                    if (total <= 7) {
-                        for (let i = 1; i <= total; i++) pages.push(i);
-                    } else if (current <= 3) {
-                        for (let i = 1; i <= 5; i++) pages.push(i);
-                        pages.push('...');
-                        pages.push(total);
-                    } else if (current >= total - 2) {
-                        pages.push(1);
-                        pages.push('...');
-                        for (let i = total - 4; i <= total; i++) pages.push(i);
-                    } else {
-                        pages.push(1);
-                        pages.push('...');
-                        for (let i = current - 1; i <= current + 1; i++) pages.push(i);
-                        pages.push('...');
-                        pages.push(total);
-                    }
-                %>
-
-                <% pages.forEach(function(p) { %>
-                    <% if (p === '...') { %>
-                        <span class="text-gray-500 text-xs md:text-sm px-1 select-none">…</span>
-                    <% } else { %>
-                        <button onclick="loadPage(<%= p %>)"
-                                class="flex items-center justify-center min-w-[32px] md:min-w-[40px] h-8 md:h-10 px-2 md:px-3 rounded-lg text-xs md:text-sm font-medium transition-all duration-200
-                                <%= p === current ? 'bg-accent-600 text-white' : 'text-gray-400 hover:text-white hover:bg-white/5' %>">
-                            <%= p %>
-                        </button>
-                    <% } %>
-                <% }); %>
-
-                <button onclick="loadPage(<%= currentPage + 1 %>)"
-                        class="flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all duration-200 <%= currentPage >= totalPages ? 'opacity-30 pointer-events-none' : '' %>"
-                        <%= currentPage >= totalPages ? 'disabled' : '' %>>
-                    <i class="bi bi-chevron-left text-sm md:text-lg"></i>
-                </button>
+        <!-- Empty State -->
+        <div id="emptyState" class="empty-state" style="display: none;">
+            <div class="empty-state__icon">
+                <i class="bi bi-inbox" aria-hidden="true"></i>
             </div>
+            <h3 class="empty-state__title">هیچ فاکتوری یافت نشد</h3>
+            <p class="empty-state__desc">هیچ فاکتوری با این فیلترها وجود ندارد</p>
+        </div>
+
+        <!-- Pagination -->
+        <div id="paginationContainer" class="pagination">
+            <% if (totalPages > 1) { %>
+            <button type="button" class="pagination__btn" onclick="loadPage(<%= currentPage - 1 %>)" <%= currentPage <= 1 ? 'disabled' : '' %> aria-label="صفحه قبلی">
+                <i class="bi bi-chevron-right" aria-hidden="true"></i>
+            </button>
+
+            <%
+                const total = totalPages;
+                const current = currentPage;
+                const pages = [];
+
+                if (total <= 7) {
+                    for (let i = 1; i <= total; i++) pages.push(i);
+                } else if (current <= 3) {
+                    for (let i = 1; i <= 5; i++) pages.push(i);
+                    pages.push('...');
+                    pages.push(total);
+                } else if (current >= total - 2) {
+                    pages.push(1);
+                    pages.push('...');
+                    for (let i = total - 4; i <= total; i++) pages.push(i);
+                } else {
+                    pages.push(1);
+                    pages.push('...');
+                    for (let i = current - 1; i <= current + 1; i++) pages.push(i);
+                    pages.push('...');
+                    pages.push(total);
+                }
+            %>
+
+            <% pages.forEach(function(p) { %>
+                <% if (p === '...') { %>
+                    <span class="pagination__dots">...</span>
+                <% } else { %>
+                    <button type="button" class="pagination__btn <%= p === current ? 'pagination__btn--active' : '' %>" onclick="loadPage(<%= p %>)">
+                        <%= p %>
+                    </button>
+                <% } %>
+            <% }); %>
+
+            <button type="button" class="pagination__btn" onclick="loadPage(<%= currentPage + 1 %>)" <%= currentPage >= totalPages ? 'disabled' : '' %> aria-label="صفحه بعدی">
+                <i class="bi bi-chevron-left" aria-hidden="true"></i>
+            </button>
             <% } %>
         </div>
     </main>
 
-    <!-- DELETE MODAL -->
-    <div class="modal-overlay" id="deleteModal">
-        <div class="modal-dialog text-center">
-            <div class="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5">
-                <i class="bi bi-trash text-red-400 text-2xl"></i>
+    <!-- ===== Delete Modal ===== -->
+    <div class="modal" id="deleteModal" role="dialog" aria-modal="true" aria-labelledby="delete-title" aria-hidden="true">
+        <div class="modal__dialog">
+            <div class="modal__icon modal__icon--red" aria-hidden="true">
+                <i class="bi bi-trash"></i>
             </div>
-            <h3 class="text-lg font-bold text-white mb-2">حذف فاکتور</h3>
-            <p class="text-gray-400 text-sm mb-6" id="deleteMsg">
-                آیا از حذف این فاکتور اطمینان دارید؟ این عمل قابل بازگشت نیست.
-            </p>
-            <div class="flex gap-3 justify-center">
-                <button onclick="closeModal('deleteModal')" class="px-6 py-2.5 rounded-xl text-gray-300 font-semibold text-sm bg-white/5 border border-white/10 hover:bg-white/10 transition-all">
-                    انصراف
-                </button>
-                <button id="deleteConfirmBtn" class="px-6 py-2.5 rounded-xl text-white font-semibold text-sm bg-red-600 hover:bg-red-500 transition-all">
-                    حذف
-                </button>
+            <h3 id="delete-title" class="modal__title">حذف فاکتور</h3>
+            <p class="modal__desc" id="deleteMsg">آیا از حذف این فاکتور اطمینان دارید؟ این عمل قابل بازگشت نیست.</p>
+            <div class="modal__actions">
+                <button type="button" class="modal__btn modal__btn--secondary" onclick="closeModal('deleteModal')">انصراف</button>
+                <button type="button" id="deleteConfirmBtn" class="modal__btn modal__btn--danger">حذف</button>
             </div>
         </div>
     </div>
 
-    <!-- LOGOUT MODAL -->
-    <div class="modal-overlay" id="logoutModal">
-        <div class="modal-dialog text-center">
-            <div class="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5">
-                <i class="bi bi-box-arrow-right text-red-400 text-2xl"></i>
+    <!-- ===== Logout Modal ===== -->
+    <div class="modal" id="logoutModal" role="dialog" aria-modal="true" aria-labelledby="logout-title" aria-hidden="true">
+        <div class="modal__dialog">
+            <div class="modal__icon modal__icon--red" aria-hidden="true">
+                <i class="bi bi-box-arrow-right"></i>
             </div>
-            <h3 class="text-lg font-bold text-white mb-2">خروج از حساب</h3>
-            <p class="text-gray-400 text-sm mb-6">آیا مطمئن هستید که می‌خواهید خارج شوید؟</p>
-            <div class="flex gap-3 justify-center">
-                <button onclick="closeModal('logoutModal')" class="px-6 py-2.5 rounded-xl text-gray-300 font-semibold text-sm bg-white/5 border border-white/10 hover:bg-white/10 transition-all">
-                    انصراف
-                </button>
-                <a href="/auth/logout" class="px-6 py-2.5 rounded-xl text-white font-semibold text-sm bg-red-600 hover:bg-red-500 transition-all no-underline">
-                    خروج
-                </a>
+            <h3 id="logout-title" class="modal__title">خروج از حساب</h3>
+            <p class="modal__desc">آیا مطمئن هستید که می‌خواهید خارج شوید؟</p>
+            <div class="modal__actions">
+                <button type="button" class="modal__btn modal__btn--secondary" onclick="closeModal('logoutModal')">انصراف</button>
+                <a href="/auth/logout" class="modal__btn modal__btn--danger">خروج</a>
             </div>
         </div>
     </div>
 
-    <div id="toast" class="toast" style="display: none;"></div>
+    <div id="toast" class="toast" style="display: none;" role="status" aria-live="polite"></div>
 
     <script>
         let currentPage = <%= currentPage %>;
         let totalPages = <%= totalPages %>;
         let isLoading = false;
-        let currentStatus = '<%= filters.status || '' %>';
-        let currentSearch = '<%= filters.search || '' %>';
+        let currentStatus = '<%= filters.status || "" %>';
+        let currentSearch = '<%= filters.search || "" %>';
         let deleteId = null;
+        let lastFocusedElement = null;
 
+        // ===== Sidebar =====
         function openSidebar() {
-            document.getElementById('sidebar').classList.add('open');
-            document.getElementById('sidebarOverlay').classList.add('active');
+            lastFocusedElement = document.activeElement;
+            var sidebar = document.getElementById('sidebar');
+            var menuBtn = document.getElementById('menuBtn');
+            var overlay = document.getElementById('sidebarOverlay');
+
+            if (!sidebar) return;
+
+            sidebar.classList.add('sidebar--open');
+            sidebar.setAttribute('aria-hidden', 'false');
+            sidebar.removeAttribute('inert');
+            if (overlay) {
+                overlay.classList.add('sidebar-overlay--active');
+                overlay.setAttribute('aria-hidden', 'false');
+            }
+            if (menuBtn) menuBtn.setAttribute('aria-expanded', 'true');
             document.body.style.overflow = 'hidden';
         }
 
         function closeSidebar() {
-            document.getElementById('sidebar').classList.remove('open');
-            document.getElementById('sidebarOverlay').classList.remove('active');
+            var sidebar = document.getElementById('sidebar');
+            var menuBtn = document.getElementById('menuBtn');
+            var overlay = document.getElementById('sidebarOverlay');
+
+            if (!sidebar) return;
+
+            sidebar.classList.remove('sidebar--open');
+            sidebar.setAttribute('aria-hidden', 'true');
+            if (overlay) {
+                overlay.classList.remove('sidebar-overlay--active');
+                overlay.setAttribute('aria-hidden', 'true');
+            }
+            if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false');
             document.body.style.overflow = '';
+
+            if (lastFocusedElement && lastFocusedElement.focus) lastFocusedElement.focus();
         }
 
+        // ===== Modal =====
         function openModal(id) {
-            document.getElementById(id).classList.add('active');
+            lastFocusedElement = document.activeElement;
+            var el = document.getElementById(id);
+
+            if (!el) return;
+
+            el.classList.add('modal--active');
+            el.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+
+            requestAnimationFrame(function() {
+                var first = el.querySelector('button, a');
+                if (first) first.focus();
+            });
         }
 
         function closeModal(id) {
-            document.getElementById(id).classList.remove('active');
+            var el = document.getElementById(id);
+
+            if (!el) return;
+
+            el.classList.remove('modal--active');
+            el.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+
+            if (lastFocusedElement && lastFocusedElement.focus) lastFocusedElement.focus();
         }
 
         function openLogoutModal() {
+            closeSidebar();
             openModal('logoutModal');
         }
 
-        function openDeleteModalDesktop(id, invoiceNumber) {
+        function openDeleteModal(id, invoiceNumber) {
             deleteId = id;
-            document.getElementById('deleteMsg').textContent =
-                `آیا از حذف فاکتور شماره #${invoiceNumber} اطمینان دارید؟ این عمل قابل بازگشت نیست.`;
+            var msgEl = document.getElementById('deleteMsg');
+            if (msgEl) {
+                msgEl.textContent = 'آیا از حذف فاکتور شماره #' + invoiceNumber + ' اطمینان دارید؟ این عمل قابل بازگشت نیست.';
+            }
             openModal('deleteModal');
         }
 
+        // ===== Delete Confirm =====
         document.getElementById('deleteConfirmBtn').addEventListener('click', async function() {
             if (!deleteId) return;
 
-            const btn = this;
-            btn.textContent = 'در حال حذف...';
+            var btn = this;
+            var originalHTML = btn.innerHTML;
+            btn.innerHTML = '<span class="btn-spinner"></span> در حال حذف...';
             btn.disabled = true;
 
             try {
-                const res = await fetch(`/admin/invoices/${deleteId}`, { method: 'DELETE' });
-                const data = await res.json();
+                var res = await fetch('/admin/invoices/' + deleteId, { method: 'DELETE' });
+                var data = await res.json();
 
                 if (data.success) {
                     toast(data.message || 'فاکتور با موفقیت حذف شد', 'success');
+                    closeModal('deleteModal');
                     loadPage(currentPage);
                 } else {
                     toast(data.message || 'خطا در حذف فاکتور', 'error');
+                    closeModal('deleteModal');
                 }
             } catch (e) {
                 toast('خطا در ارتباط با سرور', 'error');
+                closeModal('deleteModal');
             }
 
-            closeModal('deleteModal');
-            btn.textContent = 'حذف';
+            btn.innerHTML = originalHTML;
             btn.disabled = false;
             deleteId = null;
         });
 
-        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+        // ===== Modal Backdrop =====
+        document.querySelectorAll('.modal').forEach(function(overlay) {
             overlay.addEventListener('click', function(e) {
-                if (e.target === this) this.classList.remove('active');
+                if (e.target === this) {
+                    this.classList.remove('modal--active');
+                    this.setAttribute('aria-hidden', 'true');
+                    document.body.style.overflow = '';
+                }
             });
         });
 
-        document.addEventListener('keydown', (e) => {
+        // ===== Escape =====
+        document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 closeSidebar();
-                document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+                document.querySelectorAll('.modal.modal--active').forEach(function(m) {
+                    m.classList.remove('modal--active');
+                    m.setAttribute('aria-hidden', 'true');
+                });
+                document.body.style.overflow = '';
             }
         });
 
+        // ===== Toast =====
         function toast(msg, type) {
-            const t = document.getElementById('toast');
+            var t = document.getElementById('toast');
+
+            if (!t) return;
+
             t.textContent = msg;
             t.style.display = 'block';
-            if (type === 'error') {
-                t.style.background = '#3b1010';
-                t.style.borderColor = 'rgba(239, 68, 68, 0.3)';
-                t.style.color = '#fca5a5';
-            } else if (type === 'success') {
-                t.style.background = '#0d2818';
-                t.style.borderColor = 'rgba(16, 185, 129, 0.3)';
-                t.style.color = '#6ee7b7';
-            } else {
-                t.style.background = '#14141f';
-                t.style.borderColor = 'rgba(255, 255, 255, 0.06)';
-                t.style.color = '#d1d5db';
-            }
+            t.className = 'toast';
+
+            if (type === 'success') t.classList.add('toast--success');
+            else if (type === 'error') t.classList.add('toast--error');
+
             clearTimeout(t._t);
-            t._t = setTimeout(() => { t.style.display = 'none'; }, 3000);
+            t._t = setTimeout(function() {
+                t.style.display = 'none';
+            }, 3000);
         }
 
-        function showLoading() {
-            const overlay = document.getElementById('loadingOverlay');
-            if (overlay) overlay.classList.add('active');
+        // ===== Skeleton =====
+        function showSkeleton() {
+            var container = document.getElementById('invoicesContainer');
+            if (container) {
+                container.setAttribute('data-loading', 'true');
+                container.setAttribute('aria-busy', 'true');
+            }
         }
 
-        function hideLoading() {
-            const overlay = document.getElementById('loadingOverlay');
-            if (overlay) overlay.classList.remove('active');
+        function hideSkeleton() {
+            var container = document.getElementById('invoicesContainer');
+            if (container) {
+                container.setAttribute('data-loading', 'false');
+                container.setAttribute('aria-busy', 'false');
+            }
         }
 
+        // ===== Render =====
         function renderInvoices(invoices) {
-            const container = document.getElementById('invoicesContainer');
+            var container = document.getElementById('invoicesContainer');
             if (!container) return;
 
+            var content = container.querySelector('.js-content');
+            if (!content) {
+                content = document.createElement('div');
+                content.className = 'js-content';
+                container.appendChild(content);
+            }
+
+            var emptyState = document.getElementById('emptyState');
+            var badge = document.getElementById('invoiceCountBadge');
+
+            if (badge) badge.textContent = invoices.length;
+
             if (invoices.length === 0) {
-                container.innerHTML = `
-                    <div class="card rounded-2xl p-12 md:p-16 text-center">
-                        <div class="w-16 h-16 md:w-20 md:h-20 bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-4 md:mb-5">
-                            <i class="bi bi-inbox text-2xl md:text-3xl text-gray-600"></i>
-                        </div>
-                        <h3 class="text-base md:text-lg font-extrabold text-white mb-1 md:mb-2">هیچ فاکتوری یافت نشد</h3>
-                        <p class="text-gray-500 text-xs md:text-sm">هیچ فاکتوری با این فیلترها وجود ندارد</p>
-                    </div>
-                `;
+                content.innerHTML = '';
+                if (emptyState) emptyState.style.display = 'block';
                 return;
             }
 
-            let desktopHtml = `
-                <div class="desktop-table card rounded-2xl overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-sm">
-                            <thead>
-                                <tr class="text-gray-500 text-xs border-b border-white/5">
-                                    <th class="p-4 text-right font-medium">شماره</th>
-                                    <th class="p-4 text-right font-medium">عضو</th>
-                                    <th class="p-4 text-right font-medium hidden md:table-cell">صاحب فاکتور</th>
-                                    <th class="p-4 text-right font-medium hidden lg:table-cell">پلن</th>
-                                    <th class="p-4 text-right font-medium">مبلغ</th>
-                                    <th class="p-4 text-right font-medium">وضعیت</th>
-                                    <th class="p-4 text-right font-medium hidden sm:table-cell">تاریخ</th>
-                                    <th class="p-4 text-center font-medium">عملیات</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-            `;
+            if (emptyState) emptyState.style.display = 'none';
 
-            let mobileHtml = '<div class="space-y-3 block md:hidden">';
+            var desktopHtml = '<div class="data-table"><div class="data-table__inner"><table class="data-table__table"><thead class="data-table__head"><tr>' +
+                '<th class="data-table__th">شماره</th>' +
+                '<th class="data-table__th">عضو</th>' +
+                '<th class="data-table__th hidden md:table-cell">صاحب فاکتور</th>' +
+                '<th class="data-table__th hidden lg:table-cell">پلن</th>' +
+                '<th class="data-table__th">مبلغ</th>' +
+                '<th class="data-table__th">وضعیت</th>' +
+                '<th class="data-table__th hidden sm:table-cell">تاریخ</th>' +
+                '<th class="data-table__th" style="text-align: center;">عملیات</th>' +
+                '</tr></thead><tbody>';
 
-            invoices.forEach(inv => {
-                const statusClass = inv.isPaid ? 'status-paid' : 'status-pending';
-                const statusColor = inv.isPaid ? '#34d399' : '#fbbf24';
-                const statusText = inv.isPaid ? 'پرداخت شده' : 'در انتظار';
+            var mobileHtml = '<div class="invoice-cards">';
 
-                desktopHtml += `
-                    <tr class="table-row border-b border-white/5">
-                        <td class="p-4">
-                            <span class="text-xs text-gray-400 font-mono tracking-wider">#${inv.invoiceNumber}</span>
-                        </td>
-                        <td class="p-4">
-                            <div class="flex items-center gap-2.5">
-                                <div class="w-7 h-7 rounded-md bg-accent-700/20 flex items-center justify-center text-accent-400 font-extrabold text-[10px]">
-                                    ${inv.member?.name ? inv.member.name.charAt(0).toUpperCase() : '?'}
-                                </div>
-                                <span class="font-semibold text-white text-sm">${inv.member?.name || 'بدون نام'}</span>
-                            </div>
-                        </td>
-                        <td class="p-4 text-gray-400 hidden md:table-cell text-sm">
-                            <div class="flex items-center gap-1.5">
-                                <i class="bi bi-person text-xs"></i>
-                                ${inv.user?.username || inv.user?.clubName || '—'}
-                            </div>
-                        </td>
-                        <td class="p-4 text-gray-400 hidden lg:table-cell text-sm">
-                            ${inv.plan?.name || '—'}
-                        </td>
-                        <td class="p-4">
-                            <div class="font-bold text-white text-sm">
-                                ${Number(inv.totalAmount).toLocaleString("fa-IR-u-nu-latn")}
-                            </div>
-                            <div class="text-[10px] text-gray-500">تومان</div>
-                        </td>
-                        <td class="p-4">
-                            <span class="status-badge ${statusClass}">
-                                <span style="width: 6px; height: 6px; border-radius: 50%; display: inline-block; background: ${statusColor};"></span>
-                                ${statusText}
-                            </span>
-                        </td>
-                        <td class="p-4 text-gray-500 hidden sm:table-cell text-xs">
-                            ${inv.invoiceDate}
-                        </td>
-                        <td class="p-4">
-                            <div class="flex items-center justify-center gap-2">
-                                <a href="/i/${inv._id}" class="action-badge">
-                                    <i class="bi bi-eye"></i> مشاهده
-                                </a>
-                                <button onclick="openDeleteModalDesktop('${inv._id}', '${inv.invoiceNumber}')" class="action-badge danger">
-                                    <i class="bi bi-trash"></i> حذف
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                `;
+            invoices.forEach(function(inv) {
+                var statusClass = inv.isPaid ? 'status-badge--paid' : 'status-badge--pending';
+                var statusColor = inv.isPaid ? '#34d399' : '#fbbf24';
+                var statusText = inv.isPaid ? 'پرداخت شده' : 'در انتظار';
+                var memberName = inv.member && inv.member.name ? inv.member.name : 'بدون نام';
+                var memberInitial = inv.member && inv.member.name ? inv.member.name.charAt(0).toUpperCase() : '?';
+                var userName = inv.user && (inv.user.username || inv.user.clubName) ? (inv.user.username || inv.user.clubName) : '-';
+                var planName = inv.plan && inv.plan.name ? inv.plan.name : '-';
+                var amount = Number(inv.totalAmount).toLocaleString('fa-IR-u-nu-latn');
 
-                mobileHtml += `
-                    <div class="invoice-card">
-                        <div class="top-row">
-                            <div class="member-info">
-                                <div class="flex items-center gap-2 flex-wrap">
-                                    <span class="status-badge ${statusClass}">
-                                        <span style="width: 6px; height: 6px; border-radius: 50%; display: inline-block; background: ${statusColor};"></span>
-                                        ${statusText}
-                                    </span>
-                                    <span class="invoice-number">#${inv.invoiceNumber}</span>
-                                </div>
-                                <div class="name">${inv.member?.name || 'بدون نام'}</div>
-                                <div class="meta">
-                                    <span><i class="bi bi-person"></i> ${inv.user?.username || '—'}</span>
-                                    <span><i class="bi bi-tag"></i> ${inv.plan?.name || '—'}</span>
-                                    <span><i class="bi bi-calendar3"></i> ${inv.invoiceDate}</span>
-                                </div>
-                            </div>
-                            <div class="price-box">
-                                <div class="amount">${Number(inv.totalAmount).toLocaleString("fa-IR-u-nu-latn")}</div>
-                                <div class="unit">تومان</div>
-                            </div>
-                        </div>
+                desktopHtml += '<tr class="data-table__row" data-invoice-id="' + inv._id + '">' +
+                    '<td class="data-table__cell"><span class="data-table__invoice-num">#' + inv.invoiceNumber + '</span></td>' +
+                    '<td class="data-table__cell"><div class="data-table__user"><div class="data-table__avatar">' + memberInitial + '</div><span class="data-table__name">' + memberName + '</span></div></td>' +
+                    '<td class="data-table__cell data-table__email hidden md:table-cell"><div style="display: flex; align-items: center; gap: 6px;"><i class="bi bi-person" style="font-size: 12px;"></i> ' + userName + '</div></td>' +
+                    '<td class="data-table__cell data-table__email hidden lg:table-cell">' + planName + '</td>' +
+                    '<td class="data-table__cell"><div class="data-table__amount">' + amount + '</div><div class="data-table__unit">تومان</div></td>' +
+                    '<td class="data-table__cell"><span class="status-badge ' + statusClass + '"><span class="status-badge__dot" style="background: ' + statusColor + ';"></span>' + statusText + '</span></td>' +
+                    '<td class="data-table__cell data-table__date hidden sm:table-cell">' + inv.invoiceDate + '</td>' +
+                    '<td class="data-table__cell"><div class="data-table__actions">' +
+                    '<a href="/i/' + inv._id + '" class="action__btn"><i class="bi bi-eye"></i></a>' +
+                    '<button type="button" class="action__btn action__btn--danger" onclick="openDeleteModal(\'' + inv._id + '\', \'' + inv.invoiceNumber + '\')"><i class="bi bi-trash"></i></button>' +
+                    '</div></td>' +
+                    '</tr>';
 
-                        <div class="action-box">
-                            <a href="/i/${inv._id}" class="action-btn view-btn">
-                                <i class="bi bi-eye"></i> مشاهده
-                            </a>
-                            <button onclick="openDeleteModalDesktop('${inv._id}', '${inv.invoiceNumber}')" class="action-btn delete-btn">
-                                <i class="bi bi-trash"></i> حذف
-                            </button>
-                        </div>
-                    </div>
-                `;
+                mobileHtml += '<div class="invoice-card" data-invoice-id="' + inv._id + '">' +
+                    '<div class="invoice-card__top"><div class="invoice-card__info">' +
+                    '<div class="invoice-card__badges"><span class="status-badge ' + statusClass + '"><span class="status-badge__dot" style="background: ' + statusColor + ';"></span>' + statusText + '</span><span class="invoice-card__number">#' + inv.invoiceNumber + '</span></div>' +
+                    '<div class="invoice-card__name">' + memberName + '</div>' +
+                    '<div class="invoice-card__meta">' +
+                    '<span><i class="bi bi-person"></i> ' + userName + '</span>' +
+                    '<span><i class="bi bi-tag"></i> ' + planName + '</span>' +
+                    '<span><i class="bi bi-calendar3"></i> ' + inv.invoiceDate + '</span>' +
+                    '</div></div>' +
+                    '<div class="invoice-card__price"><div class="invoice-card__amount">' + amount + '</div><div class="invoice-card__unit">تومان</div></div>' +
+                    '</div>' +
+                    '<div class="invoice-card__actions">' +
+                    '<a href="/i/' + inv._id + '" class="action__btn"><i class="bi bi-eye"></i> مشاهده</a>' +
+                    '<button type="button" class="action__btn action__btn--danger" onclick="openDeleteModal(\'' + inv._id + '\', \'' + inv.invoiceNumber + '\')"><i class="bi bi-trash"></i> حذف</button>' +
+                    '</div>' +
+                    '</div>';
             });
 
-            desktopHtml += `</tbody></table></div></div>`;
+            desktopHtml += '</tbody></table></div></div>';
             mobileHtml += '</div>';
 
-            container.innerHTML = desktopHtml + mobileHtml;
+            content.innerHTML = desktopHtml + mobileHtml;
         }
 
+        // ===== Pagination =====
         function updatePagination(pagination) {
-            const paginationContainer = document.getElementById('paginationContainer');
-            if (!paginationContainer) return;
+            var container = document.getElementById('paginationContainer');
+            if (!container) return;
 
             totalPages = pagination.totalPages;
             currentPage = pagination.currentPage;
 
             if (totalPages <= 1) {
-                paginationContainer.innerHTML = '';
+                container.innerHTML = '';
                 return;
             }
 
-            const hasPrev = currentPage > 1;
-            const hasNext = currentPage < totalPages;
+            var hasPrev = currentPage > 1;
+            var hasNext = currentPage < totalPages;
+            var html = '';
 
-            let html = '<div class="flex items-center justify-center gap-2 mt-6 md:mt-8">';
+            html += '<button type="button" class="pagination__btn" onclick="loadPage(' + (currentPage - 1) + ')" ' + (!hasPrev ? 'disabled' : '') + ' aria-label="صفحه قبلی"><i class="bi bi-chevron-right"></i></button>';
 
-            html += `
-                <button onclick="loadPage(${currentPage - 1})"
-                        class="flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all duration-200 ${!hasPrev ? 'opacity-30 pointer-events-none' : ''}"
-                        ${!hasPrev ? 'disabled' : ''}>
-                    <i class="bi bi-chevron-right text-sm md:text-lg"></i>
-                </button>
-            `;
-
-            const total = totalPages;
-            const current = currentPage;
-            const pages = [];
+            var total = totalPages;
+            var current = currentPage;
+            var pages = [];
 
             if (total <= 7) {
-                for (let i = 1; i <= total; i++) pages.push(i);
+                for (var i = 1; i <= total; i++) pages.push(i);
             } else if (current <= 3) {
-                for (let i = 1; i <= 5; i++) pages.push(i);
+                for (var i = 1; i <= 5; i++) pages.push(i);
                 pages.push('...');
                 pages.push(total);
             } else if (current >= total - 2) {
                 pages.push(1);
                 pages.push('...');
-                for (let i = total - 4; i <= total; i++) pages.push(i);
+                for (var i = total - 4; i <= total; i++) pages.push(i);
             } else {
                 pages.push(1);
                 pages.push('...');
-                for (let i = current - 1; i <= current + 1; i++) pages.push(i);
+                for (var i = current - 1; i <= current + 1; i++) pages.push(i);
                 pages.push('...');
                 pages.push(total);
             }
 
-            pages.forEach(p => {
+            pages.forEach(function(p) {
                 if (p === '...') {
-                    html += `<span class="text-gray-500 text-xs md:text-sm px-1 select-none">…</span>`;
+                    html += '<span class="pagination__dots">...</span>';
                 } else {
-                    html += `
-                        <button onclick="loadPage(${p})"
-                                class="flex items-center justify-center min-w-[32px] md:min-w-[40px] h-8 md:h-10 px-2 md:px-3 rounded-lg text-xs md:text-sm font-medium transition-all duration-200
-                                ${p === current ? 'bg-accent-600 text-white' : 'text-gray-400 hover:text-white hover:bg-white/5'}">
-                            ${p}
-                        </button>
-                    `;
+                    html += '<button type="button" class="pagination__btn' + (p === current ? ' pagination__btn--active' : '') + '" onclick="loadPage(' + p + ')">' + p + '</button>';
                 }
             });
 
-            html += `
-                <button onclick="loadPage(${currentPage + 1})"
-                        class="flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all duration-200 ${!hasNext ? 'opacity-30 pointer-events-none' : ''}"
-                        ${!hasNext ? 'disabled' : ''}>
-                    <i class="bi bi-chevron-left text-sm md:text-lg"></i>
-                </button>
-            `;
+            html += '<button type="button" class="pagination__btn" onclick="loadPage(' + (currentPage + 1) + ')" ' + (!hasNext ? 'disabled' : '') + ' aria-label="صفحه بعدی"><i class="bi bi-chevron-left"></i></button>';
 
-            html += '</div>';
-            paginationContainer.innerHTML = html;
+            container.innerHTML = html;
         }
 
+        // ===== Load Page =====
         window.loadPage = function(page) {
             if (page < 1 || page > totalPages || page === currentPage || isLoading) return;
 
             isLoading = true;
-            showLoading();
+            showSkeleton();
 
-            let url = `/admin/invoices?page=${page}`;
-            if (currentStatus) url += `&status=${currentStatus}`;
-            if (currentSearch) url += `&search=${encodeURIComponent(currentSearch)}`;
+            var url = '/admin/invoices?page=' + page;
+            if (currentStatus) url += '&status=' + currentStatus;
+            if (currentSearch) url += '&search=' + encodeURIComponent(currentSearch);
 
             fetch(url, {
                 method: 'GET',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
             })
-            .then(response => {
-                if (!response.ok) throw new Error('Network response was not ok');
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    renderInvoices(data.invoices);
-                    updatePagination(data.pagination);
-                } else {
-                    toast(data.message || 'خطا در بارگذاری فاکتورها', 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Error loading invoices:', error);
-                toast('خطا در ارتباط با سرور', 'error');
-            })
-            .finally(() => {
-                isLoading = false;
-                hideLoading();
-            });
+                .then(function(response) {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(function(data) {
+                    if (data.success) {
+                        renderInvoices(data.invoices);
+                        updatePagination(data.pagination);
+                    } else {
+                        toast(data.message || 'خطا در بارگذاری فاکتورها', 'error');
+                    }
+                })
+                .catch(function(error) {
+                    console.error('Error loading invoices:', error);
+                    toast('خطا در ارتباط با سرور', 'error');
+                })
+                .finally(function() {
+                    isLoading = false;
+                    hideSkeleton();
+                });
         };
+
+        // ===== Init =====
+        document.addEventListener('DOMContentLoaded', function() {
+            var sidebar = document.getElementById('sidebar');
+            var overlay = document.getElementById('sidebarOverlay');
+
+            // Overlay click -> close sidebar
+            if (overlay) {
+                overlay.addEventListener('click', closeSidebar);
+            }
+
+            // Sidebar link click -> close sidebar (then navigate)
+            if (sidebar) {
+                sidebar.addEventListener('click', function(e) {
+                    if (e.target.closest('a[href]')) closeSidebar();
+                });
+            }
+
+            // Reveal skeleton after load
+            setTimeout(function() {
+                hideSkeleton();
+            }, 400);
+        });
     </script>
+    <script src="/socket.io/socket.io.js" defer></script>
+    <script src="/realtime.js" defer></script>
 </body>
 </html>

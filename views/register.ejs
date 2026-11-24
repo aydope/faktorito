@@ -18,25 +18,58 @@
                     },
                     colors: {
                         ink: {
-                            950: '#050508', 900: '#0c0c14', 800: '#14141f', 700: '#1c1c2a',
-                            600: '#28283a', 500: '#36364c', 400: '#4a4a63',
+                            950: '#050508',
+                            900: '#0c0c14',
+                            800: '#14141f',
+                            700: '#1c1c2a',
+                            600: '#28283a',
+                            500: '#36364c',
+                            400: '#4a4a63',
                         },
                         accent: {
-                            400: '#a78bfa', 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9', 800: '#5b21b6', 900: '#4c1d95',
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            800: '#5b21b6',
+                            900: '#4c1d95',
                         },
-                        gold: { 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309' },
-                        success: { 300: '#6ee7b7', 400: '#34d399', 500: '#10b981', 600: '#059669' },
+                        gold: {
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            700: '#b45309',
+                        },
+                        success: {
+                            300: '#6ee7b7',
+                            400: '#34d399',
+                            500: '#10b981',
+                            600: '#059669',
+                        },
                     },
                     boxShadow: {
                         'glow': '0 0 32px rgba(124, 58, 237, 0.35)',
                         'glow-lg': '0 8px 40px rgba(124, 58, 237, 0.45)',
                         'card': '0 10px 40px -10px rgba(0, 0, 0, 0.4)',
                     },
-                    borderRadius: { 'xl': '12px', '2xl': '16px', '3xl': '24px' },
+                    borderRadius: {
+                        'xl': '12px',
+                        '2xl': '16px',
+                        '3xl': '24px',
+                    },
                     keyframes: {
-                        shimmer: { '0%': { backgroundPosition: '200% 0' }, '100%': { backgroundPosition: '-200% 0' } },
-                        toastIn: { '0%': { opacity: '0', transform: 'translateX(-50%) translateY(8px)' }, '100%': { opacity: '1', transform: 'translateX(-50%) translateY(0)' } },
-                        spin: { '0%': { transform: 'rotate(0deg)' }, '100%': { transform: 'rotate(360deg)' } },
+                        shimmer: {
+                            '0%': { backgroundPosition: '200% 0' },
+                            '100%': { backgroundPosition: '-200% 0' },
+                        },
+                        toastIn: {
+                            '0%': { opacity: '0', transform: 'translateX(-50%) translateY(8px)' },
+                            '100%': { opacity: '1', transform: 'translateX(-50%) translateY(0)' },
+                        },
+                        spin: {
+                            '0%': { transform: 'rotate(0deg)' },
+                            '100%': { transform: 'rotate(360deg)' },
+                        },
                     },
                     animation: {
                         shimmer: 'shimmer 1.8s infinite',
@@ -49,17 +82,87 @@
     </script>
 
     <style>
-        * { font-family: 'Sahel', 'Vazirmatn', system-ui, sans-serif !important; margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #050508; color: #d1d5db; line-height: 1.8; overflow-y: auto; min-height: 100vh; }
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: #050508; }
-        ::-webkit-scrollbar-thumb { background: #1c1c2a; border-radius: 10px; }
-        .grid-bg { background-image: linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px); background-size: 60px 60px; }
-        .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: rgba(20,20,31,0.95); color: #fff; padding: 12px 24px; border-radius: 50px; font-size: 13px; font-weight: 600; z-index: 500; box-shadow: 0 20px 40px rgba(0,0,0,0.5); border: 1px solid rgba(139,92,246,0.3); display: none; animation: toastIn 0.3s ease; }
-        @keyframes toastIn { from { opacity: 0; transform: translateX(-50%) translateY(8px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
-        .loader-spinner { width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.2); border-top-color: #fff; border-radius: 50%; animation: spin 0.6s linear infinite; display: inline-block; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        * {
+            font-family: 'Sahel', 'Vazirmatn', system-ui, sans-serif !important;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            background: #050508;
+            color: #d1d5db;
+            line-height: 1.8;
+            overflow-y: auto;
+            min-height: 100vh;
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #050508;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #1c1c2a;
+            border-radius: 10px;
+        }
+
+        .grid-bg {
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(20, 20, 31, 0.95);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 600;
+            z-index: 500;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            display: none;
+            animation: toastIn 0.3s ease;
+        }
+
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .loader-spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ===== Register Card ===== */
         .register-card {
             background: #0c0c14;
             border: 1px solid rgba(255, 255, 255, 0.04);
@@ -69,6 +172,7 @@
             overflow: hidden;
             box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.5);
         }
+
         .register-card::before {
             content: '';
             position: absolute;
@@ -79,6 +183,7 @@
             background: linear-gradient(90deg, transparent, #7c3aed, #a78bfa, #7c3aed, transparent);
         }
 
+        /* ===== Primary Button ===== */
         .btn-primary {
             position: relative;
             overflow: hidden;
@@ -87,16 +192,34 @@
             box-shadow: 0 8px 30px -8px rgba(124, 58, 237, 0.4);
             border: 1px solid rgba(139, 92, 246, 0.3);
         }
-        .btn-primary:hover { background: #8b5cf6; box-shadow: 0 12px 40px -8px rgba(139, 92, 246, 0.5); transform: translateY(-2px); }
-        .btn-primary:active { transform: scale(0.97); }
-        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
-        .float-group { position: relative; margin-bottom: 20px; }
+        .btn-primary:hover {
+            background: #8b5cf6;
+            box-shadow: 0 12px 40px -8px rgba(139, 92, 246, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.97);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ===== Floating Fields ===== */
+        .float-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
         .float-group .float-input {
             width: 100%;
             padding: 20px 42px 8px 14px;
             background: #0f0f1a;
-            border: 2px solid rgba(255,255,255,0.08);
+            border: 2px solid rgba(255, 255, 255, 0.08);
             border-radius: 12px;
             color: #fff;
             font-size: 14px;
@@ -104,11 +227,28 @@
             outline: none;
             height: 54px;
         }
-        .float-group .float-input:focus { border-color: rgba(139,92,246,0.5); box-shadow: 0 0 0 3px rgba(139,92,246,0.08); }
-        .float-group .float-input.error { border-color: rgba(239,68,68,0.4); }
-        .float-group .float-input.valid { border-color: rgba(16,185,129,0.4); }
-        .float-group .float-input.validating { border-color: rgba(245,158,11,0.4); }
-        .float-group .float-input::placeholder { color: transparent; }
+
+        .float-group .float-input:focus {
+            border-color: rgba(139, 92, 246, 0.5);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.08);
+        }
+
+        .float-group .float-input.error {
+            border-color: rgba(239, 68, 68, 0.4);
+        }
+
+        .float-group .float-input.valid {
+            border-color: rgba(16, 185, 129, 0.4);
+        }
+
+        .float-group .float-input.validating {
+            border-color: rgba(245, 158, 11, 0.4);
+        }
+
+        .float-group .float-input::placeholder {
+            color: transparent;
+        }
+
         .float-group .float-label {
             position: absolute;
             right: 42px;
@@ -119,6 +259,7 @@
             pointer-events: none;
             transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
         }
+
         .float-group .float-input:focus ~ .float-label,
         .float-group .float-input:not(:placeholder-shown) ~ .float-label {
             top: 12px;
@@ -126,25 +267,175 @@
             color: #a78bfa;
             font-weight: 700;
         }
-        .float-group .float-icon { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: #6b7280; font-size: 15px; pointer-events: none; transition: color 0.3s ease; }
-        .float-group .float-input:focus ~ .float-icon { color: #a78bfa; }
-        .float-group .toggle-pass { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #6b7280; cursor: pointer; font-size: 15px; background: none; border: none; padding: 4px; transition: color 0.3s ease; }
-        .float-group .toggle-pass:hover { color: #a78bfa; }
-        .float-group .float-feedback { font-size: 11px; margin-top: 5px; margin-right: 4px; font-weight: 500; display: none; align-items: center; gap: 5px; }
-        .float-group .float-feedback.show { display: flex; animation: fadeIn 0.3s ease; }
-        .float-group .float-feedback.error { color: #fca5a5; }
-        .float-group .float-feedback.success { color: #6ee7b7; }
-        .float-group .float-feedback.validating { color: #fcd34d; }
 
-        .float-group .float-input.pw-weak { border-color: #ef4444 !important; box-shadow: 0 0 0 3px rgba(239,68,68,0.08) !important; }
-        .float-group .float-input.pw-medium { border-color: #f59e0b !important; box-shadow: 0 0 0 3px rgba(245,158,11,0.08) !important; }
-        .float-group .float-input.pw-strong { border-color: #10b981 !important; box-shadow: 0 0 0 3px rgba(16,185,129,0.08) !important; }
+        .float-group .float-icon {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+            font-size: 15px;
+            pointer-events: none;
+            transition: color 0.3s ease;
+        }
 
-        .error-box { background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.2); border-radius: 12px; padding: 12px 16px; margin-bottom: 18px; color: #fca5a5; font-size: 13px; font-weight: 500; display: none; }
-        .error-box.show { display: block; animation: fadeIn 0.3s ease; }
-        .error-box p { display: flex; align-items: center; gap: 8px; margin-bottom: 3px; }
-        .error-box p:last-child { margin-bottom: 0; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+        .float-group .float-input:focus ~ .float-icon {
+            color: #a78bfa;
+        }
+
+        .float-group .toggle-pass {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+            cursor: pointer;
+            font-size: 15px;
+            background: none;
+            border: none;
+            padding: 4px;
+            transition: color 0.3s ease;
+        }
+
+        .float-group .toggle-pass:hover {
+            color: #a78bfa;
+        }
+
+        .float-group .float-feedback {
+            font-size: 11px;
+            margin-top: 5px;
+            margin-right: 4px;
+            font-weight: 500;
+            display: none;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .float-group .float-feedback.show {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .float-group .float-feedback.error {
+            color: #fca5a5;
+        }
+
+        .float-group .float-feedback.success {
+            color: #6ee7b7;
+        }
+
+        .float-group .float-feedback.validating {
+            color: #fcd34d;
+        }
+
+        .float-group .float-input.pw-weak {
+            border-color: #ef4444 !important;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.08) !important;
+        }
+
+        .float-group .float-input.pw-medium {
+            border-color: #f59e0b !important;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.08) !important;
+        }
+
+        .float-group .float-input.pw-strong {
+            border-color: #10b981 !important;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.08) !important;
+        }
+
+        /* ===== Custom Checkbox ===== */
+        .custom-checkbox {
+            position: relative;
+            display: inline-flex;
+            align-items: flex-start;
+            gap: 10px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .custom-checkbox input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .custom-checkbox .check-box {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+            margin-top: 1px;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: 6px;
+            background: #0f0f1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.25s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+        }
+
+        .custom-checkbox .check-box i {
+            font-size: 12px;
+            color: #fff;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .custom-checkbox:hover .check-box {
+            border-color: rgba(139, 92, 246, 0.5);
+            background: rgba(139, 92, 246, 0.05);
+        }
+
+        .custom-checkbox input:focus-visible ~ .check-box {
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.25);
+            border-color: rgba(139, 92, 246, 0.6);
+        }
+
+        .custom-checkbox input:checked ~ .check-box {
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
+            border-color: #8b5cf6;
+            box-shadow: 0 4px 12px -2px rgba(124, 58, 237, 0.5);
+        }
+
+        .custom-checkbox input:checked ~ .check-box i {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .custom-checkbox input:checked ~ .check-label {
+            color: #c4b5fd;
+        }
+
+        .custom-checkbox .check-label {
+            font-size: 12px;
+            color: #9ca3af;
+            line-height: 1.7;
+            transition: color 0.25s ease;
+        }
+
+        .custom-checkbox .check-label a {
+            color: #a78bfa;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .custom-checkbox .check-label a:hover {
+            color: #c4b5fd;
+            text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-4px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 <body class="antialiased bg-[#050508] grid-bg">
@@ -152,14 +443,24 @@
     <main class="max-w-md mx-auto px-5 relative z-10 flex items-center justify-center" style="min-height: 100vh; padding: 30px 0;">
         <div class="w-full">
             <div class="text-center mb-7">
-                <div class="w-14 h-14 bg-gradient-to-br from-accent-700 to-accent-500 rounded-2xl flex items-center justify-center text-white text-xl font-extrabold shadow-glow mx-auto mb-4">ف</div>
+                <div class="w-14 h-14 bg-gradient-to-br from-accent-700 to-accent-500 rounded-2xl flex items-center justify-center text-white text-xl font-extrabold shadow-glow mx-auto mb-4">
+                    ف
+                </div>
                 <h1 class="text-xl md:text-2xl font-black text-white mb-1">ثبت‌نام در فاکتوریتو</h1>
                 <p class="text-gray-400 text-xs">حساب کاربری خود را ایجاد کنید</p>
             </div>
 
-            <div class="error-box" id="errorBox"></div>
-
             <div class="register-card">
+                <p class="text-[11px] text-gray-400 leading-6 mb-5 bg-accent-700/10 border border-accent-700/20 rounded-xl px-3 py-2">
+                    اگر باشگاه دارید، بعد از ورود از پنل خود «ساخت باشگاه» را بزنید. اگر باشگاهی شما را عضو کرده، با همین ایمیل ثبت‌نام کنید تا اشتراک و فاکتورهایتان در پنل شما نمایش داده شود.
+                </p>
+
+                <% if (typeof signupFull !== 'undefined' && signupFull) { %>
+                <div class="mb-5 rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-200 leading-7" role="alert" id="signupFull">
+                    <%= signupMessage %>
+                </div>
+                <% } %>
+
                 <form id="registerForm" autocomplete="on" novalidate>
                     <div class="float-group">
                         <i class="bi bi-person float-icon"></i>
@@ -179,7 +480,9 @@
                         <i class="bi bi-lock float-icon"></i>
                         <input type="password" name="password" id="password" required autocomplete="new-password" class="float-input" placeholder=" " />
                         <label class="float-label" for="password">رمز عبور</label>
-                        <button type="button" onclick="togglePass('password','p1')" class="toggle-pass" tabindex="-1"><i class="bi bi-eye" id="p1"></i></button>
+                        <button type="button" onclick="togglePass('password','p1')" class="toggle-pass" tabindex="-1">
+                            <i class="bi bi-eye" id="p1"></i>
+                        </button>
                         <div class="float-feedback" id="passwordFeedback"></div>
                     </div>
 
@@ -187,17 +490,23 @@
                         <i class="bi bi-lock-fill float-icon"></i>
                         <input type="password" name="confirmPassword" id="confirmPassword" required autocomplete="new-password" class="float-input" placeholder=" " />
                         <label class="float-label" for="confirmPassword">تکرار رمز عبور</label>
-                        <button type="button" onclick="togglePass('confirmPassword','p2')" class="toggle-pass" tabindex="-1"><i class="bi bi-eye" id="p2"></i></button>
+                        <button type="button" onclick="togglePass('confirmPassword','p2')" class="toggle-pass" tabindex="-1">
+                            <i class="bi bi-eye" id="p2"></i>
+                        </button>
                         <div class="float-feedback" id="confirmPasswordFeedback"></div>
                     </div>
 
-                    <div class="float-group" style="margin-bottom: 24px;">
-                        <i class="bi bi-building float-icon"></i>
-                        <input type="text" name="clubName" id="clubName" autocomplete="organization" class="float-input" placeholder=" " maxlength="100" />
-                        <label class="float-label" for="clubName">نام باشگاه <span style="font-weight:400;font-size:10px;">(اختیاری)</span></label>
-                    </div>
+                    <label class="custom-checkbox mb-5">
+                        <input type="checkbox" id="acceptTerms" />
+                        <span class="check-box"><i class="bi bi-check-lg"></i></span>
+                        <span class="check-label">
+                            <a href="/terms" target="_blank">شرایط استفاده</a> و
+                            <a href="/privacy" target="_blank">سیاست حریم خصوصی</a>
+                            را خوانده‌ام و می‌پذیرم.
+                        </span>
+                    </label>
 
-                    <button type="submit" class="btn-primary w-full py-3 rounded-xl text-white font-bold text-sm flex items-center justify-center gap-2" id="submitBtn">
+                    <button type="submit" class="btn-primary w-full py-3 rounded-xl text-white font-bold text-sm flex items-center justify-center gap-2" id="submitBtn"<%= (typeof signupFull !== 'undefined' && signupFull) ? ' disabled' : '' %>>
                         <i class="bi bi-person-plus text-base"></i>
                         <span>ثبت‌نام</span>
                     </button>
@@ -220,52 +529,160 @@
     <div id="toast" class="toast"></div>
 
     <script>
-        function debounce(func, wait) { let timeout; return function executedFunction(...args) { const later = () => { clearTimeout(timeout); func(...args); }; clearTimeout(timeout); timeout = setTimeout(later, wait); }; }
-        function escapeHtml(str) { if (!str) return ''; const div = document.createElement('div'); div.appendChild(document.createTextNode(str)); return div.innerHTML; }
-        function sanitizeInput(value) { return value.replace(/<[^>]*>/g, '').replace(/[<>"'&]/g, '').trim(); }
-        function togglePass(id, iconId) { const input = document.getElementById(id); const icon = document.getElementById(iconId); const isPassword = input.type === 'password'; input.type = isPassword ? 'text' : 'password'; icon.className = isPassword ? 'bi bi-eye-slash' : 'bi bi-eye'; }
-        function showFeedback(elementId, message, type) { const el = document.getElementById(elementId); el.textContent = message; el.className = 'float-feedback show ' + type; }
-        function hideFeedback(elementId) { const el = document.getElementById(elementId); el.classList.remove('show'); }
-        function setFieldState(inputId, state) { const input = document.getElementById(inputId); input.classList.remove('error', 'valid', 'validating'); if (state) input.classList.add(state); }
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.appendChild(document.createTextNode(str));
+            return div.innerHTML;
+        }
+
+        function sanitizeInput(value) {
+            return value.replace(/<[^>]*>/g, '').replace(/[<>"'&]/g, '').trim();
+        }
+
+        function togglePass(id, iconId) {
+            const input = document.getElementById(id);
+            const icon = document.getElementById(iconId);
+            const isPassword = input.type === 'password';
+            input.type = isPassword ? 'text' : 'password';
+            icon.className = isPassword ? 'bi bi-eye-slash' : 'bi bi-eye';
+        }
+
+        function showFeedback(elementId, message, type) {
+            const el = document.getElementById(elementId);
+            el.textContent = message;
+            el.className = 'float-feedback show ' + type;
+        }
+
+        function hideFeedback(elementId) {
+            const el = document.getElementById(elementId);
+            el.classList.remove('show');
+        }
+
+        function setFieldState(inputId, state) {
+            const input = document.getElementById(inputId);
+            input.classList.remove('error', 'valid', 'validating');
+            if (state) input.classList.add(state);
+        }
 
         const debouncedCheckAvailability = debounce(async (field, value) => {
             if (!value) return;
+
             const feedbackId = field === 'username' ? 'usernameFeedback' : 'emailFeedback';
             setFieldState(field, 'validating');
             showFeedback(feedbackId, 'در حال بررسی...', 'validating');
+
             try {
-                const queryParam = field === 'username' ? `username=${encodeURIComponent(value)}` : `email=${encodeURIComponent(value)}`;
-                const res = await fetch(`/auth/check-availability?${queryParam}`, { method: 'GET', headers: { 'Accept': 'application/json', 'Cache-Control': 'no-cache' }, cache: 'no-store' });
+                const queryParam = field === 'username'
+                    ? `username=${encodeURIComponent(value)}`
+                    : `email=${encodeURIComponent(value)}`;
+
+                const res = await fetch(`/auth/check-availability?${queryParam}`, {
+                    method: 'GET',
+                    headers: { 'Accept': 'application/json', 'Cache-Control': 'no-cache' },
+                    cache: 'no-store'
+                });
+
                 const result = await res.json();
+
                 if (!result.available && result.taken && result.taken.length > 0) {
                     const fieldError = result.taken.find(item => item.field === field);
-                    if (fieldError) { showFeedback(feedbackId, fieldError.message, 'error'); setFieldState(field, 'error'); return; }
+                    if (fieldError) {
+                        showFeedback(feedbackId, fieldError.message, 'error');
+                        setFieldState(field, 'error');
+                        return;
+                    }
                 }
+
                 showFeedback(feedbackId, 'در دسترس است', 'success');
                 setFieldState(field, 'valid');
-            } catch (err) { hideFeedback(feedbackId); setFieldState(field, null); }
+            } catch (err) {
+                hideFeedback(feedbackId);
+                setFieldState(field, null);
+            }
         }, 500);
 
         const debouncedValidateEmail = debounce(async () => {
             const input = document.getElementById('email');
             const value = input.value.trim();
-            if (!value) { hideFeedback('emailFeedback'); setFieldState('email', null); return; }
+
+            if (!value) {
+                hideFeedback('emailFeedback');
+                setFieldState('email', null);
+                return;
+            }
+
             const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\.[a-zA-Z]{2,}$/;
-            if (!emailRegex.test(value)) { showFeedback('emailFeedback', 'لطفاً یک ایمیل معتبر وارد کنید', 'error'); setFieldState('email', 'error'); return; }
-            if (/\s/.test(value)) { showFeedback('emailFeedback', 'ایمیل نباید شامل فاصله باشد', 'error'); setFieldState('email', 'error'); return; }
-            if (value.length < 5) { showFeedback('emailFeedback', 'ایمیل خیلی کوتاه است', 'error'); setFieldState('email', 'error'); return; }
-            if (value.length > 254) { showFeedback('emailFeedback', 'ایمیل خیلی طولانی است', 'error'); setFieldState('email', 'error'); return; }
+
+            if (!emailRegex.test(value)) {
+                showFeedback('emailFeedback', 'لطفاً یک ایمیل معتبر وارد کنید', 'error');
+                setFieldState('email', 'error');
+                return;
+            }
+
+            if (/\s/.test(value)) {
+                showFeedback('emailFeedback', 'ایمیل نباید شامل فاصله باشد', 'error');
+                setFieldState('email', 'error');
+                return;
+            }
+
+            if (value.length < 5) {
+                showFeedback('emailFeedback', 'ایمیل خیلی کوتاه است', 'error');
+                setFieldState('email', 'error');
+                return;
+            }
+
+            if (value.length > 254) {
+                showFeedback('emailFeedback', 'ایمیل خیلی طولانی است', 'error');
+                setFieldState('email', 'error');
+                return;
+            }
+
             await debouncedCheckAvailability('email', value);
         }, 500);
 
         const debouncedValidateUsername = debounce(async () => {
             const input = document.getElementById('username');
             const value = input.value.trim();
-            if (!value) { hideFeedback('usernameFeedback'); setFieldState('username', null); return; }
-            const usernameRegex = /^[a-zA-Z][a-zA-Z0-9_]*$/;
-            if (!usernameRegex.test(value)) { showFeedback('usernameFeedback', 'فقط حروف انگلیسی، اعداد و _ مجاز است', 'error'); setFieldState('username', 'error'); return; }
-            if (value.length < 3) { showFeedback('usernameFeedback', 'حداقل ۳ کاراکتر وارد کنید', 'error'); setFieldState('username', 'error'); return; }
-            if (value.length > 30) { showFeedback('usernameFeedback', 'حداکثر ۳۰ کاراکتر مجاز است', 'error'); setFieldState('username', 'error'); return; }
+
+            if (!value) {
+                hideFeedback('usernameFeedback');
+                setFieldState('username', null);
+                return;
+            }
+
+            const usernameRegex = /^[a-zA-Z0-9._-]+$/;
+
+            if (!usernameRegex.test(value)) {
+                showFeedback('usernameFeedback', 'فقط حروف انگلیسی، اعداد، نقطه، خط تیره و _ مجاز است', 'error');
+                setFieldState('username', 'error');
+                return;
+            }
+
+            if (value.length < 3) {
+                showFeedback('usernameFeedback', 'حداقل 3 کاراکتر وارد کنید', 'error');
+                setFieldState('username', 'error');
+                return;
+            }
+
+            if (value.length > 30) {
+                showFeedback('usernameFeedback', 'حداکثر 30 کاراکتر مجاز است', 'error');
+                setFieldState('username', 'error');
+                return;
+            }
+
             await debouncedCheckAvailability('username', value);
         }, 500);
 
@@ -280,27 +697,20 @@
                 return;
             }
 
-            let score = 0;
             const checks = [];
 
-            if (value.length >= 6) score++; else checks.push('حداقل ۶ کاراکتر');
-            if (value.length >= 10) score++;
-            if (/[A-Za-z]/.test(value) && /[0-9]/.test(value)) score++; else if (value.length >= 6) checks.push('ترکیب حروف و اعداد');
-            if (/[^A-Za-z0-9]/.test(value)) score++;
-
-            if (score <= 2) {
-                input.classList.add('pw-weak');
-            } else if (score === 3) {
-                input.classList.add('pw-medium');
-            } else {
-                input.classList.add('pw-strong');
-            }
+            if (value.length < 8) checks.push('حداقل 8 کاراکتر');
+            if (!/[a-z]/.test(value)) checks.push('حروف کوچک');
+            if (!/[A-Z]/.test(value)) checks.push('حروف بزرگ');
+            if (!/[0-9]/.test(value)) checks.push('عدد');
+            if (!/[^A-Za-z0-9]/.test(value)) checks.push('کاراکتر خاص');
 
             if (checks.length > 0) {
-                showFeedback('passwordFeedback', checks.join('، '), 'error');
+                input.classList.add('pw-weak');
+                showFeedback('passwordFeedback', 'نیاز به: ' + checks.join('، '), 'error');
             } else {
-                const strengthLabels = ['', '', 'متوسط', 'قوی'];
-                showFeedback('passwordFeedback', 'رمز عبور ' + (strengthLabels[score] || 'بسیار قوی'), 'success');
+                input.classList.add('pw-strong');
+                showFeedback('passwordFeedback', 'رمز عبور قوی است', 'success');
             }
 
             debouncedValidateConfirmPassword();
@@ -309,13 +719,53 @@
         const debouncedValidateConfirmPassword = debounce(() => {
             const password = document.getElementById('password').value;
             const confirm = document.getElementById('confirmPassword').value;
-            if (!confirm) { hideFeedback('confirmPasswordFeedback'); setFieldState('confirmPassword', null); return; }
-            if (!password) { showFeedback('confirmPasswordFeedback', 'ابتدا رمز عبور را وارد کنید', 'error'); setFieldState('confirmPassword', 'error'); return; }
-            if (confirm !== password) { showFeedback('confirmPasswordFeedback', 'رمز عبور مطابقت ندارد', 'error'); setFieldState('confirmPassword', 'error'); return; }
-            hideFeedback('confirmPasswordFeedback'); setFieldState('confirmPassword', 'valid');
+
+            if (!confirm) {
+                hideFeedback('confirmPasswordFeedback');
+                setFieldState('confirmPassword', null);
+                return;
+            }
+
+            if (!password) {
+                showFeedback('confirmPasswordFeedback', 'ابتدا رمز عبور را وارد کنید', 'error');
+                setFieldState('confirmPassword', 'error');
+                return;
+            }
+
+            if (confirm !== password) {
+                showFeedback('confirmPasswordFeedback', 'رمز عبور مطابقت ندارد', 'error');
+                setFieldState('confirmPassword', 'error');
+                return;
+            }
+
+            hideFeedback('confirmPasswordFeedback');
+            setFieldState('confirmPassword', 'valid');
         }, 400);
 
-        function toast(msg, type) { const t = document.getElementById('toast'); t.textContent = msg; t.style.display = 'block'; if (type === 'error') { t.style.background = 'rgba(127,29,29,0.95)'; t.style.borderColor = 'rgba(239,68,68,0.4)'; t.style.color = '#fca5a5'; } else if (type === 'success') { t.style.background = 'rgba(6,78,59,0.95)'; t.style.borderColor = 'rgba(16,185,129,0.4)'; t.style.color = '#6ee7b7'; } else { t.style.background = 'rgba(20,20,31,0.95)'; t.style.borderColor = 'rgba(139,92,246,0.4)'; t.style.color = '#fff'; } clearTimeout(t._t); t._t = setTimeout(() => { t.style.display = 'none'; }, 3000); }
+        function toast(msg, type) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.style.display = 'block';
+
+            if (type === 'error') {
+                t.style.background = 'rgba(127,29,29,0.95)';
+                t.style.borderColor = 'rgba(239,68,68,0.4)';
+                t.style.color = '#fca5a5';
+            } else if (type === 'success') {
+                t.style.background = 'rgba(6,78,59,0.95)';
+                t.style.borderColor = 'rgba(16,185,129,0.4)';
+                t.style.color = '#6ee7b7';
+            } else {
+                t.style.background = 'rgba(20,20,31,0.95)';
+                t.style.borderColor = 'rgba(139,92,246,0.4)';
+                t.style.color = '#fff';
+            }
+
+            clearTimeout(t._t);
+            t._t = setTimeout(() => {
+                t.style.display = 'none';
+            }, 3000);
+        }
 
         document.getElementById('email').addEventListener('input', debouncedValidateEmail);
         document.getElementById('username').addEventListener('input', debouncedValidateUsername);
@@ -326,46 +776,145 @@
             input.addEventListener('blur', function() {
                 if (this.name === 'username' || this.name === 'clubName') {
                     const sanitized = sanitizeInput(this.value);
-                    if (sanitized !== this.value) { this.value = sanitized; toast('کاراکترهای نامعتبر حذف شدند', 'error'); }
+                    if (sanitized !== this.value) {
+                        this.value = sanitized;
+                        toast('کاراکترهای نامعتبر حذف شدند', 'error');
+                    }
                 }
-                if (this.value && /<[^>]*>/.test(this.value)) { this.value = this.value.replace(/<[^>]*>/g, ''); toast('کاراکترهای نامعتبر حذف شدند', 'error'); }
+                if (this.value && /<[^>]*>/.test(this.value)) {
+                    this.value = this.value.replace(/<[^>]*>/g, '');
+                    toast('کاراکترهای نامعتبر حذف شدند', 'error');
+                }
             });
+
             input.addEventListener('paste', function(e) {
                 const pastedText = (e.clipboardData || window.clipboardData).getData('text');
-                if (/<[^>]*>|javascript:/i.test(pastedText)) { e.preventDefault(); toast('پیست کردن کد HTML مجاز نیست', 'error'); }
+                if (/<[^>]*>|javascript:/i.test(pastedText)) {
+                    e.preventDefault();
+                    toast('پیست کردن کد HTML مجاز نیست', 'error');
+                }
             });
         });
 
         document.getElementById('registerForm').addEventListener('submit', async function(e) {
             e.preventDefault();
+
             const btn = document.getElementById('submitBtn');
             const originalHTML = btn.innerHTML;
-            const errorBox = document.getElementById('errorBox');
-            errorBox.classList.remove('show'); errorBox.innerHTML = '';
             const username = sanitizeInput(document.getElementById('username').value);
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
-            const clubName = sanitizeInput(document.getElementById('clubName').value);
+            const clubEl = document.getElementById('clubName');
+            const clubName = clubEl ? sanitizeInput(clubEl.value) : '';
+
             document.getElementById('username').value = username;
-            document.getElementById('clubName').value = clubName;
-            const errors = [];
-            if (!username || username.length < 3) errors.push('نام کاربری باید حداقل ۳ کاراکتر باشد');
-            if (!email) errors.push('ایمیل الزامی است');
-            if (!password || password.length < 6) errors.push('رمز عبور باید حداقل ۶ کاراکتر باشد');
-            if (password !== confirmPassword) errors.push('رمز عبور و تکرار آن مطابقت ندارند');
+            if (clubEl) clubEl.value = clubName;
+
+            let hasErr = false;
+            const usernameRegex = /^[a-zA-Z0-9._-]+$/;
+            const pwChecks = [];
+
+            if (!username || username.length < 3) {
+                showFeedback('usernameFeedback', 'نام کاربری باید حداقل 3 کاراکتر باشد', 'error');
+                setFieldState('username', 'error');
+                hasErr = true;
+            } else if (!usernameRegex.test(username)) {
+                showFeedback('usernameFeedback', 'فقط حروف انگلیسی، اعداد، نقطه، خط تیره و _ مجاز است', 'error');
+                setFieldState('username', 'error');
+                hasErr = true;
+            }
+
+            if (!email) {
+                showFeedback('emailFeedback', 'ایمیل الزامی است', 'error');
+                setFieldState('email', 'error');
+                hasErr = true;
+            }
+
+            if (!password || password.length < 8) pwChecks.push('حداقل 8 کاراکتر');
+            if (!/[a-z]/.test(password)) pwChecks.push('حروف کوچک');
+            if (!/[A-Z]/.test(password)) pwChecks.push('حروف بزرگ');
+            if (!/[0-9]/.test(password)) pwChecks.push('عدد');
+            if (!/[^A-Za-z0-9]/.test(password)) pwChecks.push('کاراکتر خاص');
+
+            if (pwChecks.length > 0) {
+                showFeedback('passwordFeedback', 'نیاز به: ' + pwChecks.join('، '), 'error');
+                setFieldState('password', 'error');
+                hasErr = true;
+            }
+
+            if (password !== confirmPassword) {
+                showFeedback('confirmPasswordFeedback', 'رمز عبور و تکرار آن مطابقت ندارند', 'error');
+                setFieldState('confirmPassword', 'error');
+                hasErr = true;
+            }
+
+            if (!document.getElementById('acceptTerms').checked) {
+                toast('برای ثبت‌نام باید شرایط استفاده و حریم خصوصی را بپذیرید', 'error');
+                hasErr = true;
+            }
+
             const dangerousPattern = /<[^>]*>|javascript:|on\w+\s*=/i;
-            if (dangerousPattern.test(username) || dangerousPattern.test(clubName)) errors.push('کاراکترهای نامعتبر در ورودی تشخیص داده شد');
-            if (errors.length > 0) { errorBox.innerHTML = errors.map(err => `<p><i class="bi bi-exclamation-circle"></i>${escapeHtml(err)}</p>`).join(''); errorBox.classList.add('show'); return; }
-            btn.disabled = true; btn.innerHTML = '<span class="loader-spinner"></span><span>در حال ثبت‌نام...</span>';
+
+            if (dangerousPattern.test(username) || dangerousPattern.test(clubName)) {
+                toast('کاراکترهای نامعتبر در ورودی تشخیص داده شد', 'error');
+                hasErr = true;
+            }
+
+            if (hasErr) return;
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loader-spinner"></span><span>در حال ثبت‌نام...</span>';
+
             try {
-                const data = { username, email, password, confirmPassword, clubName };
-                const res = await fetch('/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+                const data = { username, email, password, confirmPassword, acceptTerms: true };
+                if (clubEl && clubName) data.clubName = clubName;
+
+                const res = await fetch('/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
                 const result = await res.json();
-                if (result.success) { toast(result.message || 'ثبت‌نام با موفقیت انجام شد', 'success'); setTimeout(() => { window.location.href = result.redirect || '/dashboard'; }, 800); }
-                else { const serverErrors = result.errors || [result.message || 'خطا در ثبت‌نام']; errorBox.innerHTML = serverErrors.map(err => `<p><i class="bi bi-exclamation-circle"></i>${escapeHtml(err)}</p>`).join(''); errorBox.classList.add('show'); }
-            } catch (err) { toast('خطا در ارتباط با سرور', 'error'); }
-            btn.disabled = false; btn.innerHTML = originalHTML;
+
+                if (result.success) {
+                    toast(result.message || 'ثبت‌نام با موفقیت انجام شد', 'success');
+                    setTimeout(() => {
+                        window.location.href = result.redirect || '/auth/verify';
+                    }, 800);
+                } else {
+                    let er = {};
+                    let raw = result.errors || result.validationErrors;
+
+                    Array.isArray(raw)
+                        ? raw.forEach(x => er.general = (er.general || []).concat(x))
+                        : raw && typeof raw === 'object'
+                            ? er = raw
+                            : er.general = result.message ? [result.message] : ['خطا در ثبت‌نام'];
+
+                    const map = {
+                        username: 'usernameFeedback',
+                        email: 'emailFeedback',
+                        password: 'passwordFeedback',
+                        confirmPassword: 'confirmPasswordFeedback'
+                    };
+
+                    Object.keys(map).forEach(f => {
+                        if (er[f]) {
+                            showFeedback(map[f], er[f], 'error');
+                            setFieldState(f, 'error');
+                        }
+                    });
+
+                    (er.general || []).forEach(x => toast(x, 'error'));
+                }
+            } catch (err) {
+                toast('خطا در ارتباط با سرور', 'error');
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = originalHTML;
         });
     </script>
 </body>

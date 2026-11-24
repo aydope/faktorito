@@ -13,17 +13,10 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        'sahel': ['Sahel', 'Vazirmatn', 'system-ui', 'sans-serif'],
-                    },
+                    fontFamily: { 'sahel': ['Sahel', 'Vazirmatn', 'system-ui', 'sans-serif'] },
                     colors: {
-                        ink: {
-                            950: '#050508', 900: '#0c0c14', 800: '#14141f', 700: '#1c1c2a',
-                            600: '#28283a', 500: '#36364c', 400: '#4a4a63',
-                        },
-                        accent: {
-                            400: '#a78bfa', 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9', 800: '#5b21b6', 900: '#4c1d95',
-                        },
+                        ink: { 950: '#050508', 900: '#0c0c14', 800: '#14141f', 700: '#1c1c2a', 600: '#28283a', 500: '#36364c', 400: '#4a4a63' },
+                        accent: { 400: '#a78bfa', 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9', 800: '#5b21b6', 900: '#4c1d95' },
                         gold: { 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309' },
                         success: { 300: '#6ee7b7', 400: '#34d399', 500: '#10b981', 600: '#059669' },
                     },
@@ -38,15 +31,11 @@
                         shimmer: { '0%': { backgroundPosition: '200% 0' }, '100%': { backgroundPosition: '-200% 0' } },
                         toastIn: { '0%': { opacity: '0', transform: 'translateX(-50%) translateY(8px)' }, '100%': { opacity: '1', transform: 'translateX(-50%) translateY(0)' } },
                         spin: { '0%': { transform: 'rotate(0deg)' }, '100%': { transform: 'rotate(360deg)' } },
-                        slideIn: { '0%': { transform: 'translateX(110%)' }, '100%': { transform: 'translateX(0)' } },
-                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
                     },
                     animation: {
                         shimmer: 'shimmer 1.8s infinite',
                         toastIn: 'toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
                         spin: 'spin 0.6s linear infinite',
-                        slideIn: 'slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-                        fadeIn: 'fadeIn 0.3s ease',
                     },
                 }
             }
@@ -116,9 +105,7 @@
             box-shadow: 0 12px 40px -8px rgba(139, 92, 246, 0.5);
             transform: translateY(-2px);
         }
-        .btn-primary:active {
-            transform: scale(0.97);
-        }
+        .btn-primary:active { transform: scale(0.97); }
 
         .icon-btn {
             display: inline-flex; align-items: center; justify-content: center;
@@ -130,6 +117,16 @@
         .icon-btn i { font-size: 15px; display: flex; width: 100%; height: 100%; align-items: center; justify-content: center; }
         .icon-btn:hover { background: rgba(139, 92, 246, 0.08); color: #c4b5fd; border-color: rgba(139, 92, 246, 0.3); }
         .icon-btn.danger:hover { background: rgba(220, 38, 38, 0.08); color: #f87171; border-color: rgba(220,38,38,0.3); }
+
+        .icon-btn:disabled,
+        .icon-btn.is-disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            background: rgba(255, 255, 255, 0.01);
+            border-color: rgba(255, 255, 255, 0.04);
+            color: #6b7280;
+            pointer-events: none;
+        }
 
         .dropdown-trigger {
             display: flex; align-items: center; gap: 10px; padding: 4px 12px 4px 6px;
@@ -218,6 +215,181 @@
         .status-paid { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); color: #6ee7b7; }
         .status-pending { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3); color: #fcd34d; }
 
+        .inv-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 150px 170px;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .inv-main {
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .inv-avatar {
+            width: 46px;
+            height: 46px;
+            flex-shrink: 0;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(124,58,237,0.25), rgba(167,139,250,0.15));
+            border: 1px solid rgba(139,92,246,0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 17px;
+            color: #c4b5fd;
+            letter-spacing: -0.5px;
+        }
+        .inv-main-content {
+            min-width: 0;
+            flex: 1;
+        }
+        .inv-main-top {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+            flex-wrap: wrap;
+        }
+        .inv-member-name {
+            font-size: 15px;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.3;
+            margin: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .inv-meta {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            font-size: 11px;
+            color: #6b7280;
+        }
+        .inv-meta-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            min-width: 0;
+        }
+        .inv-meta-item i {
+            font-size: 11px;
+            color: #4a4a63;
+            flex-shrink: 0;
+        }
+        .inv-meta-item span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .inv-price-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 10px 12px;
+            background: rgba(139, 92, 246, 0.04);
+            border: 1px solid rgba(139, 92, 246, 0.12);
+            border-radius: 12px;
+            min-height: 68px;
+        }
+        .inv-price-label {
+            font-size: 10px;
+            color: #6b7280;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        .inv-price-amount {
+            font-size: 17px;
+            font-weight: 900;
+            color: #fff;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+        .inv-price-currency {
+            font-size: 10px;
+            color: #6b7280;
+            margin-top: 1px;
+        }
+
+        .inv-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 6px;
+            padding-right: 14px;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            margin-right: 4px;
+        }
+
+        @media (max-width: 640px) {
+            .inv-row {
+                grid-template-columns: 1fr;
+                grid-template-areas:
+                    "main"
+                    "price"
+                    "actions";
+                gap: 10px;
+            }
+            .inv-main {
+                grid-area: main;
+                gap: 12px;
+            }
+            .inv-avatar {
+                width: 42px;
+                height: 42px;
+                font-size: 15px;
+                border-radius: 11px;
+            }
+            .inv-member-name { font-size: 14px; }
+            .inv-meta { gap: 10px; font-size: 10.5px; }
+
+            .inv-price-box {
+                grid-area: price;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                min-height: 0;
+                padding: 10px 14px;
+                border-radius: 10px;
+            }
+            .inv-price-label {
+                margin-bottom: 0;
+                font-size: 11px;
+            }
+            .inv-price-amount { font-size: 16px; }
+            .inv-price-currency {
+                margin-top: 0;
+                margin-right: 4px;
+                font-size: 10px;
+            }
+
+            .inv-actions {
+                grid-area: actions;
+                justify-content: space-between;
+                gap: 6px;
+                padding-right: 0;
+                margin-right: 0;
+                border-right: none;
+                padding-top: 10px;
+                border-top: 1px solid rgba(255, 255, 255, 0.05);
+            }
+            .inv-actions .icon-btn {
+                flex: 1;
+                width: auto;
+                height: 38px;
+                border-radius: 9px;
+            }
+        }
+
         .modal-overlay {
             position: fixed; inset: 0; background: rgba(5, 5, 8, 0.85);
             backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
@@ -248,147 +420,8 @@
 </head>
 <body class="antialiased bg-[#050508] grid-bg">
 
-    <!-- ========== SIDEBAR (Mobile) ========== -->
-    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
-    <div class="sidebar" id="sidebar">
-        <div class="flex items-center justify-between mb-6 pb-4 border-b border-white/5">
-            <a href="/dashboard" class="flex items-center gap-2.5 no-underline">
-                <div class="w-9 h-9 bg-gradient-to-br from-accent-700 to-accent-500 rounded-xl flex items-center justify-center text-white font-extrabold text-lg">ف</div>
-                <span class="font-extrabold text-xl text-white">فاکتوریتو</span>
-            </a>
-            <button onclick="closeSidebar()" class="icon-btn"><i class="bi bi-x-lg"></i></button>
-        </div>
+<%- include('partials/shell') %>
 
-        <div class="space-y-1">
-            <div class="text-xs font-bold text-gray-500 px-3 mb-2">منوی اصلی</div>
-            <a href="/dashboard" class="sidebar-link"><i class="bi bi-speedometer2"></i> داشبورد</a>
-            <a href="/invoices" class="sidebar-link active"><i class="bi bi-receipt"></i> فاکتورها</a>
-            <a href="/profile" class="sidebar-link"><i class="bi bi-person"></i> پروفایل</a>
-            <a href="/plans" class="sidebar-link"><i class="bi bi-collection"></i> پلن‌ها</a>
-            <a href="/settings" class="sidebar-link"><i class="bi bi-gear"></i> تنظیمات</a>
-            <% if (user.role && ["admin", "moderator"].includes(user.role)) { %>
-            <a href="/admin/dashboard" class="sidebar-link"><i class="bi bi-shield"></i> مدیریت سیستم</a>
-            <% } %>
-        </div>
-
-        <div class="sidebar-divider"></div>
-        <button onclick="openLogoutModal(); closeSidebar();" class="sidebar-link w-full text-red-400 hover:text-red-300 hover:bg-red-500/5"><i class="bi bi-box-arrow-right"></i> خروج از حساب</button>
-    </div>
-
-    <!-- ========== HEADER ========== -->
-    <header class="fixed top-0 right-0 left-0 z-50 px-4 md:px-6 py-4">
-        <div class="max-w-5xl mx-auto glass-header rounded-2xl px-4 md:px-5 py-2.5 flex items-center justify-between">
-            <!-- Logo -->
-            <a href="/dashboard" class="flex items-center gap-2.5 no-underline shrink-0 group">
-                <div class="w-9 h-9 bg-gradient-to-br from-accent-700 to-accent-500 rounded-xl flex items-center justify-center text-white font-extrabold text-lg shadow-glow group-hover:shadow-glow-lg transition-all">ف</div>
-                <span class="font-extrabold text-xl md:text-2xl text-white tracking-tight group-hover:text-accent-400 transition-colors">فاکتوریتو</span>
-            </a>
-
-            <!-- Desktop Nav Links -->
-            <div class="hidden md:flex items-center gap-1 desktop-only">
-                <a href="/dashboard" class="nav-link"><i class="bi bi-speedometer2"></i> داشبورد</a>
-                <a href="/invoices" class="nav-link active"><i class="bi bi-receipt"></i> فاکتورها</a>
-                <button onclick="toggleMegaMenu()" class="nav-link" id="megaMenuBtn">
-                    <i class="bi bi-grid-1x2"></i> بیشتر
-                    <i class="bi bi-chevron-down text-[10px]" id="megaCaret"></i>
-                </button>
-            </div>
-
-            <!-- Right side actions -->
-            <div class="flex items-center gap-2.5">
-                <!-- Single "New Invoice" button (desktop only) -->
-                <a href="/invoices/new" class="btn-primary hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-xl text-white font-semibold text-sm">
-                    <i class="bi bi-plus-lg"></i> فاکتور جدید
-                </a>
-
-                <!-- User Dropdown -->
-                <div class="relative" id="userDropdown">
-                    <button class="dropdown-trigger" onclick="toggleDropdown(event)" aria-label="منوی کاربری">
-                        <div class="avatar">
-                            <%= user.username ? user.username.charAt(0).toUpperCase() : 'U' %>
-                        </div>
-                        <span class="hidden sm:block max-w-[90px] truncate text-sm">
-                            <%= user.username || 'کاربر' %>
-                        </span>
-                        <span class="hidden sm:inline-flex items-center justify-center transition-transform duration-300 text-[10px] text-gray-500" id="dropdownCaret">
-                            <i class="bi bi-chevron-down"></i>
-                        </span>
-                    </button>
-
-                    <div class="dropdown-menu" id="dropdownMenu">
-                        <div class="px-4 py-3">
-                            <div class="flex items-center gap-3 mb-3">
-                                <div class="avatar w-11 h-11 text-base">
-                                    <%= user.username ? user.username.charAt(0).toUpperCase() : 'U' %>
-                                </div>
-                                <div>
-                                    <div class="text-sm font-bold text-white"><%= user.username || 'کاربر' %></div>
-                                    <div class="text-xs text-gray-500"><%= user.email || '' %></div>
-                                </div>
-                            </div>
-                            <% if (user.clubName) { %>
-                            <div class="bg-accent-700/10 border border-accent-700/20 rounded-lg px-3 py-2 text-xs text-accent-400 flex items-center gap-2">
-                                <i class="bi bi-building"></i> <%= user.clubName %>
-                            </div>
-                            <% } %>
-                        </div>
-                        <div class="dropdown-divider"></div>
-                        <a href="/dashboard" class="dropdown-item"><i class="bi bi-speedometer2"></i> داشبورد</a>
-                        <a href="/profile" class="dropdown-item"><i class="bi bi-person"></i> پروفایل</a>
-                        <a href="/invoices" class="dropdown-item"><i class="bi bi-receipt"></i> فاکتورهای من</a>
-                        <a href="/settings" class="dropdown-item"><i class="bi bi-gear"></i> تنظیمات</a>
-                        <div class="dropdown-divider"></div>
-                        <button onclick="openLogoutModal(); closeDropdown();" class="dropdown-item w-full danger">
-                            <i class="bi bi-box-arrow-right"></i> خروج از حساب
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Mobile menu button -->
-                <button onclick="openSidebar()" class="icon-btn mobile-only md:hidden" aria-label="منو"><i class="bi bi-list"></i></button>
-            </div>
-        </div>
-
-        <!-- MEGA MENU -->
-        <div class="max-w-5xl mx-auto relative">
-            <div class="mega-menu" id="megaMenu">
-                <div class="mega-grid">
-                    <a href="/profile" class="mega-item">
-                        <i class="bi bi-person"></i>
-                        <div>
-                            <div class="mega-title">پروفایل</div>
-                            <div class="mega-desc">اطلاعات حساب کاربری</div>
-                        </div>
-                    </a>
-                    <a href="/plans" class="mega-item">
-                        <i class="bi bi-collection"></i>
-                        <div>
-                            <div class="mega-title">پلن‌ها</div>
-                            <div class="mega-desc">مدیریت اشتراک</div>
-                        </div>
-                    </a>
-                    <a href="/settings" class="mega-item">
-                        <i class="bi bi-gear"></i>
-                        <div>
-                            <div class="mega-title">تنظیمات</div>
-                            <div class="mega-desc">ترجیحات و امنیت</div>
-                        </div>
-                    </a>
-                    <% if (user.role && ["admin", "moderator"].includes(user.role)) { %>
-                    <a href="/admin/dashboard" class="mega-item">
-                        <i class="bi bi-shield"></i>
-                        <div>
-                            <div class="mega-title">مدیریت</div>
-                            <div class="mega-desc">کنترل سیستم</div>
-                        </div>
-                    </a>
-                    <% } %>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- ========== MAIN CONTENT ========== -->
     <main class="max-w-5xl mx-auto px-4 pt-28 pb-16 relative z-10">
 
         <div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -396,38 +429,30 @@
                 <h1 class="text-3xl md:text-4xl font-black text-white tracking-tight">فاکتورهای من</h1>
                 <p class="text-gray-500 text-sm mt-1">مدیریت و پیگیری فاکتورهای صادر شده</p>
             </div>
-            <!-- Mobile: single new invoice button -->
-            <a href="/invoices/new" class="btn-primary md:hidden inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-white font-semibold text-sm w-full">
+            <a href="/invoices/new" class="btn-primary inline-flex items-center justify-center gap-2 px-4 md:px-5 py-2.5 rounded-xl text-white font-semibold text-sm w-full md:w-auto">
                 <i class="bi bi-plus-lg"></i> فاکتور جدید
             </a>
         </div>
 
-        <!-- Invoices Wrapper with Skeleton -->
         <div class="relative" id="invoicesWrapper">
-            <!-- Skeleton Loading (initial) -->
             <div id="skeletonContainer">
                 <div class="space-y-3">
                     <% for (let i = 0; i < 3; i++) { %>
                     <div class="card rounded-2xl px-5 py-4">
-                        <div class="flex flex-col sm:flex-row sm:items-center gap-4">
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-center gap-2 mb-2">
-                                    <div class="skeleton w-20 h-5 rounded-full"></div>
-                                    <div class="skeleton w-16 h-4 rounded"></div>
-                                </div>
-                                <div class="skeleton w-40 h-5 rounded mb-2"></div>
-                                <div class="flex gap-3">
-                                    <div class="skeleton w-24 h-4 rounded"></div>
-                                    <div class="skeleton w-24 h-4 rounded"></div>
-                                    <div class="skeleton w-24 h-4 rounded"></div>
+                        <div class="inv-row">
+                            <div class="inv-main">
+                                <div class="skeleton" style="width:46px;height:46px;border-radius:12px;flex-shrink:0;"></div>
+                                <div class="inv-main-content">
+                                    <div class="skeleton w-32 h-4 rounded mb-2"></div>
+                                    <div class="flex gap-3">
+                                        <div class="skeleton w-20 h-3 rounded"></div>
+                                        <div class="skeleton w-24 h-3 rounded"></div>
+                                        <div class="skeleton w-24 h-3 rounded"></div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="text-left sm:text-center shrink-0 px-2">
-                                <div class="skeleton w-16 h-3 rounded mb-2"></div>
-                                <div class="skeleton w-24 h-6 rounded"></div>
-                                <div class="skeleton w-12 h-3 rounded mt-1"></div>
-                            </div>
-                            <div class="flex items-center gap-1.5 shrink-0">
+                            <div class="skeleton rounded-xl" style="height:68px;"></div>
+                            <div class="flex items-center gap-1.5 justify-end">
                                 <div class="skeleton w-8 h-8 rounded-lg"></div>
                                 <div class="skeleton w-8 h-8 rounded-lg"></div>
                                 <div class="skeleton w-8 h-8 rounded-lg"></div>
@@ -439,38 +464,44 @@
                 </div>
             </div>
 
-            <!-- Actual Content (hidden initially) -->
             <div id="invoicesContainer" style="display: none;">
                 <% if (invoices.length > 0) { %>
                 <div class="space-y-3">
                     <% invoices.forEach(function(inv) { %>
                     <div class="card rounded-2xl px-5 py-4" data-id="<%= inv._id %>">
-                        <div class="flex flex-col sm:flex-row sm:items-center gap-4">
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-center gap-2 mb-1.5 flex-wrap">
-                                    <span class="status-badge <%= inv.isPaid ? 'status-paid' : 'status-pending' %>">
-                                        <i class="bi <%= inv.isPaid ? 'bi-check-circle-fill' : 'bi-clock-fill' %> text-[10px]"></i>
-                                        <%= inv.isPaid ? 'پرداخت' : 'در انتظار' %>
-                                    </span>
-                                    <span class="text-[11px] text-gray-500 font-mono">#<%= inv.invoiceNumber %></span>
-                                </div>
-                                <h3 class="text-base font-bold text-white mb-1"><%= inv.member.name %></h3>
-                                <div class="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-gray-400">
-                                    <span class="flex items-center gap-1.5"><i class="bi bi-tag text-gray-500"></i> <%= inv.plan.name %></span>
-                                    <span class="flex items-center gap-1.5"><i class="bi bi-calendar3 text-gray-500"></i> <%= inv.invoiceDate %></span>
-                                    <span class="flex items-center gap-1.5"><i class="bi bi-telephone text-gray-500"></i> <%= inv.member.phone %></span>
+                        <div class="inv-row">
+                            <div class="inv-main">
+                                <div class="inv-avatar"><%= (inv.member.name || '?').charAt(0).toUpperCase() %></div>
+                                <div class="inv-main-content">
+                                    <div class="inv-main-top">
+                                        <h3 class="inv-member-name"><%= inv.member.name %></h3>
+                                        <span class="status-badge <%= inv.isPaid ? 'status-paid' : 'status-pending' %>">
+                                            <i class="bi <%= inv.isPaid ? 'bi-check-circle-fill' : 'bi-clock-fill' %> text-[10px]"></i>
+                                            <%= inv.isPaid ? 'پرداخت' : 'در انتظار' %>
+                                        </span>
+                                        <span class="text-[11px] text-gray-500 font-mono">#<%= inv.invoiceNumber %></span>
+                                    </div>
+                                    <div class="inv-meta">
+                                        <span class="inv-meta-item"><i class="bi bi-tag"></i><span><%= inv.plan.name %></span></span>
+                                        <span class="inv-meta-item"><i class="bi bi-calendar3"></i><span><%= inv.invoiceDate %></span></span>
+                                        <span class="inv-meta-item"><i class="bi bi-telephone"></i><span><%= inv.member.phone %></span></span>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="text-left sm:text-center shrink-0 px-2">
-                                <div class="text-[10px] text-gray-500 mb-1">مبلغ</div>
-                                <div class="text-lg font-extrabold text-white"><%= inv.totalAmount.toLocaleString("fa-IR-u-nu-latn") %></div>
-                                <div class="text-[10px] text-gray-500">تومان</div>
+
+                            <div class="inv-price-box">
+                                <div class="inv-price-label">مبلغ</div>
+                                <div class="inv-price-amount"><%= inv.totalAmount.toLocaleString("fa-IR-u-nu-latn") %></div>
+                                <div class="inv-price-currency">تومان</div>
                             </div>
-                            <div class="flex items-center gap-1.5 shrink-0">
+
+                            <div class="inv-actions">
                                 <a href="/i/<%= inv._id %>" class="icon-btn" title="مشاهده"><i class="bi bi-eye"></i></a>
                                 <a href="/invoices/<%= inv._id %>/edit" class="icon-btn" title="ویرایش"><i class="bi bi-pencil"></i></a>
                                 <% if (!inv.isPaid) { %>
                                 <button onclick="openPayModal('<%= inv._id %>')" class="icon-btn" title="تأیید پرداخت" style="color:#6ee7b7;"><i class="bi bi-check-circle"></i></button>
+                                <% } else { %>
+                                <button type="button" class="icon-btn is-disabled" disabled title="پرداخت شده"><i class="bi bi-check-circle"></i></button>
                                 <% } %>
                                 <button onclick="openDeleteModal('<%= inv._id %>')" class="icon-btn danger" title="حذف"><i class="bi bi-trash"></i></button>
                             </div>
@@ -493,7 +524,6 @@
             </div>
         </div>
 
-        <!-- Pagination -->
         <div id="paginationContainer">
             <% if (pagination.totalPages > 1) { %>
             <div class="flex items-center justify-center gap-1.5 mt-8">
@@ -505,7 +535,7 @@
                    else { pages.push(1); pages.push('...'); for (let i = current - 1; i <= current + 1; i++) pages.push(i); pages.push('...'); pages.push(total); }
                 %>
                 <% pages.forEach(function(p) { %>
-                    <% if (p === '...') { %><span class="text-gray-500 text-xs px-1 select-none">…</span><% } else { %>
+                    <% if (p === '...') { %><span class="text-gray-500 text-xs px-1 select-none">...</span><% } else { %>
                     <button onclick="loadPage(<%= p %>, false, true)" class="min-w-[32px] h-8 px-2 rounded-lg text-xs font-bold transition-all <%= p === current ? 'bg-accent-700 text-white shadow-glow' : 'text-gray-400 hover:text-white hover:bg-white/5' %>"><%= p %></button>
                     <% } %>
                 <% }); %>
@@ -515,7 +545,6 @@
         </div>
     </main>
 
-    <!-- ========== MODALS ========== -->
     <div class="modal-overlay" id="payModal">
         <div class="modal-dialog text-center">
             <div class="w-16 h-16 bg-emerald-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5">
@@ -558,19 +587,16 @@
         </div>
     </div>
 
-    <!-- Toast -->
     <div id="toast" style="position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: rgba(20,20,31,0.95); backdrop-filter: blur(12px); color: #fff; padding: 12px 28px; border-radius: 50px; font-size: 13px; font-weight: 600; z-index: 500; box-shadow: 0 20px 40px rgba(0,0,0,0.5); border: 1px solid rgba(139,92,246,0.3); display: none; animation: toastIn 0.3s ease;"></div>
 
     <script>
-        // ====== Initial page load: show skeleton then content ======
         window.addEventListener('load', function() {
             setTimeout(function() {
                 document.getElementById('skeletonContainer').style.display = 'none';
                 document.getElementById('invoicesContainer').style.display = 'block';
-            }, 500); // 500ms skeleton display for demo
+            }, 500);
         });
 
-        // ====== Dropdown ======
         function toggleDropdown(e) {
             e.stopPropagation();
             const menu = document.getElementById('dropdownMenu');
@@ -593,7 +619,6 @@
             }
         }
 
-        // ====== Mega Menu ======
         function toggleMegaMenu() {
             const menu = document.getElementById('megaMenu');
             const caret = document.getElementById('megaCaret');
@@ -609,7 +634,6 @@
             }
         }
 
-        // ====== Sidebar ======
         function openSidebar() {
             document.getElementById('sidebar').classList.add('open');
             document.getElementById('sidebarOverlay').classList.add('active');
@@ -621,7 +645,6 @@
             document.body.style.overflow = '';
         }
 
-        // ====== Modals ======
         window.openModal = (id) => document.getElementById(id)?.classList.add('active');
         window.closeModal = (id) => document.getElementById(id)?.classList.remove('active');
         function openLogoutModal() {
@@ -637,7 +660,6 @@
             });
         });
 
-        // ====== Global click handlers ======
         document.addEventListener('click', (e) => {
             const userDropdown = document.getElementById('userDropdown');
             if (userDropdown && !userDropdown.contains(e.target)) closeDropdown();
@@ -658,7 +680,6 @@
             }
         });
 
-        // ====== Toast ======
         function toast(msg, type) {
             const t = document.getElementById('toast');
             t.textContent = msg;
@@ -680,7 +701,6 @@
             t._t = setTimeout(() => t.style.display = 'none', 3000);
         }
 
-        // ====== Skeleton Loading for actions ======
         function showSkeletonLoading() {
             const container = document.getElementById('invoicesContainer');
             if (!container) return;
@@ -689,25 +709,20 @@
             for (let i = 0; i < 3; i++) {
                 skeletonHtml += `
                     <div class="card rounded-2xl px-5 py-4">
-                        <div class="flex flex-col sm:flex-row sm:items-center gap-4">
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-center gap-2 mb-2">
-                                    <div class="skeleton w-20 h-5 rounded-full"></div>
-                                    <div class="skeleton w-16 h-4 rounded"></div>
-                                </div>
-                                <div class="skeleton w-40 h-5 rounded mb-2"></div>
-                                <div class="flex gap-3">
-                                    <div class="skeleton w-24 h-4 rounded"></div>
-                                    <div class="skeleton w-24 h-4 rounded"></div>
-                                    <div class="skeleton w-24 h-4 rounded"></div>
+                        <div class="inv-row">
+                            <div class="inv-main">
+                                <div class="skeleton" style="width:46px;height:46px;border-radius:12px;flex-shrink:0;"></div>
+                                <div class="inv-main-content">
+                                    <div class="skeleton w-32 h-4 rounded mb-2"></div>
+                                    <div class="flex gap-3">
+                                        <div class="skeleton w-20 h-3 rounded"></div>
+                                        <div class="skeleton w-24 h-3 rounded"></div>
+                                        <div class="skeleton w-24 h-3 rounded"></div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="text-left sm:text-center shrink-0 px-2">
-                                <div class="skeleton w-16 h-3 rounded mb-2"></div>
-                                <div class="skeleton w-24 h-6 rounded"></div>
-                                <div class="skeleton w-12 h-3 rounded mt-1"></div>
-                            </div>
-                            <div class="flex items-center gap-1.5 shrink-0">
+                            <div class="skeleton rounded-xl" style="height:68px;"></div>
+                            <div class="flex items-center gap-1.5 justify-end">
                                 <div class="skeleton w-8 h-8 rounded-lg"></div>
                                 <div class="skeleton w-8 h-8 rounded-lg"></div>
                                 <div class="skeleton w-8 h-8 rounded-lg"></div>
@@ -722,13 +737,15 @@
             container.style.display = 'block';
         }
 
-        // ====== State ======
         let currentPage = <%= pagination.currentPage %>;
         let totalPages = <%= pagination.totalPages %>;
         let isLoading = false;
         let currentId = null;
 
-        // ====== Load Page ======
+        window.fxLiveHandlers = Object.assign(window.fxLiveHandlers || {}, {
+            invoices: () => window.loadPage(currentPage, true, false),
+        });
+
         window.loadPage = function(page, force = false, showSkeleton = false) {
             if (page < 1 || page > totalPages || (page === currentPage && !force) || (isLoading && !force)) return;
 
@@ -779,33 +796,40 @@
                 let html = '<div class="space-y-3">';
                 invoices.forEach(inv => {
                     const amount = Number(inv.totalAmount).toLocaleString("fa-IR-u-nu-latn");
+                    const initial = (inv.member.name || '?').charAt(0).toUpperCase();
+                    const payBtn = inv.isPaid
+                        ? `<button type="button" class="icon-btn is-disabled" disabled title="پرداخت شده"><i class="bi bi-check-circle"></i></button>`
+                        : `<button onclick="openPayModal('${inv._id}')" class="icon-btn" title="تأیید پرداخت" style="color:#6ee7b7;"><i class="bi bi-check-circle"></i></button>`;
                     html += `
                         <div class="card rounded-2xl px-5 py-4" data-id="${inv._id}">
-                            <div class="flex flex-col sm:flex-row sm:items-center gap-4">
-                                <div class="flex-1 min-w-0">
-                                    <div class="flex items-center gap-2 mb-1.5 flex-wrap">
-                                        <span class="status-badge ${inv.isPaid ? 'status-paid' : 'status-pending'}">
-                                            <i class="bi ${inv.isPaid ? 'bi-check-circle-fill' : 'bi-clock-fill'} text-[10px]"></i>
-                                            ${inv.isPaid ? 'پرداخت' : 'در انتظار'}
-                                        </span>
-                                        <span class="text-[11px] text-gray-500 font-mono">#${inv.invoiceNumber}</span>
-                                    </div>
-                                    <h3 class="text-base font-bold text-white mb-1">${inv.member.name}</h3>
-                                    <div class="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-gray-400">
-                                        <span class="flex items-center gap-1.5"><i class="bi bi-tag text-gray-500"></i> ${inv.plan.name}</span>
-                                        <span class="flex items-center gap-1.5"><i class="bi bi-calendar3 text-gray-500"></i> ${inv.invoiceDate}</span>
-                                        <span class="flex items-center gap-1.5"><i class="bi bi-telephone text-gray-500"></i> ${inv.member.phone}</span>
+                            <div class="inv-row">
+                                <div class="inv-main">
+                                    <div class="inv-avatar">${initial}</div>
+                                    <div class="inv-main-content">
+                                        <div class="inv-main-top">
+                                            <h3 class="inv-member-name">${inv.member.name}</h3>
+                                            <span class="status-badge ${inv.isPaid ? 'status-paid' : 'status-pending'}">
+                                                <i class="bi ${inv.isPaid ? 'bi-check-circle-fill' : 'bi-clock-fill'} text-[10px]"></i>
+                                                ${inv.isPaid ? 'پرداخت' : 'در انتظار'}
+                                            </span>
+                                            <span class="text-[11px] text-gray-500 font-mono">#${inv.invoiceNumber}</span>
+                                        </div>
+                                        <div class="inv-meta">
+                                            <span class="inv-meta-item"><i class="bi bi-tag"></i><span>${inv.plan.name}</span></span>
+                                            <span class="inv-meta-item"><i class="bi bi-calendar3"></i><span>${inv.invoiceDate}</span></span>
+                                            <span class="inv-meta-item"><i class="bi bi-telephone"></i><span>${inv.member.phone}</span></span>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="text-left sm:text-center shrink-0 px-2">
-                                    <div class="text-[10px] text-gray-500 mb-1">مبلغ</div>
-                                    <div class="text-lg font-extrabold text-white">${amount}</div>
-                                    <div class="text-[10px] text-gray-500">تومان</div>
+                                <div class="inv-price-box">
+                                    <div class="inv-price-label">مبلغ</div>
+                                    <div class="inv-price-amount">${amount}</div>
+                                    <div class="inv-price-currency">تومان</div>
                                 </div>
-                                <div class="flex items-center gap-1.5 shrink-0">
+                                <div class="inv-actions">
                                     <a href="/i/${inv._id}" class="icon-btn" title="مشاهده"><i class="bi bi-eye"></i></a>
                                     <a href="/invoices/${inv._id}/edit" class="icon-btn" title="ویرایش"><i class="bi bi-pencil"></i></a>
-                                    ${!inv.isPaid ? `<button onclick="openPayModal('${inv._id}')" class="icon-btn" title="تأیید پرداخت" style="color:#6ee7b7;"><i class="bi bi-check-circle"></i></button>` : ''}
+                                    ${payBtn}
                                     <button onclick="openDeleteModal('${inv._id}')" class="icon-btn danger" title="حذف"><i class="bi bi-trash"></i></button>
                                 </div>
                             </div>
@@ -839,7 +863,7 @@
             else { pages.push(1); pages.push('...'); for (let i = current - 1; i <= current + 1; i++) pages.push(i); pages.push('...'); pages.push(total); }
 
             pages.forEach(p => {
-                if (p === '...') { html += `<span class="text-gray-500 text-xs px-1 select-none">…</span>`; }
+                if (p === '...') { html += `<span class="text-gray-500 text-xs px-1 select-none">...</span>`; }
                 else { html += `<button onclick="loadPage(${p}, false, true)" class="min-w-[32px] h-8 px-2 rounded-lg text-xs font-bold transition-all ${p === current ? 'bg-accent-700 text-white shadow-glow' : 'text-gray-400 hover:text-white hover:bg-white/5'}">${p}</button>`; }
             });
 
@@ -848,7 +872,6 @@
             container.innerHTML = html;
         }
 
-        // ====== Actions ======
         function openPayModal(id) { currentId = id; openModal('payModal'); }
         function openDeleteModal(id) { currentId = id; openModal('deleteModal'); }
 

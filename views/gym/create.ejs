@@ -1,0 +1,232 @@
+<%- include('../partials/head') %>
+
+<body class="antialiased bg-[#050508] grid-bg">
+<%- include('../partials/shell') %>
+
+<main class="max-w-xl mx-auto px-4 pt-28 pb-16 relative z-10">
+    <div class="text-center mb-6">
+        <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-accent-700 to-accent-500 flex items-center justify-center text-white text-3xl shadow-glow">
+            <i class="bi bi-heart-pulse"></i>
+        </div>
+
+        <h1 class="text-2xl font-black text-white mb-1">ساخت باشگاه</h1>
+
+        <p class="text-xs text-gray-400">
+            حساب شما به حساب صاحب باشگاه ارتقا پیدا می‌کند و پنل مدیریت اعضا و فاکتورها برایتان باز می‌شود
+        </p>
+    </div>
+
+    <% if (inClub) { %>
+    <div class="card rounded-2xl p-6 text-center">
+        <i class="bi bi-exclamation-triangle text-amber-400 text-3xl"></i>
+
+        <p class="text-sm text-gray-300 leading-7 mt-3">
+            شما هم‌اکنون عضو یک باشگاه هستید. برای ساخت باشگاه ابتدا از پنل خود «خروج از باشگاه» را بزنید.
+        </p>
+
+        <a href="/me" class="inline-block mt-4 text-accent-400 text-sm font-bold no-underline">
+            بازگشت به پنل من
+        </a>
+    </div>
+    <% } else { %>
+    <div class="error-box" id="errorBox" style="display:none"></div>
+
+    <form id="bizForm" class="card rounded-2xl p-6 space-y-4" novalidate>
+        <div>
+            <label class="block text-xs font-bold text-gray-400 mb-2" for="clubName">
+                نام باشگاه
+            </label>
+            <input id="clubName"
+                   name="clubName"
+                   maxlength="24"
+                   class="input-field"
+                   placeholder="مثلاً باشگاه ققنوس"
+                   autocomplete="organization" />
+        </div>
+
+        <div>
+            <label class="block text-xs font-bold text-gray-400 mb-2" for="clubPhone">
+                شماره تماس
+                <span class="font-normal text-gray-600">(اختیاری)</span>
+            </label>
+            <input id="clubPhone"
+                   name="clubPhone"
+                   maxlength="11"
+                   inputmode="numeric"
+                   dir="ltr"
+                   class="input-field"
+                   placeholder="09123456789" />
+        </div>
+
+        <div>
+            <label class="block text-xs font-bold text-gray-400 mb-2" for="clubAddress">
+                آدرس
+                <span class="font-normal text-gray-600">(اختیاری)</span>
+            </label>
+            <input id="clubAddress"
+                   name="clubAddress"
+                   maxlength="128"
+                   class="input-field"
+                   placeholder="تهران، ..." />
+        </div>
+
+        <!-- Custom checkbox -->
+        <label class="checkbox-row">
+            <input type="checkbox" id="acceptBiz" class="checkbox-input" />
+            <span class="checkbox-box" aria-hidden="true">
+                <i class="bi bi-check-lg"></i>
+            </span>
+            <span class="checkbox-text">
+                <a href="/terms/business" target="_blank" class="text-accent-400 no-underline">
+                    شرایط ویژه‌ی صاحبان باشگاه
+                </a>
+                (از جمله مسئولیت داده‌ی اعضا و سقف‌های استفاده) را خوانده‌ام و می‌پذیرم.
+            </span>
+        </label>
+
+        <button type="submit"
+                id="bizBtn"
+                class="btn-primary w-full py-3 rounded-xl text-white font-bold text-sm flex items-center justify-center gap-2">
+            <i class="bi bi-check2-circle"></i>
+            <span>ساخت باشگاه</span>
+        </button>
+    </form>
+    <% } %>
+</main>
+
+<%- include('../partials/modals-common') %>
+
+<style>
+    /* ===== Custom checkbox ===== */
+    .checkbox-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        cursor: pointer;
+        font-size: 12px;
+        color: #9ca3af;
+        line-height: 1.7;
+        padding: 4px 0;
+    }
+
+    .checkbox-input {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+        width: 0;
+        height: 0;
+    }
+
+    .checkbox-box {
+        width: 20px;
+        height: 20px;
+        border-radius: 6px;
+        border: 1.5px solid rgba(167, 139, 250, 0.25);
+        background: rgba(15, 15, 26, 0.6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        margin-top: 2px;
+        color: transparent;
+        font-size: 13px;
+        transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .checkbox-box i {
+        opacity: 0;
+        transform: scale(0.6);
+        transition: opacity 0.15s ease, transform 0.15s ease;
+    }
+
+    .checkbox-row:hover .checkbox-box {
+        border-color: rgba(167, 139, 250, 0.5);
+    }
+
+    .checkbox-input:focus-visible + .checkbox-box {
+        outline: 2px solid #a78bfa;
+        outline-offset: 2px;
+    }
+
+    .checkbox-input:checked + .checkbox-box {
+        background: linear-gradient(135deg, #7c3aed, #a78bfa);
+        border-color: #a78bfa;
+        color: #fff;
+        box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+    }
+
+    .checkbox-input:checked + .checkbox-box i {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    .checkbox-text {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .checkbox-text a {
+        font-weight: 600;
+    }
+</style>
+
+<script>
+<%- include('../partials/scripts-common') %>
+
+    const form = document.getElementById('bizForm');
+
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const btn = document.getElementById('bizBtn');
+
+            const body = {
+                clubName: clubName.value.trim(),
+                clubPhone: clubPhone.value.trim(),
+                clubAddress: clubAddress.value.trim(),
+                acceptBusinessTerms: document.getElementById('acceptBiz').checked,
+            };
+
+            if (body.clubName.length < 2) {
+                return toast('نام کسب‌وکار را وارد کنید', 'error');
+            }
+
+            if (!body.acceptBusinessTerms) {
+                return toast('برای ساخت کسب‌وکار باید شرایط ویژه‌ی صاحبان باشگاه را بپذیرید', 'error');
+            }
+
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/gym/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify(body),
+                });
+
+                const r = await res.json();
+
+                if (r.success) {
+                    toast(r.message, 'success');
+                    setTimeout(() => {
+                        location.href = r.redirect;
+                    }, 700);
+                } else {
+                    toast((r.errors && r.errors[0]) || r.message || 'خطا', 'error');
+                    btn.disabled = false;
+                }
+            } catch (err) {
+                toast('خطا در ارتباط با سرور', 'error');
+                btn.disabled = false;
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

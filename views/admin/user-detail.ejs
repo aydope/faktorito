@@ -3,11 +3,15 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#050508" />
+    <meta name="color-scheme" content="dark" />
     <title><%= user.username %> | فاکتوریتو</title>
 
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/sahel-font@v3.4.0/dist/font-face.css" />
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
 
     <script>
         tailwind.config = {
@@ -31,7 +35,7 @@
                             500: '#8b5cf6',
                             600: '#7c3aed',
                             700: '#6d28d9',
-                        }
+                        },
                     },
                 }
             }
@@ -39,49 +43,454 @@
     </script>
 
     <style>
-        * {
+        :root {
+            --color-bg: #050508;
+            --color-surface: #0f0f1a;
+            --color-surface-elevated: #14141f;
+            --color-border: rgba(167, 139, 250, 0.06);
+            --color-border-strong: rgba(167, 139, 250, 0.15);
+            --color-accent: #a78bfa;
+            --color-accent-strong: #7c3aed;
+            --color-accent-soft: rgba(167, 139, 250, 0.06);
+            --color-accent-soft-hover: rgba(167, 139, 250, 0.12);
+            --color-text-primary: #e5e7eb;
+            --color-text-secondary: #9ca3af;
+            --color-text-muted: #6b7280;
+            --color-danger: #f87171;
+            --color-danger-soft: rgba(239, 68, 68, 0.06);
+            --color-danger-soft-hover: rgba(239, 68, 68, 0.12);
+            --color-success: #34d399;
+            --color-success-soft: rgba(52, 211, 153, 0.08);
+            --color-warning: #fbbf24;
+            --color-warning-soft: rgba(251, 191, 36, 0.08);
+
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+
+            --duration-fast: 150ms;
+            --duration-base: 250ms;
+            --duration-slow: 400ms;
+            --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        *,
+        *::before,
+        *::after {
             font-family: 'Sahel', 'Vazirmatn', system-ui, sans-serif !important;
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        html {
+            -webkit-text-size-adjust: 100%;
+            text-rendering: optimizeLegibility;
+        }
+
         body {
-            background: #050508;
-            color: #d1d5db;
+            background: var(--color-bg);
+            color: var(--color-text-secondary);
             line-height: 1.8;
             font-weight: 400;
             overflow-x: hidden;
-            scroll-behavior: smooth;
+            min-height: 100dvh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: #050508; }
-        ::-webkit-scrollbar-thumb { background: #1a1a2e; border-radius: 10px; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--color-bg); }
+        ::-webkit-scrollbar-thumb { background: var(--color-surface); border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #2a2a46; }
 
-        .glass-nav {
-            background: rgba(10, 10, 18, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(167, 139, 250, 0.08);
-            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.6);
+        :focus-visible {
+            outline: 2px solid var(--color-accent);
+            outline-offset: 2px;
+            border-radius: 6px;
         }
 
-        .nav-link {
-            color: #9ca3af;
+        /* ===== Skip Link ===== */
+        .skip-link {
+            position: absolute;
+            top: -100px;
+            right: 16px;
+            background: var(--color-accent-strong);
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: var(--radius-md);
+            z-index: 9999;
+            text-decoration: none;
+            font-weight: 700;
+            transition: top var(--duration-fast) ease;
+        }
+
+        .skip-link:focus {
+            top: 16px;
+            outline: 2px solid var(--color-accent);
+            outline-offset: 2px;
+        }
+
+        /* ===== Sidebar Overlay ===== */
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 5, 8, 0.6);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 90;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity var(--duration-slow) var(--ease-out),
+                        visibility var(--duration-slow) var(--ease-out);
+        }
+
+        .sidebar-overlay--active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        /* ===== Sidebar ===== */
+        .sidebar {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            bottom: 16px;
+            width: 280px;
+            max-width: calc(100vw - 32px);
+            background: rgba(10, 10, 18, 0.98);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--color-border-strong);
+            border-radius: 24px;
+            box-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.85);
+            z-index: 110;
+            padding: 20px;
+            overflow-y: auto;
+            transform: translateX(calc(100% + 32px));
+            visibility: hidden;
+            pointer-events: none;
+            transition: transform var(--duration-slow) var(--ease-out),
+                        visibility var(--duration-slow) var(--ease-out);
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            will-change: transform;
+            contain: layout style;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            display: none;
+            width: 0;
+        }
+
+        .sidebar--open {
+            transform: translateX(0);
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        @media (max-width: 480px) {
+            .sidebar {
+                top: 12px;
+                right: 12px;
+                bottom: 12px;
+                width: calc(100vw - 24px);
+                max-width: 280px;
+            }
+        }
+
+        .sidebar__header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--color-border);
+            margin-bottom: 20px;
+        }
+
+        .sidebar__brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .sidebar__logo {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--color-accent-strong), var(--color-accent));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 800;
+            font-size: 16px;
+            box-shadow: 0 4px 16px rgba(124, 58, 237, 0.3);
+            flex-shrink: 0;
+        }
+
+        .sidebar__title {
+            font-weight: 800;
+            font-size: 18px;
+            color: #fff;
+        }
+
+        .sidebar__close {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: var(--color-text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color var(--duration-fast) ease,
+                        color var(--duration-fast) ease;
+            font-size: 18px;
+            flex-shrink: 0;
+            font-family: inherit;
+        }
+
+        .sidebar__close:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+        }
+
+        .sidebar__nav {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .sidebar__link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            color: var(--color-text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color var(--duration-fast) ease,
+                        color var(--duration-fast) ease;
+            text-decoration: none;
+            min-height: 44px;
+            width: 100%;
+            text-align: right;
+            font-family: inherit;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .sidebar__link:hover {
+            background: var(--color-accent-soft);
+            color: #c4b5fd;
+        }
+
+        .sidebar__link--active {
+            background: rgba(167, 139, 250, 0.08);
+            color: var(--color-accent);
+        }
+
+        .sidebar__link-icon {
+            font-size: 18px;
+            width: 22px;
+            text-align: center;
+            color: var(--color-text-muted);
+            flex-shrink: 0;
+        }
+
+        .sidebar__link--active .sidebar__link-icon {
+            color: var(--color-accent);
+        }
+
+        .sidebar__link--danger {
+            color: var(--color-danger);
+        }
+
+        .sidebar__link--danger .sidebar__link-icon {
+            color: var(--color-danger);
+        }
+
+        .sidebar__divider {
+            height: 1px;
+            background: var(--color-border);
+            margin: 8px 12px;
+        }
+
+        /* ===== Navbar ===== */
+        .nav {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+            z-index: 30;
+            padding: 12px;
+        }
+
+        @media (min-width: 769px) {
+            .nav {
+                padding: 20px 24px;
+            }
+        }
+
+        .nav__container {
+            max-width: 72rem;
+            margin: 0 auto;
+            background: rgba(10, 10, 18, 0.9);
+            border: 1px solid var(--color-border-strong);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.6);
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        @media (min-width: 769px) {
+            .nav__container {
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                padding: 12px 24px;
+            }
+        }
+
+        .nav__brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            flex-shrink: 0;
+            min-width: 0;
+        }
+
+        .nav__logo {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--color-accent-strong), var(--color-accent));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 800;
+            font-size: 14px;
+            box-shadow: 0 4px 16px rgba(124, 58, 237, 0.3);
+            flex-shrink: 0;
+            transition: transform var(--duration-base) var(--ease-out);
+        }
+
+        .nav__brand:hover .nav__logo {
+            transform: scale(1.05);
+        }
+
+        @media (min-width: 769px) {
+            .nav__logo {
+                width: 36px;
+                height: 36px;
+                font-size: 16px;
+            }
+        }
+
+        .nav__title {
+            font-weight: 800;
+            font-size: 14px;
+            color: #fff;
+            letter-spacing: -0.02em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        @media (min-width: 769px) {
+            .nav__title {
+                font-size: 18px;
+            }
+        }
+
+        .nav__mobile {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        @media (min-width: 769px) {
+            .nav__mobile {
+                display: none;
+            }
+        }
+
+        .nav__icon-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            color: var(--color-text-primary);
+            cursor: pointer;
+            transition: background-color var(--duration-base) ease,
+                        color var(--duration-base) ease;
+            font-size: 18px;
+            font-family: inherit;
+        }
+
+        .nav__icon-btn:hover {
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .nav__icon-btn--danger {
+            color: var(--color-danger);
+            background: var(--color-danger-soft);
+            border-color: rgba(239, 68, 68, 0.1);
+        }
+
+        .nav__icon-btn--danger:hover {
+            background: var(--color-danger-soft-hover);
+            color: #fca5a5;
+        }
+
+        .nav__links {
+            display: none;
+            align-items: center;
+            gap: 4px;
+        }
+
+        @media (min-width: 769px) {
+            .nav__links {
+                display: flex;
+            }
+        }
+
+        .nav__link {
+            color: var(--color-text-secondary);
             font-size: 13px;
             font-weight: 600;
-            padding: 8px 16px;
+            padding: 10px 16px;
             border-radius: 10px;
-            transition: all 0.3s ease;
+            transition: color var(--duration-base) ease,
+                        background-color var(--duration-base) ease;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 8px;
             position: relative;
+            min-height: 40px;
         }
-        .nav-link::before {
+
+        .nav__link::before {
             content: '';
             position: absolute;
             right: 0;
@@ -89,76 +498,222 @@
             transform: translateY(-50%);
             width: 2px;
             height: 0;
-            background: #a78bfa;
+            background: var(--color-accent);
             border-radius: 2px;
-            transition: all 0.3s ease;
+            transition: height var(--duration-base) ease;
         }
-        .nav-link:hover {
-            color: #e5e7eb;
-            background: rgba(167, 139, 250, 0.04);
+
+        .nav__link:hover {
+            color: var(--color-text-primary);
+            background: var(--color-accent-soft);
         }
-        .nav-link.active {
-            color: #a78bfa;
-            background: rgba(167, 139, 250, 0.06);
+
+        .nav__link--active {
+            color: var(--color-accent);
+            background: var(--color-accent-soft);
         }
-        .nav-link.active::before {
+
+        .nav__link--active::before {
             height: 24px;
         }
 
-        .btn-logout {
-            display: flex;
+        .nav__divider {
+            width: 1px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.05);
+            margin: 0 8px;
+        }
+
+        .nav__logout {
+            display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 8px 16px;
-            background: rgba(239, 68, 68, 0.06);
+            padding: 10px 16px;
+            background: var(--color-danger-soft);
             border: 1px solid rgba(239, 68, 68, 0.1);
             border-radius: 10px;
-            color: #f87171;
+            color: var(--color-danger);
             font-size: 13px;
             font-weight: 600;
-            transition: all 0.3s ease;
+            transition: background-color var(--duration-base) ease,
+                        border-color var(--duration-base) ease,
+                        color var(--duration-base) ease;
             cursor: pointer;
-            text-decoration: none;
+            min-height: 40px;
+            font-family: inherit;
         }
-        .btn-logout:hover {
-            background: rgba(239, 68, 68, 0.12);
+
+        .nav__logout:hover {
+            background: var(--color-danger-soft-hover);
             border-color: rgba(239, 68, 68, 0.2);
             color: #fca5a5;
         }
 
-        .card {
-            background: rgba(15, 15, 26, 0.6);
-            border: 1px solid rgba(167, 139, 250, 0.06);
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-            backdrop-filter: blur(4px);
-            border-radius: 16px;
+        /* ===== Page ===== */
+        .page {
+            max-width: 56rem;
+            margin: 0 auto;
+            padding: 76px 12px 48px;
         }
-        .card:hover {
-            border-color: rgba(167, 139, 250, 0.1);
+
+        @media (min-width: 769px) {
+            .page {
+                padding: 112px 16px 64px;
+            }
         }
 
         .btn-back {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            color: #a78bfa;
+            color: var(--color-accent);
             font-size: 13px;
             font-weight: 600;
-            transition: all 0.3s ease;
+            transition: background-color var(--duration-fast) ease,
+                        border-color var(--duration-fast) ease,
+                        gap var(--duration-fast) ease;
             text-decoration: none;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             padding: 8px 14px;
             border-radius: 10px;
-            background: rgba(167, 139, 250, 0.04);
-            border: 1px solid rgba(167, 139, 250, 0.06);
+            background: var(--color-accent-soft);
+            border: 1px solid var(--color-border);
         }
+
         .btn-back:hover {
-            background: rgba(167, 139, 250, 0.08);
-            border-color: rgba(167, 139, 250, 0.2);
+            background: var(--color-accent-soft-hover);
+            border-color: var(--color-border-strong);
             color: #c4b5fd;
             gap: 12px;
         }
 
+        @media (max-width: 768px) {
+            .btn-back {
+                font-size: 12px;
+                padding: 6px 10px;
+                margin-bottom: 16px;
+            }
+        }
+
+        /* ===== Card ===== */
+        .card {
+            background: rgba(15, 15, 26, 0.6);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            transition: border-color var(--duration-slow) var(--ease-out);
+            contain: layout style;
+        }
+
+        @media (min-width: 769px) {
+            .card {
+                padding: 24px;
+                border-radius: 20px;
+            }
+        }
+
+        @media (min-width: 1025px) {
+            .card {
+                padding: 32px;
+            }
+        }
+
+        .card:hover {
+            border-color: rgba(167, 139, 250, 0.1);
+        }
+
+        .card--profile {
+            margin-bottom: 24px;
+        }
+
+        @media (min-width: 769px) {
+            .card--profile {
+                margin-bottom: 32px;
+            }
+        }
+
+        /* ===== Profile Header ===== */
+        .profile-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        @media (min-width: 769px) {
+            .profile-header {
+                gap: 20px;
+                margin-bottom: 32px;
+            }
+        }
+
+        .profile-header__avatar {
+            width: 56px;
+            height: 56px;
+            background: rgba(124, 58, 237, 0.2);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-accent);
+            font-size: 20px;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        @media (min-width: 769px) {
+            .profile-header__avatar {
+                width: 64px;
+                height: 64px;
+                font-size: 24px;
+                border-radius: 20px;
+            }
+        }
+
+        .profile-header__info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .profile-header__name {
+            font-size: 20px;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        @media (min-width: 769px) {
+            .profile-header__name {
+                font-size: 26px;
+            }
+        }
+
+        @media (min-width: 1025px) {
+            .profile-header__name {
+                font-size: 30px;
+            }
+        }
+
+        .profile-header__email {
+            font-size: 12px;
+            color: var(--color-text-secondary);
+            margin-bottom: 12px;
+        }
+
+        @media (min-width: 769px) {
+            .profile-header__email {
+                font-size: 14px;
+            }
+        }
+
+        .profile-header__badges {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ===== Role / Status Badges ===== */
         .role-badge {
             display: inline-flex;
             align-items: center;
@@ -168,20 +723,30 @@
             font-size: 12px;
             font-weight: 700;
         }
-        .role-admin {
-            background: rgba(239, 68, 68, 0.08);
+
+        .role-badge--admin {
+            background: var(--color-danger-soft);
             border: 1px solid rgba(239, 68, 68, 0.15);
-            color: #f87171;
+            color: var(--color-danger);
         }
-        .role-moderator {
+
+        .role-badge--moderator {
             background: rgba(168, 85, 247, 0.08);
             border: 1px solid rgba(168, 85, 247, 0.15);
             color: #c4b5fd;
         }
-        .role-user {
-            background: rgba(167, 139, 250, 0.08);
+
+        .role-badge--user,
+        .role-badge--member {
+            background: var(--color-accent-soft);
             border: 1px solid rgba(167, 139, 250, 0.15);
-            color: #a78bfa;
+            color: var(--color-accent);
+        }
+
+        .role-badge--owner {
+            background: rgba(251, 191, 36, 0.08);
+            border: 1px solid rgba(251, 191, 36, 0.15);
+            color: var(--color-warning);
         }
 
         .status-badge {
@@ -193,20 +758,51 @@
             font-size: 12px;
             font-weight: 700;
         }
-        .status-active {
-            background: rgba(52, 211, 153, 0.08);
+
+        .status-badge--active {
+            background: var(--color-success-soft);
             border: 1px solid rgba(52, 211, 153, 0.15);
-            color: #34d399;
+            color: var(--color-success);
         }
-        .status-suspended {
-            background: rgba(251, 191, 36, 0.08);
+
+        .status-badge--suspended {
+            background: var(--color-warning-soft);
             border: 1px solid rgba(251, 191, 36, 0.15);
-            color: #fbbf24;
+            color: var(--color-warning);
         }
-        .status-disabled {
-            background: rgba(239, 68, 68, 0.08);
+
+        .status-badge--disabled {
+            background: var(--color-danger-soft);
             border: 1px solid rgba(239, 68, 68, 0.15);
-            color: #f87171;
+            color: var(--color-danger);
+        }
+
+        .status-badge__dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        @media (max-width: 480px) {
+            .role-badge,
+            .status-badge {
+                font-size: 10px;
+                padding: 3px 10px;
+            }
+        }
+
+        /* ===== Info Grid ===== */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        @media (min-width: 640px) {
+            .info-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
 
         .info-item {
@@ -216,15 +812,35 @@
             padding: 14px 16px;
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(167, 139, 250, 0.04);
-            border-radius: 12px;
-            transition: all 0.2s ease;
+            border-radius: var(--radius-md);
+            transition: background-color var(--duration-fast) ease,
+                        border-color var(--duration-fast) ease;
         }
+
         .info-item:hover {
             background: rgba(255, 255, 255, 0.03);
             border-color: rgba(167, 139, 250, 0.08);
         }
 
-        .info-item .info-icon {
+        @media (max-width: 768px) {
+            .info-item {
+                padding: 12px 14px;
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .info-item {
+                padding: 10px 12px;
+                gap: 8px;
+            }
+        }
+
+        .info-item--wide {
+            grid-column: 1 / -1;
+        }
+
+        .info-item__icon {
             width: 38px;
             height: 38px;
             border-radius: 10px;
@@ -234,15 +850,163 @@
             font-size: 16px;
             flex-shrink: 0;
         }
-        .info-item .info-label {
+
+        @media (max-width: 768px) {
+            .info-item__icon {
+                width: 32px;
+                height: 32px;
+                font-size: 14px;
+                border-radius: 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .info-item__icon {
+                width: 28px;
+                height: 28px;
+                font-size: 12px;
+            }
+        }
+
+        .info-item__icon--accent {
+            background: rgba(124, 58, 237, 0.1);
+            color: var(--color-accent);
+        }
+
+        .info-item__icon--emerald {
+            background: rgba(16, 185, 129, 0.1);
+            color: #34d399;
+        }
+
+        .info-item__icon--purple {
+            background: rgba(168, 85, 247, 0.1);
+            color: #c4b5fd;
+        }
+
+        .info-item__icon--amber {
+            background: rgba(251, 191, 36, 0.1);
+            color: var(--color-warning);
+        }
+
+        .info-item__icon--gray {
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--color-text-secondary);
+        }
+
+        .info-item__content {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .info-item__label {
             font-size: 11px;
-            color: #6b7280;
+            color: var(--color-text-muted);
             margin-bottom: 2px;
         }
-        .info-item .info-value {
+
+        @media (max-width: 480px) {
+            .info-item__label {
+                font-size: 10px;
+            }
+        }
+
+        .info-item__value {
             font-size: 14px;
             font-weight: 600;
-            color: #e5e7eb;
+            color: var(--color-text-primary);
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        @media (max-width: 768px) {
+            .info-item__value {
+                font-size: 13px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .info-item__value {
+                font-size: 12px;
+            }
+        }
+
+        /* شماره‌ها و کدها: راست‌چین درون باکس خودشان، با حفظ جهت LTR برای خوانایی */
+        .info-item__value--ltr {
+            direction: ltr;
+            text-align: right;
+            unicode-bidi: plaintext;
+        }
+
+        .info-item__value--mono {
+            font-family: ui-monospace, 'SF Mono', Menlo, Monaco, monospace;
+            letter-spacing: 0.05em;
+        }
+
+        /* ===== Invoices ===== */
+        .invoices-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        @media (min-width: 769px) {
+            .invoices-header {
+                margin-bottom: 24px;
+            }
+        }
+
+        .invoices-header__icon {
+            width: 36px;
+            height: 36px;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #34d399;
+            flex-shrink: 0;
+        }
+
+        @media (min-width: 769px) {
+            .invoices-header__icon {
+                width: 40px;
+                height: 40px;
+                border-radius: 12px;
+            }
+        }
+
+        .invoices-header__title {
+            font-size: 14px;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        @media (min-width: 769px) {
+            .invoices-header__title {
+                font-size: 16px;
+            }
+        }
+
+        .invoices-header__desc {
+            font-size: 10px;
+            color: var(--color-text-muted);
+        }
+
+        @media (min-width: 769px) {
+            .invoices-header__desc {
+                font-size: 12px;
+            }
+        }
+
+        .invoices-header__count {
+            margin-right: auto;
+            background: var(--color-accent-soft);
+            color: var(--color-accent);
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
         }
 
         .invoice-item {
@@ -251,11 +1015,15 @@
             align-items: center;
             padding: 12px 0;
             border-bottom: 1px solid rgba(167, 139, 250, 0.04);
-            transition: all 0.2s ease;
+            transition: background-color var(--duration-fast) ease;
+            content-visibility: auto;
+            contain-intrinsic-size: auto 60px;
         }
+
         .invoice-item:last-child {
             border-bottom: none;
         }
+
         .invoice-item:hover {
             background: rgba(167, 139, 250, 0.02);
             margin: 0 -12px;
@@ -264,11 +1032,183 @@
             border-radius: 8px;
         }
 
+        @media (max-width: 768px) {
+            .invoice-item {
+                padding: 10px 0;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .invoice-item {
+                padding: 8px 0;
+            }
+        }
+
+        .invoice-item__main {
+            flex: 1;
+            min-width: 0;
+        }
+
+        @media (max-width: 768px) {
+            .invoice-item__main {
+                width: 100%;
+            }
+        }
+
+        .invoice-item__title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .invoice-item__name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #fff;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 480px) {
+            .invoice-item__name {
+                font-size: 12px;
+            }
+        }
+
+        .invoice-item__plan {
+            font-size: 10px;
+            color: var(--color-text-muted);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        @media (min-width: 769px) {
+            .invoice-item__plan {
+                font-size: 12px;
+            }
+        }
+
+        .invoice-item__paid-icon {
+            font-size: 10px;
+        }
+
+        @media (min-width: 769px) {
+            .invoice-item__paid-icon {
+                font-size: 12px;
+            }
+        }
+
+        .invoice-item__paid-icon--paid {
+            color: #34d399;
+        }
+
+        .invoice-item__paid-icon--pending {
+            color: var(--color-warning);
+        }
+
+        .invoice-item__meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 10px;
+            color: var(--color-text-muted);
+            font-variant-numeric: tabular-nums;
+        }
+
+        @media (min-width: 769px) {
+            .invoice-item__meta {
+                font-size: 12px;
+            }
+        }
+
+        .invoice-item__actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        @media (min-width: 769px) {
+            .invoice-item__actions {
+                gap: 16px;
+            }
+        }
+
+        .invoice-item__amount-box {
+            text-align: left;
+        }
+
+        .invoice-item__amount {
+            font-size: 13px;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
+
+        @media (min-width: 769px) {
+            .invoice-item__amount {
+                font-size: 14px;
+            }
+        }
+
+        .invoice-item__amount--paid {
+            color: #34d399;
+        }
+
+        .invoice-item__amount--pending {
+            color: var(--color-warning);
+        }
+
+        .invoice-item__unit {
+            font-size: 10px;
+            color: var(--color-text-muted);
+        }
+
+        @media (min-width: 769px) {
+            .invoice-item__unit {
+                font-size: 12px;
+            }
+        }
+
+        .invoice-item__view {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-text-secondary);
+            transition: background-color var(--duration-fast) ease,
+                        border-color var(--duration-fast) ease,
+                        color var(--duration-fast) ease;
+            text-decoration: none;
+        }
+
+        .invoice-item__view:hover {
+            color: var(--color-accent);
+            background: rgba(124, 58, 237, 0.1);
+            border-color: rgba(124, 58, 237, 0.3);
+        }
+
+        /* ===== Empty State ===== */
         .empty-state {
             text-align: center;
             padding: 48px 20px;
         }
-        .empty-state .empty-icon {
+
+        @media (max-width: 768px) {
+            .empty-state {
+                padding: 32px 16px;
+            }
+        }
+
+        .empty-state__icon {
             width: 64px;
             height: 64px;
             background: rgba(255, 255, 255, 0.03);
@@ -280,218 +1220,86 @@
             font-size: 28px;
             color: #4a4a63;
         }
-        .empty-state p {
-            color: #6b7280;
+
+        @media (max-width: 768px) {
+            .empty-state__icon {
+                width: 48px;
+                height: 48px;
+                font-size: 20px;
+            }
+        }
+
+        .empty-state__text {
+            color: var(--color-text-muted);
             font-size: 14px;
         }
 
-        .badge-purple {
-            background: rgba(167, 139, 250, 0.08);
-            color: #a78bfa;
-            padding: 2px 10px;
-            border-radius: 20px;
-            font-size: 10px;
-            font-weight: 700;
+        @media (max-width: 768px) {
+            .empty-state__text {
+                font-size: 12px;
+            }
         }
 
-        .sidebar-overlay {
+        /* ===== Modal ===== */
+        .modal {
             position: fixed;
             inset: 0;
-            background: rgba(5, 5, 8, 0.7);
-            backdrop-filter: blur(8px);
-            z-index: 60;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-        .sidebar-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .sidebar {
-            position: fixed;
-            top: 0;
-            right: -100%;
-            width: 280px;
-            height: 100vh;
-            background: rgba(10, 10, 18, 0.95);
-            backdrop-filter: blur(20px);
-            border-left: 1px solid rgba(167, 139, 250, 0.06);
-            z-index: 70;
-            padding: 20px;
-            transition: right 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-            overflow-y: auto;
-        }
-        .sidebar.open {
-            right: 0;
-        }
-
-        .sidebar-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding-bottom: 16px;
-            border-bottom: 1px solid rgba(167, 139, 250, 0.06);
-            margin-bottom: 20px;
-        }
-
-        .sidebar-logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-        }
-        .sidebar-logo .logo-box {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, #7c3aed, #a78bfa);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-weight: 800;
-            font-size: 16px;
-            box-shadow: 0 4px 16px rgba(124, 58, 237, 0.3);
-        }
-        .sidebar-logo span {
-            font-weight: 800;
-            font-size: 18px;
-            color: #fff;
-        }
-
-        .sidebar-close {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            color: #6b7280;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-            font-size: 18px;
-        }
-        .sidebar-close:hover {
-            background: rgba(255, 255, 255, 0.06);
-            color: #fff;
-        }
-
-        .sidebar-link {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 14px;
-            border-radius: 10px;
-            color: #9ca3af;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            text-decoration: none;
-        }
-        .sidebar-link:hover {
-            background: rgba(167, 139, 250, 0.06);
-            color: #c4b5fd;
-        }
-        .sidebar-link.active {
-            background: rgba(167, 139, 250, 0.08);
-            color: #a78bfa;
-        }
-        .sidebar-link i {
-            font-size: 18px;
-            width: 22px;
-            text-align: center;
-            color: #6b7280;
-        }
-        .sidebar-link.active i {
-            color: #a78bfa;
-        }
-
-        .sidebar-divider {
-            height: 1px;
-            background: rgba(167, 139, 250, 0.06);
-            margin: 8px 12px;
-        }
-
-        .menu-btn {
-            display: none;
-            align-items: center;
-            justify-content: center;
-            width: 38px;
-            height: 38px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 12px;
-            color: #d1d5db;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .menu-btn:hover {
-            background: rgba(255, 255, 255, 0.06);
-        }
-
-        /* ===== MODAL ===== */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(5, 5, 8, 0.7);
+            background: rgba(5, 5, 8, 0.85);
             backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 200;
             opacity: 0;
             visibility: hidden;
-            transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+            pointer-events: none;
+            transition: opacity var(--duration-base) ease,
+                        visibility var(--duration-base) ease;
             padding: 16px;
         }
-        .modal-overlay.active {
+
+        .modal--active {
             opacity: 1;
             visibility: visible;
+            pointer-events: auto;
         }
 
-        .modal-dialog {
-            background: rgba(15, 15, 26, 0.95);
+        .modal__dialog {
+            background: var(--color-surface-elevated);
             border: 1px solid rgba(167, 139, 250, 0.08);
             border-radius: 24px;
             padding: 32px 28px;
             max-width: 420px;
             width: 100%;
-            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6), 0 0 60px rgba(124, 58, 237, 0.05);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6),
+                        0 0 60px rgba(124, 58, 237, 0.05);
             transform: scale(0.92) translateY(20px);
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: transform var(--duration-slow) var(--ease-spring);
             position: relative;
+            contain: layout style;
+            text-align: center;
         }
-        .modal-overlay.active .modal-dialog {
+
+        .modal--active .modal__dialog {
             transform: scale(1) translateY(0);
         }
 
-        .modal-close-btn {
-            position: absolute;
-            top: 16px;
-            left: 16px;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            color: #6b7280;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-            font-size: 18px;
-        }
-        .modal-close-btn:hover {
-            background: rgba(255, 255, 255, 0.08);
-            color: #d1d5db;
+        @media (max-width: 768px) {
+            .modal__dialog {
+                padding: 24px 20px;
+                border-radius: 20px;
+            }
         }
 
-        .modal-icon-wrapper {
+        @media (max-width: 480px) {
+            .modal__dialog {
+                padding: 20px 16px;
+                border-radius: 18px;
+            }
+        }
+
+        .modal__icon {
             width: 72px;
             height: 72px;
             border-radius: 24px;
@@ -501,10 +1309,11 @@
             margin: 0 auto 16px;
             font-size: 32px;
             background: rgba(239, 68, 68, 0.12);
-            color: #f87171;
+            color: var(--color-danger);
             position: relative;
         }
-        .modal-icon-wrapper::after {
+
+        .modal__icon::after {
             content: '';
             position: absolute;
             inset: -4px;
@@ -515,154 +1324,51 @@
             z-index: -1;
         }
 
-        .modal-title {
-            font-size: 20px;
-            font-weight: 800;
-            color: #fff;
-            text-align: center;
-            margin-bottom: 4px;
-        }
-
-        .modal-subtitle {
-            font-size: 13px;
-            color: #9ca3af;
-            text-align: center;
-            margin-bottom: 24px;
-        }
-
-        .modal-actions {
-            display: flex;
-            gap: 10px;
-        }
-        .modal-actions button {
-            flex: 1;
-            padding: 12px 20px;
-            border-radius: 14px;
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.25s ease;
-            cursor: pointer;
-            border: none;
-            outline: none;
-        }
-        .modal-actions .btn-cancel {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            color: #9ca3af;
-        }
-        .modal-actions .btn-cancel:hover {
-            background: rgba(255, 255, 255, 0.08);
-            color: #d1d5db;
-        }
-        .modal-actions .btn-danger {
-            background: linear-gradient(135deg, #dc2626, #b91c1c);
-            color: #fff;
-            box-shadow: 0 8px 24px rgba(220, 38, 38, 0.3);
-        }
-        .modal-actions .btn-danger:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 32px rgba(220, 38, 38, 0.4);
-        }
-
         @media (max-width: 768px) {
-            .nav-links {
-                display: none !important;
-            }
-            .menu-btn {
-                display: flex !important;
-            }
-
-            .glass-nav {
-                padding: 8px 12px !important;
-                border-radius: 16px !important;
-            }
-            .glass-nav .font-extrabold.text-xl {
-                font-size: 16px !important;
-            }
-            .glass-nav .w-9.h-9 {
-                width: 32px !important;
-                height: 32px !important;
-                font-size: 14px !important;
-            }
-
-            main {
-                padding-top: 90px !important;
-                padding-left: 12px !important;
-                padding-right: 12px !important;
-            }
-
-            .card {
-                padding: 16px !important;
-                border-radius: 14px !important;
-            }
-
-            .info-item {
-                padding: 12px 14px !important;
-                gap: 10px !important;
-            }
-            .info-item .info-icon {
-                width: 32px !important;
-                height: 32px !important;
-                font-size: 14px !important;
-            }
-            .info-item .info-value {
-                font-size: 13px !important;
-            }
-
-            .invoice-item {
-                padding: 10px 0 !important;
-                flex-wrap: wrap !important;
-                gap: 8px !important;
-            }
-            .invoice-item .flex-1 {
-                width: 100% !important;
-            }
-            .invoice-item .flex.items-center.gap-4 {
-                width: 100% !important;
-                justify-content: space-between !important;
-            }
-
-            .btn-back {
-                font-size: 12px !important;
-                padding: 6px 10px !important;
-                margin-bottom: 16px !important;
-            }
-
-            .sidebar {
-                width: 280px !important;
-            }
-
-            .empty-state {
-                padding: 32px 16px !important;
-            }
-            .empty-state .empty-icon {
-                width: 48px !important;
-                height: 48px !important;
-                font-size: 20px !important;
-            }
-
-            .modal-dialog {
-                padding: 24px 20px;
-                border-radius: 20px;
-            }
-            .modal-icon-wrapper {
+            .modal__icon {
                 width: 60px;
                 height: 60px;
                 font-size: 26px;
                 border-radius: 20px;
             }
-            .modal-title {
-                font-size: 18px;
+        }
+
+        @media (max-width: 480px) {
+            .modal__icon {
+                width: 56px;
+                height: 56px;
+                font-size: 24px;
+                border-radius: 18px;
             }
-            .modal-actions {
-                flex-direction: column-reverse;
-                gap: 8px;
-            }
-            .modal-actions button {
-                width: 100%;
-                padding: 14px;
-            }
-            .modal-close-btn {
+        }
+
+        .modal__close {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: var(--color-text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color var(--duration-fast) ease,
+                        color var(--duration-fast) ease;
+            font-size: 18px;
+            font-family: inherit;
+        }
+
+        .modal__close:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #d1d5db;
+        }
+
+        @media (max-width: 768px) {
+            .modal__close {
                 top: 12px;
                 left: 12px;
                 width: 32px;
@@ -672,82 +1378,7 @@
         }
 
         @media (max-width: 480px) {
-            .glass-nav .font-extrabold.text-xl {
-                font-size: 14px !important;
-            }
-            .glass-nav .w-9.h-9 {
-                width: 28px !important;
-                height: 28px !important;
-                font-size: 12px !important;
-            }
-
-            main {
-                padding-top: 80px !important;
-                padding-left: 10px !important;
-                padding-right: 10px !important;
-            }
-
-            .card {
-                padding: 12px !important;
-                border-radius: 12px !important;
-            }
-
-            .info-item {
-                padding: 10px 12px !important;
-                gap: 8px !important;
-            }
-            .info-item .info-icon {
-                width: 28px !important;
-                height: 28px !important;
-                font-size: 12px !important;
-                border-radius: 8px !important;
-            }
-            .info-item .info-value {
-                font-size: 12px !important;
-            }
-            .info-item .info-label {
-                font-size: 10px !important;
-            }
-
-            .invoice-item {
-                padding: 8px 0 !important;
-            }
-            .invoice-item .text-sm {
-                font-size: 12px !important;
-            }
-            .invoice-item .text-xs {
-                font-size: 10px !important;
-            }
-
-            .role-badge,
-            .status-badge {
-                font-size: 10px !important;
-                padding: 3px 10px !important;
-            }
-
-            .btn-back {
-                font-size: 11px !important;
-                padding: 4px 8px !important;
-            }
-            .btn-logout {
-                font-size: 11px !important;
-                padding: 6px 12px !important;
-            }
-
-            .modal-dialog {
-                padding: 20px 16px;
-                border-radius: 18px;
-            }
-            .modal-icon-wrapper {
-                width: 56px;
-                height: 56px;
-                font-size: 24px;
-                border-radius: 18px;
-            }
-            .modal-title {
-                font-size: 17px;
-            }
-            .modal-close-btn {
+            .modal__close {
                 top: 10px;
                 left: 10px;
                 width: 30px;
@@ -756,226 +1387,342 @@
             }
         }
 
-        @media (min-width: 769px) {
-            .sidebar-overlay,
-            .sidebar,
-            .menu-btn {
-                display: none !important;
+        .modal__title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        @media (max-width: 768px) {
+            .modal__title {
+                font-size: 18px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .modal__title {
+                font-size: 17px;
+            }
+        }
+
+        .modal__desc {
+            font-size: 13px;
+            color: var(--color-text-secondary);
+            margin-bottom: 24px;
+        }
+
+        .modal__actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .modal__actions {
+                flex-direction: column-reverse;
+                gap: 8px;
+            }
+        }
+
+        .modal__btn {
+            flex: 1;
+            padding: 12px 20px;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background-color var(--duration-fast) ease,
+                        border-color var(--duration-fast) ease,
+                        transform var(--duration-fast) ease,
+                        box-shadow var(--duration-fast) ease;
+            cursor: pointer;
+            border: none;
+            outline: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-family: inherit;
+        }
+
+        @media (max-width: 768px) {
+            .modal__btn {
+                width: 100%;
+                padding: 14px;
+            }
+        }
+
+        .modal__btn--cancel {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: var(--color-text-secondary);
+        }
+
+        .modal__btn--cancel:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #d1d5db;
+        }
+
+        .modal__btn--danger {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            color: #fff;
+            box-shadow: 0 8px 24px rgba(220, 38, 38, 0.3);
+        }
+
+        .modal__btn--danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(220, 38, 38, 0.4);
+        }
+
+        /* ===== Reduced Motion ===== */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+
+            .sidebar {
+                transition: none;
             }
         }
     </style>
 </head>
-<body class="antialiased bg-[#050508]">
+<body>
 
-    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+    <a href="#main-content" class="skip-link">پرش به محتوای اصلی</a>
 
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <a href="/admin/dashboard" class="sidebar-logo">
-                <div class="logo-box">ا</div>
-                <span>پنل ادمین</span>
+    <!-- ===== Sidebar Overlay ===== -->
+    <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
+    <!-- ===== Sidebar ===== -->
+    <aside class="sidebar" id="sidebar" aria-label="منوی ناوبری موبایل" aria-hidden="true">
+        <div class="sidebar__header">
+            <a href="/admin/dashboard" class="sidebar__brand">
+                <div class="sidebar__logo" aria-hidden="true">ا</div>
+                <span class="sidebar__title">پنل ادمین</span>
             </a>
-            <button class="sidebar-close" onclick="closeSidebar()">&times;</button>
+            <button type="button" class="sidebar__close" onclick="closeSidebar()" aria-label="بستن منو">
+                <i class="bi bi-x-lg" aria-hidden="true"></i>
+            </button>
         </div>
 
-        <div class="space-y-1">
-            <a href="/admin/dashboard" class="sidebar-link">
-                <i class="bi bi-speedometer2"></i> داشبورد
+        <nav class="sidebar__nav" aria-label="ناوبری اصلی">
+            <a href="/admin/dashboard" class="sidebar__link">
+                <i class="bi bi-speedometer2 sidebar__link-icon" aria-hidden="true"></i> داشبورد
             </a>
-            <a href="/admin/users" class="sidebar-link active">
-                <i class="bi bi-people"></i> کاربران
+            <a href="/admin/users" class="sidebar__link sidebar__link--active" aria-current="page">
+                <i class="bi bi-people sidebar__link-icon" aria-hidden="true"></i> کاربران
             </a>
-            <a href="/admin/invoices" class="sidebar-link">
-                <i class="bi bi-receipt"></i> فاکتورها
+            <a href="/admin/invoices" class="sidebar__link">
+                <i class="bi bi-receipt sidebar__link-icon" aria-hidden="true"></i> فاکتورها
             </a>
-            <a href="/admin/plans" class="sidebar-link">
-                <i class="bi bi-collection"></i> پلن‌ها
+            <a href="/admin/plans" class="sidebar__link">
+                <i class="bi bi-collection sidebar__link-icon" aria-hidden="true"></i> پلن‌ها
             </a>
-        </div>
 
-        <div class="sidebar-divider"></div>
+            <% if (user && (user.role === 'admin' || user.role === 'moderator')) { %>
+            <a href="/admin/deletion-requests" class="sidebar__link">
+                <i class="bi bi-trash3 sidebar__link-icon" aria-hidden="true"></i> درخواست‌های حذف
+            </a>
+            <% } %>
 
-        <a href="/dashboard" class="sidebar-link">
-            <i class="bi bi-globe"></i> داشبورد کاربر
-        </a>
-        <button onclick="openLogoutModal()" class="sidebar-link" style="color: #f87171; width: 100%; text-align: right; border: none; background: transparent; cursor: pointer;">
-            <i class="bi bi-box-arrow-right" style="color: #f87171;"></i> خروج
-        </button>
-    </div>
+            <div class="sidebar__divider" role="separator"></div>
 
-    <nav class="fixed top-0 right-0 left-0 z-50 px-3 md:px-6 py-3 md:py-5">
-        <div class="max-w-6xl mx-auto glass-nav rounded-2xl px-3 md:px-6 py-2 md:py-3 flex items-center justify-between">
-            <div class="flex items-center gap-2 md:gap-3">
-                <button class="menu-btn" onclick="openSidebar()">
-                    <i class="bi bi-list text-xl"></i>
+            <a href="/dashboard" class="sidebar__link">
+                <i class="bi bi-globe sidebar__link-icon" aria-hidden="true"></i> داشبورد کاربر
+            </a>
+            <button type="button" onclick="openLogoutModal()" class="sidebar__link sidebar__link--danger" aria-label="خروج از حساب کاربری">
+                <i class="bi bi-box-arrow-right sidebar__link-icon" aria-hidden="true"></i> خروج
+            </button>
+        </nav>
+    </aside>
+
+    <!-- ===== Navbar ===== -->
+    <header class="nav" role="banner">
+        <div class="nav__container">
+            <a href="/admin/dashboard" class="nav__brand">
+                <div class="nav__logo" aria-hidden="true">ا</div>
+                <span class="nav__title">پنل ادمین</span>
+            </a>
+
+            <div class="nav__mobile">
+                <button type="button" class="nav__icon-btn nav__icon-btn--danger" onclick="openLogoutModal()" aria-label="خروج از حساب کاربری">
+                    <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
                 </button>
-                <a href="/admin/dashboard" class="flex items-center gap-2 md:gap-2.5 no-underline shrink-0 group">
-                    <div class="w-8 h-8 md:w-9 md:h-9 bg-gradient-to-br from-accent-600 to-accent-400 rounded-lg flex items-center justify-center text-white font-extrabold text-sm md:text-lg transition-transform group-hover:scale-105 shadow-lg shadow-accent-600/30">
-                        ا
-                    </div>
-                    <span class="font-extrabold text-base md:text-xl lg:text-2xl text-white tracking-tight">پنل ادمین</span>
-                </a>
-            </div>
-
-            <div class="nav-links flex items-center gap-1 md:gap-1.5">
-                <a href="/admin/dashboard" class="nav-link">
-                    <i class="bi bi-speedometer2"></i> <span class="hidden sm:inline">داشبورد</span>
-                </a>
-                <a href="/admin/users" class="nav-link active">
-                    <i class="bi bi-people"></i> <span class="hidden sm:inline">کاربران</span>
-                </a>
-                <a href="/admin/invoices" class="nav-link">
-                    <i class="bi bi-receipt"></i> <span class="hidden sm:inline">فاکتورها</span>
-                </a>
-                <a href="/admin/plans" class="nav-link hidden lg:inline-flex">
-                    <i class="bi bi-collection"></i> پلن‌ها
-                </a>
-
-                <div class="w-px h-6 bg-white/5 mx-1 md:mx-2 hidden lg:block"></div>
-
-                <a href="/dashboard" class="nav-link hidden md:inline-flex">
-                    <i class="bi bi-globe"></i> <span class="hidden lg:inline">داشبورد کاربر</span>
-                </a>
-                <button onclick="openLogoutModal()" class="btn-logout">
-                    <i class="bi bi-box-arrow-right"></i>
-                    <span class="hidden sm:inline">خروج</span>
+                <button type="button" class="nav__icon-btn" onclick="openSidebar()" aria-label="باز کردن منو" aria-expanded="false" aria-controls="sidebar" id="menuBtn">
+                    <i class="bi bi-list" aria-hidden="true"></i>
                 </button>
             </div>
+
+            <nav class="nav__links" aria-label="ناوبری اصلی">
+                <a href="/admin/dashboard" class="nav__link">
+                    <i class="bi bi-speedometer2" aria-hidden="true"></i> داشبورد
+                </a>
+                <a href="/admin/users" class="nav__link nav__link--active" aria-current="page">
+                    <i class="bi bi-people" aria-hidden="true"></i> کاربران
+                </a>
+                <a href="/admin/invoices" class="nav__link">
+                    <i class="bi bi-receipt" aria-hidden="true"></i> فاکتورها
+                </a>
+                <a href="/admin/plans" class="nav__link">
+                    <i class="bi bi-collection" aria-hidden="true"></i> پلن‌ها
+                </a>
+
+                <% if (user && (user.role === 'admin' || user.role === 'moderator')) { %>
+                <a href="/admin/deletion-requests" class="nav__link">
+                    <i class="bi bi-trash3" aria-hidden="true"></i> درخواست‌های حذف
+                </a>
+                <% } %>
+
+                <div class="nav__divider" role="separator"></div>
+
+                <a href="/dashboard" class="nav__link">
+                    <i class="bi bi-globe" aria-hidden="true"></i> داشبورد کاربر
+                </a>
+                <button type="button" onclick="openLogoutModal()" class="nav__logout" aria-label="خروج از حساب کاربری">
+                    <i class="bi bi-box-arrow-right" aria-hidden="true"></i> خروج
+                </button>
+            </nav>
         </div>
-    </nav>
+    </header>
 
-    <main class="max-w-4xl mx-auto px-3 md:px-4 pt-24 md:pt-28 pb-12 md:pb-16">
-
+    <!-- ===== Main ===== -->
+    <main id="main-content" class="page">
         <a href="/admin/users" class="btn-back">
-            <i class="bi bi-arrow-right"></i> بازگشت به لیست کاربران
+            <i class="bi bi-arrow-right" aria-hidden="true"></i> بازگشت به لیست کاربران
         </a>
 
-        <div class="card rounded-2xl p-4 md:p-6 lg:p-8 mb-6">
-            <div class="flex items-start gap-4 md:gap-5 mb-6 md:mb-8">
-                <div class="w-14 h-14 md:w-16 md:h-16 bg-accent-700/20 rounded-2xl flex items-center justify-center text-accent-400 text-xl md:text-2xl font-extrabold flex-shrink-0">
+        <!-- Profile Card -->
+        <div class="card card--profile">
+            <div class="profile-header">
+                <div class="profile-header__avatar" aria-hidden="true">
                     <%= user.username ? user.username.charAt(0).toUpperCase() : '?' %>
                 </div>
-                <div class="flex-1 min-w-0">
-                    <h1 class="text-xl md:text-2xl lg:text-3xl font-black text-white mb-1"><%= user.username %></h1>
-                    <p class="text-gray-400 text-xs md:text-sm mb-3"><%= user.email %></p>
-                    <div class="flex flex-wrap items-center gap-2">
-                        <span class="role-badge <%= user.role === 'admin' ? 'role-admin' : user.role === 'moderator' ? 'role-moderator' : 'role-user' %>">
-                            <i class="bi <%= user.role === 'admin' ? 'bi-shield-fill' : user.role === 'moderator' ? 'bi-star-fill' : 'bi-person-fill' %> text-[10px]"></i>
-                            <%= user.role === 'admin' ? 'ادمین' : user.role === 'moderator' ? 'مدیر ارشد' : 'کاربر' %>
+                <div class="profile-header__info">
+                    <h1 class="profile-header__name"><%= user.username %></h1>
+                    <p class="profile-header__email"><%= user.email %></p>
+                    <div class="profile-header__badges">
+                        <span class="role-badge role-badge--<%= user.role %>">
+                            <i class="bi <%= user.role === 'admin' ? 'bi-shield-fill' : user.role === 'moderator' ? 'bi-star-fill' : user.role === 'owner' ? 'bi-crown-fill' : 'bi-person-fill' %>" style="font-size: 10px;" aria-hidden="true"></i>
+                            <%= user.role === 'admin' ? 'ادمین' : user.role === 'moderator' ? 'مدیر ارشد' : user.role === 'owner' ? 'مالک' : 'کاربر' %>
                         </span>
-                        <span class="status-badge <%= user.status === 'active' ? 'status-active' : user.status === 'suspended' ? 'status-suspended' : 'status-disabled' %>">
-                            <span style="width: 6px; height: 6px; border-radius: 50%; display: inline-block; background: <%= user.status === 'active' ? '#34d399' : user.status === 'suspended' ? '#fbbf24' : '#f87171' %>;"></span>
+                        <span class="status-badge status-badge--<%= user.status %>">
+                            <span class="status-badge__dot" style="background: <%= user.status === 'active' ? '#34d399' : user.status === 'suspended' ? '#fbbf24' : '#f87171' %>;"></span>
                             <%= user.status === 'active' ? 'فعال' : user.status === 'suspended' ? 'تعلیق' : 'غیرفعال' %>
                         </span>
                     </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="info-grid">
                 <div class="info-item">
-                    <div class="info-icon bg-accent-700/10 text-accent-400">
-                        <i class="bi bi-building"></i>
+                    <div class="info-item__icon info-item__icon--accent">
+                        <i class="bi bi-building" aria-hidden="true"></i>
                     </div>
-                    <div>
-                        <div class="info-label">نام باشگاه</div>
-                        <div class="info-value"><%= user.clubName || '-' %></div>
+                    <div class="info-item__content">
+                        <div class="info-item__label">نام باشگاه</div>
+                        <div class="info-item__value"><%= user.clubName || '-' %></div>
                     </div>
                 </div>
 
                 <div class="info-item">
-                    <div class="info-icon bg-emerald-700/10 text-emerald-400">
-                        <i class="bi bi-telephone"></i>
+                    <div class="info-item__icon info-item__icon--emerald">
+                        <i class="bi bi-telephone" aria-hidden="true"></i>
                     </div>
-                    <div>
-                        <div class="info-label">شماره تماس</div>
-                        <div class="info-value text-left dir-ltr"><%= user.clubPhone || '—' %></div>
-                    </div>
-                </div>
-
-                <div class="info-item">
-                    <div class="info-icon bg-purple-700/10 text-purple-400">
-                        <i class="bi bi-calendar3"></i>
-                    </div>
-                    <div>
-                        <div class="info-label">تاریخ عضویت</div>
-                        <div class="info-value"><%= user.createdAt ? new Date(user.createdAt).toLocaleDateString("fa-IR-u-nu-latn") : '—' %></div>
+                    <div class="info-item__content">
+                        <div class="info-item__label">شماره تماس</div>
+                        <div class="info-item__value"><%= user.clubPhone || '-' %></div>
                     </div>
                 </div>
 
                 <div class="info-item">
-                    <div class="info-icon bg-amber-700/10 text-amber-400">
-                        <i class="bi bi-receipt"></i>
+                    <div class="info-item__icon info-item__icon--purple">
+                        <i class="bi bi-calendar3" aria-hidden="true"></i>
                     </div>
-                    <div>
-                        <div class="info-label">تعداد فاکتورها</div>
-                        <div class="info-value"><%= invoices.length.toLocaleString("fa-IR-u-nu-latn") %> فاکتور</div>
+                    <div class="info-item__content">
+                        <div class="info-item__label">تاریخ عضویت</div>
+                        <div class="info-item__value"><%= user.createdAt ? new Date(user.createdAt).toLocaleDateString("fa-IR-u-nu-latn") : '-' %></div>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-item__icon info-item__icon--amber">
+                        <i class="bi bi-receipt" aria-hidden="true"></i>
+                    </div>
+                    <div class="info-item__content">
+                        <div class="info-item__label">تعداد فاکتورها</div>
+                        <div class="info-item__value"><%= invoices.length.toLocaleString("fa-IR-u-nu-latn") %> فاکتور</div>
                     </div>
                 </div>
 
                 <% if (user.clubAddress) { %>
-                <div class="info-item sm:col-span-2">
-                    <div class="info-icon bg-gray-700/10 text-gray-400">
-                        <i class="bi bi-geo-alt"></i>
+                <div class="info-item info-item--wide">
+                    <div class="info-item__icon info-item__icon--gray">
+                        <i class="bi bi-geo-alt" aria-hidden="true"></i>
                     </div>
-                    <div>
-                        <div class="info-label">آدرس</div>
-                        <div class="info-value"><%= user.clubAddress %></div>
+                    <div class="info-item__content">
+                        <div class="info-item__label">آدرس</div>
+                        <div class="info-item__value"><%= user.clubAddress %></div>
                     </div>
                 </div>
                 <% } %>
 
                 <% if (user.clubCode) { %>
-                <div class="info-item sm:col-span-2">
-                    <div class="info-icon bg-accent-700/10 text-accent-400">
-                        <i class="bi bi-hash"></i>
+                <div class="info-item info-item--wide">
+                    <div class="info-item__icon info-item__icon--accent">
+                        <i class="bi bi-hash" aria-hidden="true"></i>
                     </div>
-                    <div>
-                        <div class="info-label">کد باشگاه</div>
-                        <div class="info-value text-left dir-ltr font-mono tracking-wider"><%= user.clubCode %></div>
+                    <div class="info-item__content">
+                        <div class="info-item__label">کد باشگاه</div>
+                        <div class="info-item__value info-item__value--ltr info-item__value--mono"><%= user.clubCode %></div>
                     </div>
                 </div>
                 <% } %>
             </div>
         </div>
 
-        <div class="card rounded-2xl p-4 md:p-6 lg:p-8">
-            <div class="flex items-center gap-3 mb-5 md:mb-6">
-                <div class="w-9 h-9 md:w-10 md:h-10 bg-emerald-700/10 rounded-xl flex items-center justify-center text-emerald-400">
-                    <i class="bi bi-receipt-cutoff"></i>
+        <!-- Invoices Card -->
+        <div class="card">
+            <div class="invoices-header">
+                <div class="invoices-header__icon">
+                    <i class="bi bi-receipt-cutoff" aria-hidden="true"></i>
                 </div>
                 <div>
-                    <h2 class="text-sm md:text-base font-extrabold text-white">فاکتورهای این کاربر</h2>
-                    <p class="text-[10px] md:text-xs text-gray-500">لیست فاکتورهای صادر شده</p>
+                    <h2 class="invoices-header__title">فاکتورهای این کاربر</h2>
+                    <p class="invoices-header__desc">لیست فاکتورهای صادر شده</p>
                 </div>
-                <span class="badge-purple mr-auto"><%= invoices.length %></span>
+                <span class="invoices-header__count"><%= invoices.length %></span>
             </div>
 
             <% if (invoices.length > 0) { %>
             <div>
                 <% invoices.forEach(function(inv) { %>
                 <div class="invoice-item">
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-2 md:gap-3 mb-1">
-                            <span class="text-sm font-semibold text-white truncate"><%= inv.member?.name || 'بدون نام' %></span>
-                            <span class="text-[10px] md:text-xs text-gray-500 truncate"><%= inv.plan?.name || '—' %></span>
-                            <span class="text-[10px] md:text-xs text-gray-500 <%= inv.isPaid ? 'text-emerald-400' : 'text-amber-400' %>">
-                                <i class="bi <%= inv.isPaid ? 'bi-check-circle-fill' : 'bi-clock-fill' %>"></i>
+                    <div class="invoice-item__main">
+                        <div class="invoice-item__title">
+                            <span class="invoice-item__name"><%= inv.member?.name || 'بدون نام' %></span>
+                            <span class="invoice-item__plan"><%= inv.plan?.name || '-' %></span>
+                            <span class="invoice-item__paid-icon invoice-item__paid-icon--<%= inv.isPaid ? 'paid' : 'pending' %>">
+                                <i class="bi <%= inv.isPaid ? 'bi-check-circle-fill' : 'bi-clock-fill' %>" aria-hidden="true"></i>
                             </span>
                         </div>
-                        <div class="flex items-center gap-3 text-[10px] md:text-xs text-gray-500">
+                        <div class="invoice-item__meta">
                             <span>#<%= inv.invoiceNumber %></span>
                             <span><%= inv.invoiceDate %></span>
                         </div>
                     </div>
-                    <div class="flex items-center gap-3 md:gap-4">
-                        <div class="text-right">
-                            <div class="text-sm font-bold <%= inv.isPaid ? 'text-emerald-400' : 'text-amber-400' %>">
+                    <div class="invoice-item__actions">
+                        <div class="invoice-item__amount-box">
+                            <div class="invoice-item__amount invoice-item__amount--<%= inv.isPaid ? 'paid' : 'pending' %>">
                                 <%= inv.totalAmount.toLocaleString("fa-IR-u-nu-latn") %>
                             </div>
-                            <div class="text-[10px] md:text-xs text-gray-500">تومان</div>
+                            <div class="invoice-item__unit">تومان</div>
                         </div>
-                        <a href="/i/<%= inv._id %>" class="w-8 h-8 rounded-lg bg-white/5 border border-white/5 flex items-center justify-center text-gray-400 hover:text-accent-400 hover:bg-accent-700/10 hover:border-accent-500/30 transition-all" title="مشاهده فاکتور">
-                            <i class="bi bi-eye"></i>
+                        <a href="/i/<%= inv._id %>" class="invoice-item__view" title="مشاهده فاکتور" aria-label="مشاهده فاکتور">
+                            <i class="bi bi-eye" aria-hidden="true"></i>
                         </a>
                     </div>
                 </div>
@@ -983,76 +1730,151 @@
             </div>
             <% } else { %>
             <div class="empty-state">
-                <div class="empty-icon">
-                    <i class="bi bi-inbox"></i>
+                <div class="empty-state__icon">
+                    <i class="bi bi-inbox" aria-hidden="true"></i>
                 </div>
-                <p>این کاربر هنوز فاکتوری صادر نکرده است</p>
+                <p class="empty-state__text">این کاربر هنوز فاکتوری صادر نکرده است</p>
             </div>
             <% } %>
         </div>
     </main>
 
-    <!-- ===== LOGOUT MODAL ===== -->
-    <div class="modal-overlay" id="logoutModal">
-        <div class="modal-dialog">
-            <button class="modal-close-btn" onclick="closeModal('logoutModal')">
-                <i class="bi bi-x-lg"></i>
+    <!-- ===== Logout Modal ===== -->
+    <div class="modal" id="logoutModal" role="dialog" aria-modal="true" aria-labelledby="logout-title" aria-hidden="true">
+        <div class="modal__dialog">
+            <button type="button" class="modal__close" onclick="closeModal('logoutModal')" aria-label="بستن">
+                <i class="bi bi-x-lg" aria-hidden="true"></i>
             </button>
-            <div class="modal-icon-wrapper">
+            <div class="modal__icon" aria-hidden="true">
                 <i class="bi bi-box-arrow-right"></i>
             </div>
-            <h3 class="modal-title">خروج از حساب</h3>
-            <p class="modal-subtitle">آیا مطمئن هستید که می‌خواهید خارج شوید؟</p>
-
-            <div class="modal-actions">
-                <button class="btn-cancel" onclick="closeModal('logoutModal')">انصراف</button>
-                <a href="/auth/logout" class="btn-danger" style="text-decoration: none; text-align: center;">خروج</a>
+            <h3 id="logout-title" class="modal__title">خروج از حساب</h3>
+            <p class="modal__desc">آیا مطمئن هستید که می‌خواهید خارج شوید؟</p>
+            <div class="modal__actions">
+                <button type="button" class="modal__btn modal__btn--cancel" onclick="closeModal('logoutModal')">انصراف</button>
+                <a href="/auth/logout" class="modal__btn modal__btn--danger">خروج</a>
             </div>
         </div>
     </div>
 
     <script>
+        let lastFocusedElement = null;
+
+        // ===== Sidebar =====
         function openSidebar() {
-            document.getElementById('sidebar').classList.add('open');
-            document.getElementById('sidebarOverlay').classList.add('active');
+            lastFocusedElement = document.activeElement;
+            var sidebar = document.getElementById('sidebar');
+            var menuBtn = document.getElementById('menuBtn');
+            var overlay = document.getElementById('sidebarOverlay');
+
+            if (!sidebar) return;
+
+            sidebar.classList.add('sidebar--open');
+            sidebar.setAttribute('aria-hidden', 'false');
+            sidebar.removeAttribute('inert');
+            if (overlay) {
+                overlay.classList.add('sidebar-overlay--active');
+                overlay.setAttribute('aria-hidden', 'false');
+            }
+            if (menuBtn) menuBtn.setAttribute('aria-expanded', 'true');
             document.body.style.overflow = 'hidden';
         }
 
         function closeSidebar() {
-            document.getElementById('sidebar').classList.remove('open');
-            document.getElementById('sidebarOverlay').classList.remove('active');
+            var sidebar = document.getElementById('sidebar');
+            var menuBtn = document.getElementById('menuBtn');
+            var overlay = document.getElementById('sidebarOverlay');
+
+            if (!sidebar) return;
+
+            sidebar.classList.remove('sidebar--open');
+            sidebar.setAttribute('aria-hidden', 'true');
+            if (overlay) {
+                overlay.classList.remove('sidebar-overlay--active');
+                overlay.setAttribute('aria-hidden', 'true');
+            }
+            if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false');
             document.body.style.overflow = '';
+
+            if (lastFocusedElement && lastFocusedElement.focus) lastFocusedElement.focus();
         }
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeSidebar();
-                document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
-            }
-        });
-
+        // ===== Modal =====
         function openModal(id) {
-            document.getElementById(id).classList.add('active');
+            lastFocusedElement = document.activeElement;
+            var el = document.getElementById(id);
+
+            if (!el) return;
+
+            el.classList.add('modal--active');
+            el.setAttribute('aria-hidden', 'false');
             document.body.style.overflow = 'hidden';
+
+            requestAnimationFrame(function() {
+                var first = el.querySelector('button, a');
+                if (first) first.focus();
+            });
         }
 
         function closeModal(id) {
-            document.getElementById(id).classList.remove('active');
+            var el = document.getElementById(id);
+
+            if (!el) return;
+
+            el.classList.remove('modal--active');
+            el.setAttribute('aria-hidden', 'true');
             document.body.style.overflow = '';
+
+            if (lastFocusedElement && lastFocusedElement.focus) lastFocusedElement.focus();
         }
 
         function openLogoutModal() {
+            closeSidebar();
             openModal('logoutModal');
         }
 
-        document.querySelectorAll('.modal-overlay').forEach(overlay => {
-            overlay.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    this.classList.remove('active');
+        // ===== Init =====
+        document.addEventListener('DOMContentLoaded', function() {
+            var sidebar = document.getElementById('sidebar');
+            var overlay = document.getElementById('sidebarOverlay');
+
+            // Overlay click -> close sidebar
+            if (overlay) {
+                overlay.addEventListener('click', closeSidebar);
+            }
+
+            // Sidebar link click -> close sidebar (then navigate)
+            if (sidebar) {
+                sidebar.addEventListener('click', function(e) {
+                    if (e.target.closest('a[href]')) closeSidebar();
+                });
+            }
+
+            // Close modals on backdrop click
+            document.querySelectorAll('.modal').forEach(function(overlayEl) {
+                overlayEl.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        this.classList.remove('modal--active');
+                        this.setAttribute('aria-hidden', 'true');
+                        document.body.style.overflow = '';
+                    }
+                });
+            });
+
+            // Escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeSidebar();
+                    document.querySelectorAll('.modal.modal--active').forEach(function(m) {
+                        m.classList.remove('modal--active');
+                        m.setAttribute('aria-hidden', 'true');
+                    });
                     document.body.style.overflow = '';
                 }
             });
         });
     </script>
+    <script src="/socket.io/socket.io.js" defer></script>
+    <script src="/realtime.js" defer></script>
 </body>
 </html>

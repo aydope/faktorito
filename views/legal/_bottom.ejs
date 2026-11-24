@@ -1,0 +1,21 @@
+  <h2>تماس با ما</h2>
+
+  <p>
+    برای پرسش، درخواست دسترسی یا حذف اطلاعات و گزارش تخلف
+    <% if (legal.contactEmail) { %>
+        با <a href="mailto:<%= legal.contactEmail %>"><%= legal.contactEmail %></a> مکاتبه کنید.
+    <% } else { %>
+        از راه‌های ارتباطی اعلام‌شده در سرویس اقدام کنید.
+    <% } %>
+  </p>
+
+  </main>
+
+  <footer class="foot">
+      <a href="/terms">شرایط استفاده</a>
+      <a href="/privacy">حریم خصوصی</a>
+      <a href="/terms/business">شرایط صاحبان باشگاه</a>
+  </footer>
+  </div>
+</body>
+</html>

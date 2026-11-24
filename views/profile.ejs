@@ -18,27 +18,66 @@
                     },
                     colors: {
                         ink: {
-                            950: '#050508', 900: '#0c0c14', 800: '#14141f', 700: '#1c1c2a',
-                            600: '#28283a', 500: '#36364c', 400: '#4a4a63',
+                            950: '#050508',
+                            900: '#0c0c14',
+                            800: '#14141f',
+                            700: '#1c1c2a',
+                            600: '#28283a',
+                            500: '#36364c',
+                            400: '#4a4a63',
                         },
                         accent: {
-                            400: '#a78bfa', 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9', 800: '#5b21b6', 900: '#4c1d95',
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            800: '#5b21b6',
+                            900: '#4c1d95',
                         },
-                        gold: { 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309' },
-                        success: { 300: '#6ee7b7', 400: '#34d399', 500: '#10b981', 600: '#059669' },
+                        gold: {
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            700: '#b45309',
+                        },
+                        success: {
+                            300: '#6ee7b7',
+                            400: '#34d399',
+                            500: '#10b981',
+                            600: '#059669',
+                        },
                     },
                     boxShadow: {
                         'glow': '0 0 32px rgba(124, 58, 237, 0.35)',
                         'glow-lg': '0 8px 40px rgba(124, 58, 237, 0.45)',
                         'card': '0 10px 40px -10px rgba(0, 0, 0, 0.4)',
                     },
-                    borderRadius: { 'xl': '12px', '2xl': '16px', '3xl': '24px' },
+                    borderRadius: {
+                        'xl': '12px',
+                        '2xl': '16px',
+                        '3xl': '24px',
+                    },
                     keyframes: {
-                        shimmer: { '0%': { backgroundPosition: '200% 0' }, '100%': { backgroundPosition: '-200% 0' } },
-                        toastIn: { '0%': { opacity: '0', transform: 'translateX(-50%) translateY(8px)' }, '100%': { opacity: '1', transform: 'translateX(-50%) translateY(0)' } },
-                        spin: { '0%': { transform: 'rotate(0deg)' }, '100%': { transform: 'rotate(360deg)' } },
-                        slideIn: { '0%': { transform: 'translateX(110%)' }, '100%': { transform: 'translateX(0)' } },
-                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                        shimmer: {
+                            '0%': { backgroundPosition: '200% 0' },
+                            '100%': { backgroundPosition: '-200% 0' },
+                        },
+                        toastIn: {
+                            '0%': { opacity: '0', transform: 'translateX(-50%) translateY(8px)' },
+                            '100%': { opacity: '1', transform: 'translateX(-50%) translateY(0)' },
+                        },
+                        spin: {
+                            '0%': { transform: 'rotate(0deg)' },
+                            '100%': { transform: 'rotate(360deg)' },
+                        },
+                        slideIn: {
+                            '0%': { transform: 'translateX(110%)' },
+                            '100%': { transform: 'translateX(0)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
                     },
                     animation: {
                         shimmer: 'shimmer 1.8s infinite',
@@ -59,6 +98,7 @@
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
             background: #050508;
             color: #d1d5db;
@@ -69,10 +109,24 @@
             scroll-behavior: smooth;
             min-height: 100vh;
         }
-        ::-webkit-scrollbar { width: 4px; height: 4px; }
-        ::-webkit-scrollbar-track { background: #050508; }
-        ::-webkit-scrollbar-thumb { background: #1c1c2a; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #28283a; }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #050508;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #1c1c2a;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #28283a;
+        }
 
         .grid-bg {
             background-image:
@@ -117,13 +171,22 @@
             box-shadow: 0 8px 30px -8px rgba(124, 58, 237, 0.4);
             border: 1px solid rgba(139, 92, 246, 0.3);
         }
+
         .btn-primary:hover {
             background: #8b5cf6;
             box-shadow: 0 12px 40px -8px rgba(139, 92, 246, 0.5);
             transform: translateY(-2px);
         }
-        .btn-primary:active { transform: scale(0.97); }
-        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        .btn-primary:active {
+            transform: scale(0.97);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
 
         .btn-edit {
             transition: all 0.3s ease;
@@ -131,6 +194,7 @@
             border: 1px solid rgba(139, 92, 246, 0.15);
             color: #a78bfa;
         }
+
         .btn-edit:hover {
             background: rgba(139, 92, 246, 0.15);
             border-color: rgba(139, 92, 246, 0.3);
@@ -138,282 +202,428 @@
         }
 
         .nav-link {
-            color: #9ca3af; font-size: 14px; font-weight: 500;
-            padding: 8px 16px; border-radius: 10px;
-            transition: all 0.25s ease; text-decoration: none;
-            display: flex; align-items: center; gap: 8px;
-            border: 1px solid transparent; background: transparent;
+            color: #9ca3af;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 10px;
+            transition: all 0.25s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid transparent;
+            background: transparent;
         }
-        .nav-link:hover { color: #fff; background: rgba(255,255,255,0.04); }
-        .nav-link.active { color: #c4b5fd; background: rgba(139,92,246,0.08); border-color: rgba(139,92,246,0.2); }
-        .nav-link i { font-size: 16px; }
+
+        .nav-link:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .nav-link.active {
+            color: #c4b5fd;
+            background: rgba(139, 92, 246, 0.08);
+            border-color: rgba(139, 92, 246, 0.2);
+        }
+
+        .nav-link i {
+            font-size: 16px;
+        }
 
         .dropdown-trigger {
-            display: flex; align-items: center; gap: 10px; padding: 4px 12px 4px 6px;
-            background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 50px; cursor: pointer; transition: all 0.3s ease; color: #d1d5db;
-            font-weight: 500; font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 4px 12px 4px 6px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #d1d5db;
+            font-weight: 500;
+            font-size: 14px;
         }
-        .dropdown-trigger:hover { background: rgba(255, 255, 255, 0.05); border-color: rgba(139, 92, 246, 0.4); }
+
+        .dropdown-trigger:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(139, 92, 246, 0.4);
+        }
+
         .avatar {
-            width: 34px; height: 34px; border-radius: 50%;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
             background: linear-gradient(135deg, #7c3aed, #a78bfa);
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 800; font-size: 14px; color: #fff; flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+            color: #fff;
+            flex-shrink: 0;
         }
+
         .dropdown-menu {
-            position: absolute; top: calc(100% + 10px); left: 0; min-width: 260px;
-            background: #14141f; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px;
-            padding: 10px; box-shadow: 0 25px 50px -15px rgba(0, 0, 0, 0.6);
-            opacity: 0; visibility: hidden; transform: translateY(-8px) scale(0.97);
-            transition: all 0.25s cubic-bezier(0.23, 1, 0.32, 1); z-index: 100;
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 0;
+            min-width: 260px;
+            background: #14141f;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 10px;
+            box-shadow: 0 25px 50px -15px rgba(0, 0, 0, 0.6);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-8px) scale(0.97);
+            transition: all 0.25s cubic-bezier(0.23, 1, 0.32, 1);
+            z-index: 100;
         }
-        .dropdown-menu.active { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
+
+        .dropdown-menu.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
         .dropdown-item {
-            display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 10px;
-            color: #9ca3af; font-size: 14px; font-weight: 500; transition: all 0.2s ease;
-            cursor: pointer; text-decoration: none; background: none; border: none; width: 100%; text-align: right;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            color: #9ca3af;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            text-decoration: none;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: right;
         }
-        .dropdown-item:hover { background: rgba(139, 92, 246, 0.08); color: #c4b5fd; }
-        .dropdown-item i { font-size: 17px; width: 20px; text-align: center; }
-        .dropdown-item.danger:hover { background: rgba(220, 38, 38, 0.12); color: #f87171; }
-        .dropdown-divider { height: 1px; background: rgba(255, 255, 255, 0.05); margin: 6px 8px; }
+
+        .dropdown-item:hover {
+            background: rgba(139, 92, 246, 0.08);
+            color: #c4b5fd;
+        }
+
+        .dropdown-item i {
+            font-size: 17px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .dropdown-item.danger:hover {
+            background: rgba(220, 38, 38, 0.12);
+            color: #f87171;
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.05);
+            margin: 6px 8px;
+        }
 
         .mega-menu {
-            position: fixed; top: 80px; right: 50%; transform: translateX(50%) translateY(-8px);
-            width: min(90%, 500px); background: #14141f; border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 20px; padding: 16px; box-shadow: 0 30px 60px rgba(0,0,0,0.6);
-            opacity: 0; visibility: hidden; transition: all 0.3s cubic-bezier(0.23,1,0.32,1); z-index: 200;
+            position: fixed;
+            top: 80px;
+            right: 50%;
+            transform: translateX(50%) translateY(-8px);
+            width: min(90%, 500px);
+            background: #14141f;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 16px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            z-index: 200;
         }
-        .mega-menu.active { opacity: 1; visibility: visible; transform: translateX(50%) translateY(0); }
-        .mega-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+
+        .mega-menu.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(50%) translateY(0);
+        }
+
+        .mega-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px;
+        }
+
         .mega-item {
-            display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 12px;
-            transition: all 0.2s ease; text-decoration: none; color: #9ca3af;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: #9ca3af;
         }
-        .mega-item:hover { background: rgba(139,92,246,0.06); color: #fff; }
-        .mega-item i { font-size: 20px; width: 24px; text-align: center; color: #a78bfa; }
-        .mega-item .mega-title { font-size: 14px; font-weight: 700; color: #e5e7eb; }
-        .mega-item .mega-desc { font-size: 11px; color: #6b7280; }
+
+        .mega-item:hover {
+            background: rgba(139, 92, 246, 0.06);
+            color: #fff;
+        }
+
+        .mega-item i {
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
+            color: #a78bfa;
+        }
+
+        .mega-item .mega-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #e5e7eb;
+        }
+
+        .mega-item .mega-desc {
+            font-size: 11px;
+            color: #6b7280;
+        }
 
         .sidebar {
-            position: fixed; top: 0; right: 0; bottom: 0; width: 85%; max-width: 320px;
-            background: #0c0c14; border-left: 1px solid rgba(255,255,255,0.06); z-index: 300;
-            padding: 20px; overflow-y: auto; transform: translateX(110%);
-            transition: transform 0.4s cubic-bezier(0.23,1,0.32,1);
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 85%;
+            max-width: 320px;
+            background: #0c0c14;
+            border-left: 1px solid rgba(255, 255, 255, 0.06);
+            z-index: 300;
+            padding: 20px;
+            overflow-y: auto;
+            transform: translateX(110%);
+            transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
         }
-        .sidebar.open { transform: translateX(0); }
+
+        .sidebar.open {
+            transform: translateX(0);
+        }
+
         .sidebar-overlay {
-            position: fixed; inset: 0; background: rgba(5,5,8,0.7); backdrop-filter: blur(4px);
-            z-index: 290; opacity: 0; visibility: hidden; transition: all 0.3s ease;
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 5, 8, 0.7);
+            backdrop-filter: blur(4px);
+            z-index: 290;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
         }
-        .sidebar-overlay.active { opacity: 1; visibility: visible; }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
 
         .sidebar-link {
-            display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 12px;
-            color: #9ca3af; font-size: 14px; font-weight: 500; transition: all 0.2s ease;
-            text-decoration: none; margin-bottom: 2px; border: 1px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 12px;
+            color: #9ca3af;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            margin-bottom: 2px;
+            border: 1px solid transparent;
         }
-        .sidebar-link i { font-size: 18px; width: 22px; text-align: center; }
-        .sidebar-link:hover { background: rgba(255,255,255,0.04); color: #fff; }
-        .sidebar-link.active { background: rgba(139,92,246,0.08); color: #c4b5fd; border-color: rgba(139,92,246,0.2); }
-        .sidebar-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 12px 0; }
+
+        .sidebar-link i {
+            font-size: 18px;
+            width: 22px;
+            text-align: center;
+        }
+
+        .sidebar-link:hover {
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+        }
+
+        .sidebar-link.active {
+            background: rgba(139, 92, 246, 0.08);
+            color: #c4b5fd;
+            border-color: rgba(139, 92, 246, 0.2);
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.06);
+            margin: 12px 0;
+        }
 
         .input-field {
-            width: 100%; padding: 12px 14px;
-            background: #0c0c14; border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 12px; color: #fff; font-size: 14px;
-            transition: all 0.3s ease; outline: none;
+            width: 100%;
+            padding: 12px 14px;
+            background: #0c0c14;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            outline: none;
         }
-        .input-field:focus { border-color: rgba(139,92,246,0.4); box-shadow: 0 0 0 3px rgba(139,92,246,0.05); }
-        .input-field::placeholder { color: #4a4a63; }
-        .input-field.error { border-color: rgba(239,68,68,0.4); box-shadow: 0 0 0 3px rgba(239,68,68,0.05); }
-        .input-field.success { border-color: rgba(16,185,129,0.4); box-shadow: 0 0 0 3px rgba(16,185,129,0.05); }
 
-        .error-text { font-size: 11px; color: #fca5a5; margin-top: 4px; display: none; }
-        .error-text.show { display: block; }
+        .input-field:focus {
+            border-color: rgba(139, 92, 246, 0.4);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.05);
+        }
 
-        .success-text { font-size: 11px; color: #6ee7b7; margin-top: 4px; display: none; }
-        .success-text.show { display: block; }
+        .input-field::placeholder {
+            color: #4a4a63;
+        }
+
+        .input-field.error {
+            border-color: rgba(239, 68, 68, 0.4);
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.05);
+        }
+
+        .input-field.success {
+            border-color: rgba(16, 185, 129, 0.4);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.05);
+        }
+
+        .error-text {
+            font-size: 11px;
+            color: #fca5a5;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .error-text.show {
+            display: block;
+        }
+
+        .success-text {
+            font-size: 11px;
+            color: #6ee7b7;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .success-text.show {
+            display: block;
+        }
 
         .modal-overlay {
-            position: fixed; inset: 0; background: rgba(5, 5, 8, 0.85);
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 400; opacity: 0; visibility: hidden; transition: all 0.3s ease;
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 5, 8, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 400;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
         }
-        .modal-overlay.active { opacity: 1; visibility: visible; }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
         .modal-dialog {
-            background: #14141f; border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 20px; padding: 28px; max-width: 440px; width: 90%;
+            background: #14141f;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 28px;
+            max-width: 440px;
+            width: 90%;
             box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
-            transform: scale(0.92) translateY(16px); transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-            max-height: 90vh; overflow-y: auto;
+            transform: scale(0.92) translateY(16px);
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-height: 90vh;
+            overflow-y: auto;
         }
-        .modal-overlay.active .modal-dialog { transform: scale(1) translateY(0); }
+
+        .modal-overlay.active .modal-dialog {
+            transform: scale(1) translateY(0);
+        }
 
         .toast {
-            position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-            background: rgba(20,20,31,0.95); backdrop-filter: blur(12px);
-            color: #fff; padding: 12px 24px; border-radius: 50px;
-            font-size: 13px; font-weight: 600; z-index: 500;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-            border: 1px solid rgba(139,92,246,0.3);
-            display: none; animation: toastIn 0.3s ease;
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(20, 20, 31, 0.95);
+            backdrop-filter: blur(12px);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 600;
+            z-index: 500;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            display: none;
+            animation: toastIn 0.3s ease;
         }
 
         .skeleton {
             background: linear-gradient(90deg, rgba(124, 58, 237, 0.1) 0%, rgba(139, 92, 246, 0.2) 50%, rgba(124, 58, 237, 0.1) 100%);
-            background-size: 200% 100%; animation: shimmer 1.8s infinite; border-radius: 6px;
+            background-size: 200% 100%;
+            animation: shimmer 1.8s infinite;
+            border-radius: 6px;
         }
 
         .info-row {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 14px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
         }
-        .info-row:last-child { border-bottom: none; }
-        .info-label { color: #6b7280; font-size: 14px; font-weight: 500; }
-        .info-value { color: #e5e7eb; font-size: 14px; font-weight: 600; direction: ltr; text-align: left; }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: #6b7280;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .info-value {
+            color: #e5e7eb;
+            font-size: 14px;
+            font-weight: 600;
+            direction: ltr;
+            text-align: left;
+        }
 
         @media (min-width: 769px) {
-            .mobile-only { display: none !important; }
+            .mobile-only {
+                display: none !important;
+            }
         }
+
         @media (max-width: 768px) {
-            .desktop-only { display: none !important; }
+            .desktop-only {
+                display: none !important;
+            }
         }
     </style>
 </head>
 <body class="antialiased bg-[#050508] grid-bg">
 
-    <!-- ========== SIDEBAR (Mobile) ========== -->
-    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
-    <div class="sidebar" id="sidebar">
-        <div class="flex items-center justify-between mb-6 pb-4 border-b border-white/5">
-            <a href="/dashboard" class="flex items-center gap-2.5 no-underline">
-                <div class="w-9 h-9 bg-gradient-to-br from-accent-700 to-accent-500 rounded-xl flex items-center justify-center text-white font-extrabold text-lg">ف</div>
-                <span class="font-extrabold text-xl text-white">فاکتوریتو</span>
-            </a>
-            <button onclick="closeSidebar()" class="btn-logout"><i class="bi bi-x-lg"></i></button>
-        </div>
-
-        <div class="space-y-1">
-            <div class="text-xs font-bold text-gray-500 px-3 mb-2">منوی اصلی</div>
-            <a href="/dashboard" class="sidebar-link"><i class="bi bi-speedometer2"></i> داشبورد</a>
-            <a href="/invoices" class="sidebar-link"><i class="bi bi-receipt"></i> فاکتورها</a>
-            <a href="/plans" class="sidebar-link"><i class="bi bi-collection"></i> پلن‌ها</a>
-            <a href="/profile" class="sidebar-link active"><i class="bi bi-person"></i> پروفایل</a>
-            <a href="/settings" class="sidebar-link"><i class="bi bi-gear"></i> تنظیمات</a>
-            <% if (user && user.role && ["admin", "moderator"].includes(user.role)) { %>
-            <a href="/admin/dashboard" class="sidebar-link"><i class="bi bi-shield"></i> مدیریت سیستم</a>
-            <% } %>
-        </div>
-
-        <div class="sidebar-divider"></div>
-        <button onclick="openLogoutModal(); closeSidebar();" class="sidebar-link w-full text-red-400 hover:text-red-300 hover:bg-red-500/5"><i class="bi bi-box-arrow-right"></i> خروج از حساب</button>
-    </div>
-
-    <!-- ========== HEADER ========== -->
-    <header class="fixed top-0 right-0 left-0 z-50 px-4 md:px-6 py-4">
-        <div class="max-w-5xl mx-auto glass-header rounded-2xl px-4 md:px-5 py-2.5 flex items-center justify-between">
-            <a href="/dashboard" class="flex items-center gap-2.5 no-underline shrink-0 group">
-                <div class="w-9 h-9 bg-gradient-to-br from-accent-700 to-accent-500 rounded-xl flex items-center justify-center text-white font-extrabold text-lg shadow-glow group-hover:shadow-glow-lg transition-all">ف</div>
-                <span class="font-extrabold text-xl md:text-2xl text-white tracking-tight group-hover:text-accent-400 transition-colors">فاکتوریتو</span>
-            </a>
-
-            <div class="hidden md:flex items-center gap-1 desktop-only">
-                <a href="/dashboard" class="nav-link"><i class="bi bi-speedometer2"></i> داشبورد</a>
-                <a href="/settings" class="nav-link"><i class="bi bi-gear"></i> تنظیمات</a>
-                <button onclick="toggleMegaMenu()" class="nav-link" id="megaMenuBtn">
-                    <i class="bi bi-grid-1x2"></i> بیشتر
-                    <i class="bi bi-chevron-down text-[10px]" id="megaCaret"></i>
-                </button>
-            </div>
-
-            <div class="flex items-center gap-2.5">
-                <div class="relative" id="userDropdown">
-                    <button class="dropdown-trigger" onclick="toggleDropdown(event)" aria-label="منوی کاربری">
-                        <div class="avatar">
-                            <%= (user && user.username) ? user.username.charAt(0).toUpperCase() : 'U' %>
-                        </div>
-                        <span class="hidden sm:block max-w-[90px] truncate text-sm">
-                            <%= (user && user.username) ? user.username : 'کاربر' %>
-                        </span>
-                        <span class="hidden sm:inline-flex items-center justify-center transition-transform duration-300 text-[10px] text-gray-500" id="dropdownCaret">
-                            <i class="bi bi-chevron-down"></i>
-                        </span>
-                    </button>
-
-                    <div class="dropdown-menu" id="dropdownMenu">
-                        <div class="px-4 py-3">
-                            <div class="flex items-center gap-3 mb-3">
-                                <div class="avatar w-11 h-11 text-base">
-                                    <%= (user && user.username) ? user.username.charAt(0).toUpperCase() : 'U' %>
-                                </div>
-                                <div>
-                                    <div class="text-sm font-bold text-white"><%= (user && user.username) ? user.username : 'کاربر' %></div>
-                                    <div class="text-xs text-gray-500"><%= (user && user.email) ? user.email : '' %></div>
-                                </div>
-                            </div>
-                            <% if (user && user.clubName) { %>
-                            <div class="bg-accent-700/10 border border-accent-700/20 rounded-lg px-3 py-2 text-xs text-accent-400 flex items-center gap-2">
-                                <i class="bi bi-building"></i> <%= user.clubName %>
-                            </div>
-                            <% } %>
-                        </div>
-                        <div class="dropdown-divider"></div>
-                        <a href="/dashboard" class="dropdown-item"><i class="bi bi-speedometer2"></i> داشبورد</a>
-                        <a href="/profile" class="dropdown-item"><i class="bi bi-person"></i> پروفایل</a>
-                        <a href="/invoices" class="dropdown-item"><i class="bi bi-receipt"></i> فاکتورهای من</a>
-                        <a href="/plans" class="dropdown-item"><i class="bi bi-collection"></i> پلن‌ها</a>
-                        <div class="dropdown-divider"></div>
-                        <button onclick="openLogoutModal(); closeDropdown();" class="dropdown-item w-full danger">
-                            <i class="bi bi-box-arrow-right"></i> خروج از حساب
-                        </button>
-                    </div>
-                </div>
-
-                <button onclick="openSidebar()" class="btn-logout mobile-only md:hidden" aria-label="منو"><i class="bi bi-list"></i></button>
-            </div>
-        </div>
-
-        <!-- MEGA MENU -->
-        <div class="max-w-5xl mx-auto relative">
-            <div class="mega-menu" id="megaMenu">
-                <div class="mega-grid">
-                    <a href="/invoices" class="mega-item">
-                        <i class="bi bi-receipt"></i>
-                        <div>
-                            <div class="mega-title">فاکتورها</div>
-                            <div class="mega-desc">مدیریت فاکتورهای صادر شده</div>
-                        </div>
-                    </a>
-                    <a href="/plans" class="mega-item">
-                        <i class="bi bi-collection"></i>
-                        <div>
-                            <div class="mega-title">پلن‌ها</div>
-                            <div class="mega-desc">مدیریت پلن‌های عضویت</div>
-                        </div>
-                    </a>
-                    <a href="/profile" class="mega-item">
-                        <i class="bi bi-person"></i>
-                        <div>
-                            <div class="mega-title">پروفایل</div>
-                            <div class="mega-desc">اطلاعات حساب کاربری</div>
-                        </div>
-                    </a>
-                    <% if (user && user.role && ["admin", "moderator"].includes(user.role)) { %>
-                    <a href="/admin/dashboard" class="mega-item">
-                        <i class="bi bi-shield"></i>
-                        <div>
-                            <div class="mega-title">مدیریت سیستم</div>
-                            <div class="mega-desc">کنترل کامل</div>
-                        </div>
-                    </a>
-                    <% } %>
-                </div>
-            </div>
-        </div>
-    </header>
+<%- include('partials/shell') %>
 
     <!-- ========== MAIN CONTENT ========== -->
     <main class="max-w-4xl mx-auto px-4 pt-28 pb-16 relative z-10">
@@ -578,7 +788,7 @@
                             <i class="bi bi-eye"></i>
                         </button>
                     </div>
-                    <p class="text-xs text-gray-500 mt-1">حداقل ۸ کاراکتر، شامل حروف بزرگ، کوچک، عدد و کاراکتر خاص</p>
+                    <p class="text-xs text-gray-500 mt-1">حداقل 8 کاراکتر، شامل حروف بزرگ، کوچک، عدد و کاراکتر خاص</p>
                     <p class="error-text" id="newPasswordError"></p>
                 </div>
 
@@ -644,6 +854,7 @@
                 if (icon) icon.style.transform = menu?.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
             }
         }
+
         function closeDropdown() {
             const menu = document.getElementById('dropdownMenu');
             const caret = document.getElementById('dropdownCaret');
@@ -663,6 +874,7 @@
             menu?.classList.toggle('active');
             if (caret) caret.style.transform = menu?.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
         }
+
         function closeMegaMenu() {
             const menu = document.getElementById('megaMenu');
             const caret = document.getElementById('megaCaret');
@@ -678,6 +890,7 @@
             document.getElementById('sidebarOverlay').classList.add('active');
             document.body.style.overflow = 'hidden';
         }
+
         function closeSidebar() {
             document.getElementById('sidebar').classList.remove('open');
             document.getElementById('sidebarOverlay').classList.remove('active');
@@ -687,6 +900,7 @@
         // ====== Modals ======
         window.openModal = (id) => document.getElementById(id)?.classList.add('active');
         window.closeModal = (id) => document.getElementById(id)?.classList.remove('active');
+
         function openLogoutModal() {
             closeDropdown();
             closeMegaMenu();
@@ -726,6 +940,7 @@
             const t = document.getElementById('toast');
             t.textContent = msg;
             t.style.display = 'block';
+
             if (type === 'error') {
                 t.style.background = 'rgba(127,29,29,0.95)';
                 t.style.borderColor = 'rgba(239,68,68,0.4)';
@@ -739,6 +954,7 @@
                 t.style.borderColor = 'rgba(139,92,246,0.4)';
                 t.style.color = '#fff';
             }
+
             clearTimeout(t._t);
             t._t = setTimeout(() => t.style.display = 'none', 3000);
         }
@@ -747,6 +963,7 @@
         function togglePasswordVisibility(id) {
             const input = document.getElementById(id);
             const icon = input.parentElement.querySelector('button i');
+
             if (input.type === 'password') {
                 input.type = 'text';
                 icon.className = 'bi bi-eye-slash';
@@ -763,11 +980,19 @@
             document.querySelectorAll('.input-field.success').forEach(el => el.classList.remove('success'));
             document.querySelectorAll('.success-text').forEach(el => el.classList.remove('show'));
         }
+
         function showError(fieldId, message) {
             const field = document.getElementById(fieldId);
             const errorEl = document.getElementById(fieldId + 'Error');
-            if (field) { field.classList.add('error'); field.classList.remove('success'); }
-            if (errorEl) { errorEl.textContent = message; errorEl.classList.add('show'); }
+
+            if (field) {
+                field.classList.add('error');
+                field.classList.remove('success');
+            }
+            if (errorEl) {
+                errorEl.textContent = message;
+                errorEl.classList.add('show');
+            }
         }
 
         // ====== Debounce Helper ======
@@ -805,7 +1030,6 @@
                 const errorEl = document.getElementById('editInputError');
 
                 if (result.success && result.available === false) {
-                    // مقدار تکراری است
                     input.classList.add('error');
                     input.classList.remove('success');
                     if (errorEl) {
@@ -814,7 +1038,6 @@
                         errorEl.classList.add('show');
                     }
                 } else if (result.success && result.available === true) {
-                    // در دسترس است
                     input.classList.remove('error');
                     input.classList.add('success');
                     if (errorEl) {
@@ -831,9 +1054,11 @@
 
         // ====== Open Edit Modal ======
         let editField = '';
+
         function openEditModal(field) {
             clearErrors();
             editField = field;
+
             const title = document.getElementById('editModalTitle');
             const label = document.getElementById('editLabel');
             const input = document.getElementById('editInput');
@@ -844,7 +1069,7 @@
                 label.textContent = 'نام کاربری جدید';
                 input.value = '<%= (user && user.username) ? user.username : "" %>';
                 input.placeholder = 'نام کاربری جدید را وارد کنید';
-                hint.textContent = 'حداقل ۳ و حداکثر ۳۰ کاراکتر';
+                hint.textContent = 'حداقل 3 و حداکثر 30 کاراکتر';
                 input.type = 'text';
             } else if (field === 'email') {
                 title.textContent = 'ویرایش ایمیل';
@@ -854,6 +1079,7 @@
                 hint.textContent = 'یک ایمیل معتبر وارد کنید';
                 input.type = 'email';
             }
+
             openModal('editModal');
         }
 
@@ -861,7 +1087,6 @@
         document.getElementById('editInput').addEventListener('input', function() {
             const value = this.value.trim();
 
-            // حذف خطاهای قبلی
             this.classList.remove('error', 'success');
             const errorEl = document.getElementById('editInputError');
             if (errorEl) {
@@ -869,7 +1094,6 @@
                 errorEl.classList.remove('show');
             }
 
-            // بررسی دسترسی با debounce
             if (editField === 'username' || editField === 'email') {
                 checkAvailability(editField, value);
             }
@@ -879,17 +1103,26 @@
         document.getElementById('editForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             clearErrors();
+
             const value = document.getElementById('editInput').value.trim();
             const btn = document.getElementById('editSubmitBtn');
             const originalHTML = btn.innerHTML;
             const input = document.getElementById('editInput');
 
+            const currentUsername = '<%= (user && user.username) ? user.username : "" %>'.trim();
+            const currentEmail = '<%= (user && user.email) ? user.email : "" %>'.trim();
+            const originalValue = editField === 'username' ? currentUsername : currentEmail;
+
+            if (value === originalValue) {
+                toast('تغییری اعمال نشده است', 'error');
+                return;
+            }
+
             let hasError = false;
 
-            // Client validation
             if (editField === 'username') {
                 if (!value || value.length < 3 || value.length > 30) {
-                    showError('editInput', 'نام کاربری باید بین ۳ تا ۳۰ کاراکتر باشد');
+                    showError('editInput', 'نام کاربری باید بین 3 تا 30 کاراکتر باشد');
                     hasError = true;
                 }
                 const usernameRegex = /^[a-zA-Z0-9_\u0600-\u06FF\s]{3,30}$/;
@@ -911,7 +1144,6 @@
 
             if (hasError) return;
 
-            // بررسی نهایی دسترسی قبل از ارسال
             try {
                 const params = new URLSearchParams();
                 if (editField === 'username') params.append('username', value);
@@ -1012,26 +1244,41 @@
         document.getElementById('passwordForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             clearErrors();
+
             const currentPassword = document.getElementById('currentPassword').value;
             const newPassword = document.getElementById('newPassword').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
 
             let hasError = false;
-            if (!currentPassword) { showError('currentPassword', 'رمز عبور فعلی را وارد کنید'); hasError = true; }
-            if (newPassword.length < 8) { showError('newPassword', 'رمز عبور جدید باید حداقل ۸ کاراکتر باشد'); hasError = true; }
+
+            if (!currentPassword) {
+                showError('currentPassword', 'رمز عبور فعلی را وارد کنید');
+                hasError = true;
+            }
+            if (newPassword.length < 8) {
+                showError('newPassword', 'رمز عبور جدید باید حداقل 8 کاراکتر باشد');
+                hasError = true;
+            }
+
             const hasUpperCase = /[A-Z]/.test(newPassword);
             const hasLowerCase = /[a-z]/.test(newPassword);
             const hasNumbers = /\d/.test(newPassword);
             const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(newPassword);
+
             if (!(hasUpperCase && hasLowerCase && hasNumbers && hasSpecialChar)) {
                 showError('newPassword', 'رمز عبور باید شامل حروف بزرگ، کوچک، عدد و کاراکتر خاص باشد');
                 hasError = true;
             }
-            if (newPassword !== confirmPassword) { showError('confirmPassword', 'رمز عبور با تکرار آن مطابقت ندارد'); hasError = true; }
+            if (newPassword !== confirmPassword) {
+                showError('confirmPassword', 'رمز عبور با تکرار آن مطابقت ندارد');
+                hasError = true;
+            }
+
             if (hasError) return;
 
             const btn = document.getElementById('passwordSubmitBtn');
             const originalHTML = btn.innerHTML;
+
             btn.disabled = true;
             btn.innerHTML = '<span style="width:20px;height:20px;border:2px solid rgba(255,255,255,0.2);border-top-color:#fff;border-radius:50%;animation:spin 0.6s linear infinite;display:inline-block;"></span> در حال تغییر...';
 
@@ -1050,7 +1297,11 @@
                 } else {
                     if (result.validationErrors) {
                         for (const [field, message] of Object.entries(result.validationErrors)) {
-                            const fieldMap = { 'currentPassword': 'currentPassword', 'newPassword': 'newPassword', 'confirmPassword': 'confirmPassword' };
+                            const fieldMap = {
+                                'currentPassword': 'currentPassword',
+                                'newPassword': 'newPassword',
+                                'confirmPassword': 'confirmPassword'
+                            };
                             showError(fieldMap[field] || field, message);
                         }
                     }
@@ -1059,6 +1310,7 @@
             } catch (err) {
                 toast('خطا در ارتباط با سرور', 'error');
             }
+
             btn.disabled = false;
             btn.innerHTML = originalHTML;
         });

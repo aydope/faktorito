@@ -1,0 +1,422 @@
+<% const isMember = user && user.role === 'member'; const isStaff = user && ['admin','moderator'].includes(user.role); const act = typeof active !== 'undefined' ? active : ''; %>
+
+<style>
+    /* ===== notifications ===== */
+    .bell-wrap {
+        position: relative;
+        display: inline-flex;
+    }
+    .bell-btn {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        border-radius: 12px;
+        cursor: pointer;
+        background: rgba(255, 255, 255, .04);
+        border: 1px solid rgba(255, 255, 255, .09);
+        color: #d1d5db;
+        font: inherit;
+        font-size: 17px;
+        line-height: 1;
+        transition: background .2s, border-color .2s, color .2s, transform .15s;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .bell-btn:hover {
+        background: rgba(255, 255, 255, .09);
+        border-color: rgba(255, 255, 255, .18);
+        color: #fff;
+    }
+    .bell-btn:active {
+        transform: scale(.94);
+    }
+    .bell-btn:focus-visible {
+        outline: 2px solid #a78bfa;
+        outline-offset: 2px;
+    }
+    .bell-btn i {
+        display: block;
+        line-height: 1;
+    }
+    .notif-badge {
+        position: absolute;
+        top: -5px;
+        left: -5px;
+        min-width: 18px;
+        height: 18px;
+        padding: 0 5px;
+        border-radius: 99px;
+        background: #ef4444;
+        color: #fff;
+        font-size: 10px;
+        font-weight: 800;
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 0 0 2px #0a0a12;
+        box-sizing: border-box;
+    }
+    .live-dot {
+        position: absolute;
+        bottom: 3px;
+        right: 3px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #6b7280;
+        box-shadow: 0 0 0 2px #0a0a12;
+        transition: background .3s;
+    }
+    .live-dot.on {
+        background: #34d399;
+        animation: livePulse 2.4s ease-out infinite;
+    }
+    @keyframes livePulse {
+        0% {
+            box-shadow: 0 0 0 2px #0a0a12, 0 0 0 2px rgba(52, 211, 153, .55);
+        }
+        70%, 100% {
+            box-shadow: 0 0 0 2px #0a0a12, 0 0 0 8px rgba(52, 211, 153, 0);
+        }
+    }
+    .notif-panel {
+        position: absolute;
+        top: calc(100% + 10px);
+        left: 0;
+        width: min(360px, calc(100vw - 24px));
+        background: #0c0c14;
+        border: 1px solid rgba(255, 255, 255, .08);
+        border-radius: 16px;
+        box-shadow: 0 24px 60px -12px rgba(0, 0, 0, .7);
+        z-index: 60;
+        overflow: hidden;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-6px);
+        transition: opacity .2s, transform .2s, visibility .2s;
+        text-align: right;
+    }
+    .notif-panel.active {
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+    }
+    .notif-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 16px;
+        font-size: 13px;
+        font-weight: 800;
+        color: #fff;
+        border-bottom: 1px solid rgba(255, 255, 255, .06);
+    }
+    .link-btn {
+        background: none;
+        border: none;
+        padding: 2px 0;
+        color: #a78bfa;
+        font: inherit;
+        font-weight: 700;
+        font-size: 11px;
+        cursor: pointer;
+    }
+    .link-btn:hover {
+        color: #c4b5fd;
+        text-decoration: underline;
+    }
+    .notif-list {
+        max-height: min(380px, 60vh);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
+    .notif-item {
+        position: relative;
+        display: flex;
+        align-items: flex-start;
+        gap: 11px;
+        padding: 12px 16px;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(255, 255, 255, .04);
+        transition: background .25s;
+    }
+    .notif-item:hover {
+        background: rgba(255, 255, 255, .04);
+    }
+    .notif-item > i {
+        flex: none;
+        width: 20px;
+        text-align: center;
+        color: #a78bfa;
+        font-size: 16px;
+        line-height: 1.4;
+    }
+    .notif-main {
+        min-width: 0;
+        flex: 1;
+    }
+    .notif-item.unread {
+        background: rgba(124, 58, 237, .10);
+    }
+    .notif-dot {
+        flex: none;
+        width: 8px;
+        height: 8px;
+        margin-top: 7px;
+        border-radius: 50%;
+        background: transparent;
+        transition: background .4s, transform .4s;
+    }
+    .notif-item.unread .notif-dot {
+        background: #a78bfa;
+        box-shadow: 0 0 8px rgba(167, 139, 250, .8);
+    }
+    .notif-title {
+        font-size: 12.5px;
+        font-weight: 700;
+        color: #f3f4f6;
+        line-height: 1.6;
+    }
+    .notif-body {
+        font-size: 11.5px;
+        color: #9ca3af;
+        line-height: 1.7;
+        word-break: break-word;
+    }
+    .notif-time {
+        font-size: 11px;
+        color: #8b95a7;
+        margin-top: 2px;
+    }
+    .notif-empty {
+        padding: 28px 16px;
+        text-align: center;
+        font-size: 12px;
+        color: #8b95a7;
+    }
+    @media (max-width: 480px) {
+        .bell-wrap {
+            position: static;
+        }
+        .notif-panel {
+            position: fixed;
+            top: 68px;
+            left: 12px;
+            right: 12px;
+            width: auto;
+        }
+    }
+    .live-flash {
+        animation: liveFlash 1s ease-out;
+    }
+    @keyframes liveFlash {
+        0% {
+            box-shadow: 0 0 0 0 rgba(167, 139, 250, .55);
+        }
+        100% {
+            box-shadow: 0 0 0 14px rgba(167, 139, 250, 0);
+        }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .live-dot.on,
+        .live-flash {
+            animation: none;
+        }
+        .notif-panel,
+        .notif-dot {
+            transition: none;
+        }
+    }
+</style>
+
+<!-- ========== SIDEBAR (Mobile) ========== -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+<aside class="sidebar" id="sidebar" aria-label="منوی کناری">
+    <div class="flex items-center justify-between mb-6 pb-4 border-b border-white/5">
+        <a href="<%= isMember ? '/me' : '/dashboard' %>" class="flex items-center gap-2.5 no-underline">
+            <div class="w-9 h-9 bg-gradient-to-br from-accent-700 to-accent-500 rounded-xl flex items-center justify-center text-white font-extrabold text-lg">ف</div>
+            <span class="font-extrabold text-xl text-white">فاکتوریتو</span>
+        </a>
+        <button onclick="closeSidebar()" class="bell-btn" aria-label="بستن منو"><i class="bi bi-x-lg"></i></button>
+    </div>
+
+    <nav class="space-y-1" aria-label="منوی اصلی">
+        <div class="text-xs font-bold text-gray-500 px-3 mb-2" aria-hidden="true">منوی اصلی</div>
+        <% if (isMember) { %>
+        <a href="/me" class="sidebar-link<%= act === 'me' ? ' active' : '' %>"><i class="bi bi-house-heart"></i> پنل من</a>
+        <a href="/profile" class="sidebar-link"><i class="bi bi-person"></i> پروفایل</a>
+        <a href="/gym/create" class="sidebar-link"><i class="bi bi-building-add"></i> ساخت باشگاه</a>
+        <% } else { %>
+        <a href="/dashboard" class="sidebar-link<%= act === 'dashboard' ? ' active' : '' %>"><i class="bi bi-speedometer2"></i> داشبورد</a>
+        <a href="/invoices" class="sidebar-link"><i class="bi bi-receipt"></i> فاکتورها</a>
+        <a href="/members" class="sidebar-link<%= act === 'members' ? ' active' : '' %>"><i class="bi bi-people"></i> اعضا</a>
+        <a href="/plans" class="sidebar-link<%= act === 'plans' ? ' active' : '' %>"><i class="bi bi-collection"></i> پلن‌ها</a>
+        <a href="/auto-invoices" class="sidebar-link<%= act === 'auto' ? ' active' : '' %>"><i class="bi bi-arrow-repeat"></i> صدور خودکار</a>
+        <a href="/reports" class="sidebar-link<%= act === 'reports' ? ' active' : '' %>"><i class="bi bi-bar-chart-line"></i> گزارش فروش</a>
+        <a href="/announcements" class="sidebar-link<%= act === 'announcements' ? ' active' : '' %>"><i class="bi bi-megaphone"></i> اعلان‌ها</a>
+        <a href="/profile" class="sidebar-link"><i class="bi bi-person"></i> پروفایل</a>
+        <a href="/settings" class="sidebar-link"><i class="bi bi-gear"></i> تنظیمات و برندینگ</a>
+        <% } %>
+        <% if (isStaff) { %>
+        <a href="/admin/dashboard" class="sidebar-link"><i class="bi bi-shield"></i> مدیریت سیستم</a>
+        <% } %>
+    </nav>
+
+    <div class="sidebar-divider"></div>
+    <button onclick="openLogoutModal(); closeSidebar();" class="sidebar-link w-full text-red-400 hover:text-red-300 hover:bg-red-500/5"><i class="bi bi-box-arrow-right"></i> خروج از حساب</button>
+</aside>
+
+<!-- ========== HEADER ========== -->
+<header class="fixed top-0 right-0 left-0 z-50 px-4 md:px-6 py-4">
+    <div class="max-w-5xl mx-auto glass-header rounded-2xl px-4 md:px-5 py-2.5 flex items-center justify-between">
+        <a href="<%= isMember ? '/me' : '/dashboard' %>" class="flex items-center gap-2.5 no-underline shrink-0 group">
+            <div class="w-9 h-9 bg-gradient-to-br from-accent-700 to-accent-500 rounded-xl flex items-center justify-center text-white font-extrabold text-lg shadow-glow group-hover:shadow-glow-lg transition-all">ف</div>
+            <span class="font-extrabold text-xl md:text-2xl text-white tracking-tight group-hover:text-accent-400 transition-colors">فاکتوریتو</span>
+        </a>
+
+        <div class="hidden md:flex items-center gap-1 desktop-only">
+            <% if (isMember) { %>
+            <a href="/me" class="nav-link<%= act === 'me' ? ' active' : '' %>"><i class="bi bi-house-heart"></i> پنل من</a>
+            <% } else { %>
+            <a href="/dashboard" class="nav-link<%= act === 'dashboard' ? ' active' : '' %>"><i class="bi bi-speedometer2"></i> داشبورد</a>
+            <a href="/members" class="nav-link<%= act === 'members' ? ' active' : '' %>"><i class="bi bi-people"></i> اعضا</a>
+            <a href="/plans" class="nav-link<%= act === 'plans' ? ' active' : '' %>"><i class="bi bi-collection"></i> پلن‌ها</a>
+            <button onclick="toggleMegaMenu()" class="nav-link" id="megaMenuBtn">
+                <i class="bi bi-grid-1x2"></i> بیشتر
+                <i class="bi bi-chevron-down text-[10px]" id="megaCaret"></i>
+            </button>
+            <% } %>
+        </div>
+
+        <div class="flex items-center gap-2.5">
+
+            <div class="bell-wrap">
+                <button type="button" id="notifBtn" class="bell-btn" aria-label="اعلان‌ها">
+                    <i class="bi bi-bell"></i>
+                    <span id="notifBadge" class="notif-badge" style="display:none">0</span>
+                    <span id="liveDot" class="live-dot" title="در حال اتصال..."></span>
+                </button>
+                <div class="notif-panel" id="notifPanel">
+                    <div class="notif-head"><span>اعلان‌ها</span><button type="button" id="notifReadAll" class="link-btn">خواندن همه</button></div>
+                    <div id="notifList" class="notif-list"></div>
+                </div>
+            </div>
+
+            <div class="relative" id="userDropdown">
+                <button class="dropdown-trigger" onclick="toggleDropdown(event)" aria-label="منوی کاربری">
+                    <div class="avatar">
+                        <%= ((user && user.username) || 'U').charAt(0).toUpperCase() %>
+                    </div>
+                    <span class="hidden sm:block max-w-[90px] truncate text-sm">
+                        <%= (user && user.username) || 'کاربر' %>
+                    </span>
+                    <span class="hidden sm:inline-flex items-center justify-center transition-transform duration-300 text-[10px] text-gray-500" id="dropdownCaret">
+                        <i class="bi bi-chevron-down"></i>
+                    </span>
+                </button>
+
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <div class="px-4 py-3">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="avatar w-11 h-11 text-base">
+                                <%= ((user && user.username) || 'U').charAt(0).toUpperCase() %>
+                            </div>
+                            <div>
+                                <div class="text-sm font-bold text-white"><%= (user && user.username) || 'کاربر' %></div>
+                                <div class="text-xs text-gray-500"><%= user ? user.email : '' %></div>
+                            </div>
+                        </div>
+                        <% if (user && user.clubName) { %>
+                        <div class="bg-accent-700/10 border border-accent-700/20 rounded-lg px-3 py-2 text-xs text-accent-400 flex items-center gap-2">
+                            <i class="bi bi-building"></i> <%= user.clubName %>
+                        </div>
+                        <% } %>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <% if (isMember) { %>
+                    <a href="/me" class="dropdown-item"><i class="bi bi-house-heart"></i> پنل من</a>
+                    <a href="/profile" class="dropdown-item"><i class="bi bi-person"></i> پروفایل</a>
+                    <% } else { %>
+                    <a href="/dashboard" class="dropdown-item"><i class="bi bi-speedometer2"></i> داشبورد</a>
+                    <a href="/profile" class="dropdown-item"><i class="bi bi-person"></i> پروفایل</a>
+                    <a href="/invoices" class="dropdown-item"><i class="bi bi-receipt"></i> فاکتورهای من</a>
+                    <a href="/settings" class="dropdown-item"><i class="bi bi-gear"></i> تنظیمات و برندینگ</a>
+                    <% } %>
+                    <div class="dropdown-divider"></div>
+                    <button onclick="openLogoutModal(); closeDropdown();" class="dropdown-item w-full danger">
+                        <i class="bi bi-box-arrow-right"></i> خروج از حساب
+                    </button>
+                </div>
+            </div>
+
+            <button onclick="openSidebar()" class="bell-btn mobile-only md:hidden" aria-label="منو"><i class="bi bi-list"></i></button>
+        </div>
+    </div>
+
+    <!-- MEGA MENU -->
+    <div class="max-w-5xl mx-auto relative">
+        <div class="mega-menu" id="megaMenu">
+            <div class="mega-grid">
+                <a href="/invoices" class="mega-item">
+                    <i class="bi bi-receipt"></i>
+                    <div>
+                        <div class="mega-title">فاکتورها</div>
+                        <div class="mega-desc">مدیریت فاکتورهای صادر شده</div>
+                    </div>
+                </a>
+                <a href="/auto-invoices" class="mega-item">
+                    <i class="bi bi-arrow-repeat"></i>
+                    <div>
+                        <div class="mega-title">صدور خودکار</div>
+                        <div class="mega-desc">فاکتور ماهانه و دوره‌ای</div>
+                    </div>
+                </a>
+                <a href="/reports" class="mega-item">
+                    <i class="bi bi-bar-chart-line"></i>
+                    <div>
+                        <div class="mega-title">گزارش فروش</div>
+                        <div class="mega-desc">درآمد روزانه و آمار</div>
+                    </div>
+                </a>
+                <a href="/announcements" class="mega-item">
+                    <i class="bi bi-megaphone"></i>
+                    <div>
+                        <div class="mega-title">اعلان‌ها</div>
+                        <div class="mega-desc">پیام 24 ساعته برای اعضا</div>
+                    </div>
+                </a>
+                <a href="/profile" class="mega-item">
+                    <i class="bi bi-person"></i>
+                    <div>
+                        <div class="mega-title">پروفایل</div>
+                        <div class="mega-desc">اطلاعات حساب کاربری</div>
+                    </div>
+                </a>
+                <a href="/settings" class="mega-item">
+                    <i class="bi bi-gear"></i>
+                    <div>
+                        <div class="mega-title">تنظیمات</div>
+                        <div class="mega-desc">ترجیحات و امنیت</div>
+                    </div>
+                </a>
+                <% if (isStaff) { %>
+                <a href="/admin/dashboard" class="mega-item">
+                    <i class="bi bi-shield"></i>
+                    <div>
+                        <div class="mega-title">مدیریت سیستم</div>
+                        <div class="mega-desc">کنترل کامل</div>
+                    </div>
+                </a>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</header>
+
+<script src="/socket.io/socket.io.js" defer></script>
+<script src="/realtime.js" defer></script>

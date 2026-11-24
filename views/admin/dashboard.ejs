@@ -3,11 +3,15 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#050508" />
+    <meta name="color-scheme" content="dark" />
     <title>پنل ادمین | فاکتوریتو</title>
 
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/sahel-font@v3.4.0/dist/font-face.css" />
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
 
     <script>
         tailwind.config = {
@@ -31,7 +35,7 @@
                             500: '#8b5cf6',
                             600: '#7c3aed',
                             700: '#6d28d9',
-                        }
+                        },
                     },
                 }
             }
@@ -39,225 +43,162 @@
     </script>
 
     <style>
-        * {
+        :root {
+            --color-bg: #050508;
+            --color-surface: #0f0f1a;
+            --color-surface-elevated: #14141f;
+            --color-border: rgba(167, 139, 250, 0.06);
+            --color-border-strong: rgba(167, 139, 250, 0.15);
+            --color-accent: #a78bfa;
+            --color-accent-strong: #7c3aed;
+            --color-accent-soft: rgba(167, 139, 250, 0.06);
+            --color-accent-soft-hover: rgba(167, 139, 250, 0.12);
+            --color-text-primary: #e5e7eb;
+            --color-text-secondary: #9ca3af;
+            --color-text-muted: #6b7280;
+            --color-danger: #f87171;
+            --color-danger-soft: rgba(239, 68, 68, 0.06);
+            --color-danger-soft-hover: rgba(239, 68, 68, 0.12);
+            --color-success: #34d399;
+            --color-success-soft: rgba(52, 211, 153, 0.08);
+            --color-warning: #fbbf24;
+            --color-warning-soft: rgba(251, 191, 36, 0.08);
+
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+
+            --duration-fast: 150ms;
+            --duration-base: 250ms;
+            --duration-slow: 400ms;
+            --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        *,
+        *::before,
+        *::after {
             font-family: 'Sahel', 'Vazirmatn', system-ui, sans-serif !important;
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        html {
+            -webkit-text-size-adjust: 100%;
+            text-rendering: optimizeLegibility;
+        }
+
         body {
-            background: #050508;
-            color: #d1d5db;
+            background: var(--color-bg);
+            color: var(--color-text-secondary);
             line-height: 1.8;
             font-weight: 400;
             overflow-x: hidden;
-            scroll-behavior: smooth;
+            min-height: 100dvh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: #050508; }
-        ::-webkit-scrollbar-thumb { background: #1a1a2e; border-radius: 10px; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--color-bg); }
+        ::-webkit-scrollbar-thumb { background: var(--color-surface); border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #2a2a46; }
 
-        .glass-nav {
-            background: rgba(10, 10, 18, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(167, 139, 250, 0.08);
-            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.6);
-        }
-        .glass-nav.admin {
-            border-color: rgba(167, 139, 250, 0.15);
+        :focus-visible {
+            outline: 2px solid var(--color-accent);
+            outline-offset: 2px;
+            border-radius: 6px;
         }
 
-        .stat-card {
-            background: rgba(15, 15, 26, 0.6);
-            border: 1px solid rgba(167, 139, 250, 0.06);
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-            position: relative;
-            overflow: hidden;
-            border-radius: 16px;
-            padding: 20px;
-        }
-        .stat-card::before {
-            content: '';
+        /* ===== Skip Link ===== */
+        .skip-link {
             position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(167, 139, 250, 0.03) 0%, transparent 70%);
-            pointer-events: none;
-        }
-        .stat-card:hover {
-            border-color: rgba(167, 139, 250, 0.15);
-            transform: translateY(-3px);
-            box-shadow: 0 12px 40px -12px rgba(124, 58, 237, 0.15);
-        }
-
-        .section-icon {
-            width: 42px;
-            height: 42px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            background: rgba(167, 139, 250, 0.06);
-            color: #a78bfa;
-            transition: all 0.3s ease;
-        }
-        .stat-card:hover .section-icon {
-            background: rgba(167, 139, 250, 0.12);
-            transform: scale(1.05);
-        }
-
-        .nav-link {
-            color: #9ca3af;
-            font-size: 13px;
-            font-weight: 600;
-            padding: 8px 16px;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            position: relative;
-        }
-        .nav-link::before {
-            content: '';
-            position: absolute;
-            right: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 2px;
-            height: 0;
-            background: #a78bfa;
-            border-radius: 2px;
-            transition: all 0.3s ease;
-        }
-        .nav-link:hover {
-            color: #e5e7eb;
-            background: rgba(167, 139, 250, 0.04);
-        }
-        .nav-link.active {
-            color: #a78bfa;
-            background: rgba(167, 139, 250, 0.06);
-        }
-        .nav-link.active::before {
-            height: 24px;
-        }
-
-        .btn-logout {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            background: rgba(239, 68, 68, 0.06);
-            border: 1px solid rgba(239, 68, 68, 0.1);
-            border-radius: 10px;
-            color: #f87171;
-            font-size: 13px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            text-decoration: none;
-        }
-        .btn-logout:hover {
-            background: rgba(239, 68, 68, 0.12);
-            border-color: rgba(239, 68, 68, 0.2);
-            color: #fca5a5;
-        }
-
-        .activity-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 0;
-            border-bottom: 1px solid rgba(167, 139, 250, 0.04);
-            transition: all 0.2s ease;
-        }
-        .activity-item:last-child {
-            border-bottom: none;
-        }
-        .activity-item:hover {
-            background: rgba(167, 139, 250, 0.02);
-            margin: 0 -12px;
-            padding-left: 12px;
-            padding-right: 12px;
-            border-radius: 8px;
-        }
-
-        .activity-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 14px;
+            top: -100px;
+            right: 16px;
+            background: var(--color-accent-strong);
             color: #fff;
-            flex-shrink: 0;
-        }
-
-        .badge-purple {
-            background: rgba(167, 139, 250, 0.08);
-            color: #a78bfa;
-            padding: 2px 10px;
-            border-radius: 20px;
-            font-size: 10px;
+            padding: 12px 20px;
+            border-radius: var(--radius-md);
+            z-index: 9999;
+            text-decoration: none;
             font-weight: 700;
+            transition: top var(--duration-fast) ease;
         }
 
-        .badge-status {
-            padding: 2px 10px;
-            border-radius: 20px;
-            font-size: 9px;
-            font-weight: 700;
-        }
-        .badge-status.paid {
-            background: rgba(52, 211, 153, 0.08);
-            color: #34d399;
-        }
-        .badge-status.pending {
-            background: rgba(251, 191, 36, 0.08);
-            color: #fbbf24;
+        .skip-link:focus {
+            top: 16px;
+            outline: 2px solid var(--color-accent);
+            outline-offset: 2px;
         }
 
+        /* ===== Sidebar Overlay ===== */
         .sidebar-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(5, 5, 8, 0.7);
-            backdrop-filter: blur(8px);
-            z-index: 60;
+            background: rgba(5, 5, 8, 0.6);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 90;
             opacity: 0;
             visibility: hidden;
-            transition: all 0.3s ease;
-        }
-        .sidebar-overlay.active {
-            opacity: 1;
-            visibility: visible;
+            pointer-events: none;
+            transition: opacity var(--duration-slow) var(--ease-out),
+                        visibility var(--duration-slow) var(--ease-out);
         }
 
+        .sidebar-overlay--active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        /* ===== Floating Sidebar ===== */
         .sidebar {
             position: fixed;
-            top: 0;
-            right: -100%;
+            top: 16px;
+            right: 16px;
+            bottom: 16px;
             width: 280px;
-            height: 100vh;
-            background: rgba(10, 10, 18, 0.95);
+            max-width: calc(100vw - 32px);
+            background: rgba(10, 10, 18, 0.98);
             backdrop-filter: blur(20px);
-            border-left: 1px solid rgba(167, 139, 250, 0.06);
-            z-index: 70;
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(167, 139, 250, 0.15);
+            border-radius: 24px;
+            box-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.85);
+            z-index: 110;
             padding: 20px;
-            transition: right 0.4s cubic-bezier(0.23, 1, 0.32, 1);
             overflow-y: auto;
+            transform: translateX(calc(100% + 32px));
+            visibility: hidden;
+            pointer-events: none;
+            transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1),
+                        visibility 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
+
+        .sidebar::-webkit-scrollbar {
+            display: none;
+            width: 0;
+        }
+
         .sidebar.open {
-            right: 0;
+            transform: translateX(0);
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        @media (max-width: 480px) {
+            .sidebar {
+                top: 12px;
+                right: 12px;
+                bottom: 12px;
+                width: calc(100vw - 24px);
+                max-width: 280px;
+            }
         }
 
         .sidebar-header {
@@ -275,6 +216,7 @@
             gap: 10px;
             text-decoration: none;
         }
+
         .sidebar-logo .logo-box {
             width: 36px;
             height: 36px;
@@ -288,6 +230,7 @@
             font-size: 16px;
             box-shadow: 0 4px 16px rgba(124, 58, 237, 0.3);
         }
+
         .sidebar-logo span {
             font-weight: 800;
             font-size: 18px;
@@ -307,7 +250,9 @@
             justify-content: center;
             transition: all 0.2s ease;
             font-size: 18px;
+            flex-shrink: 0;
         }
+
         .sidebar-close:hover {
             background: rgba(255, 255, 255, 0.06);
             color: #fff;
@@ -324,21 +269,30 @@
             font-weight: 500;
             transition: all 0.2s ease;
             text-decoration: none;
+            min-height: 44px;
+            width: 100%;
+            text-align: right;
+            font-family: inherit;
         }
+
         .sidebar-link:hover {
             background: rgba(167, 139, 250, 0.06);
             color: #c4b5fd;
         }
+
         .sidebar-link.active {
             background: rgba(167, 139, 250, 0.08);
             color: #a78bfa;
         }
+
         .sidebar-link i {
             font-size: 18px;
             width: 22px;
             text-align: center;
             color: #6b7280;
+            flex-shrink: 0;
         }
+
         .sidebar-link.active i {
             color: #a78bfa;
         }
@@ -349,331 +303,1008 @@
             margin: 8px 12px;
         }
 
-        .menu-btn {
-            display: none;
+        /* ===== Navbar ===== */
+        .nav {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+            z-index: 30;
+            padding: 12px;
+        }
+
+        .nav__container {
+            max-width: 72rem;
+            margin: 0 auto;
+            background: rgba(10, 10, 18, 0.9);
+            border: 1px solid var(--color-border-strong);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.6);
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        @media (min-width: 769px) {
+            .nav { padding: 20px 24px; }
+            .nav__container {
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                padding: 12px 24px;
+            }
+        }
+
+        .nav__brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            flex-shrink: 0;
+            min-width: 0;
+        }
+
+        .nav__logo {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--color-accent-strong), var(--color-accent));
+            border-radius: 10px;
+            display: flex;
             align-items: center;
             justify-content: center;
-            width: 38px;
-            height: 38px;
+            color: #fff;
+            font-weight: 800;
+            font-size: 14px;
+            box-shadow: 0 4px 16px rgba(124, 58, 237, 0.3);
+            flex-shrink: 0;
+            transition: transform var(--duration-base) var(--ease-out);
+        }
+
+        .nav__brand:hover .nav__logo {
+            transform: scale(1.05);
+        }
+
+        @media (min-width: 769px) {
+            .nav__logo {
+                width: 36px;
+                height: 36px;
+                font-size: 16px;
+            }
+        }
+
+        .nav__title {
+            font-weight: 800;
+            font-size: 14px;
+            color: #fff;
+            letter-spacing: -0.02em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        @media (min-width: 769px) {
+            .nav__title {
+                font-size: 18px;
+            }
+        }
+
+        .nav__mobile-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        @media (min-width: 769px) {
+            .nav__mobile-actions {
+                display: none;
+            }
+        }
+
+        .nav__icon-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 12px;
-            color: #d1d5db;
+            border-radius: 10px;
+            color: var(--color-text-primary);
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: background-color var(--duration-base) ease,
+                        color var(--duration-base) ease;
+            font-size: 18px;
+            font-family: inherit;
         }
-        .menu-btn:hover {
+
+        .nav__icon-btn:hover {
             background: rgba(255, 255, 255, 0.06);
         }
 
-        .card-footer-link {
-            display: block;
-            text-align: center;
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 1px solid rgba(167, 139, 250, 0.06);
-            font-size: 12px;
-            font-weight: 600;
-            color: #a78bfa;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-        .card-footer-link:hover {
-            color: #c4b5fd;
-        }
-        .card-footer-link i {
-            margin-right: 4px;
+        .nav__icon-btn--danger {
+            color: var(--color-danger);
+            background: var(--color-danger-soft);
+            border-color: rgba(239, 68, 68, 0.1);
         }
 
-        .modal-overlay {
+        .nav__icon-btn--danger:hover {
+            background: var(--color-danger-soft-hover);
+            color: #fca5a5;
+        }
+
+        .nav__links {
+            display: none;
+            align-items: center;
+            gap: 4px;
+        }
+
+        @media (min-width: 769px) {
+            .nav__links {
+                display: flex;
+            }
+        }
+
+        .nav__link {
+            color: var(--color-text-secondary);
+            font-size: 13px;
+            font-weight: 600;
+            padding: 10px 16px;
+            border-radius: 10px;
+            transition: color var(--duration-base) ease,
+                        background-color var(--duration-base) ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            min-height: 40px;
+        }
+
+        .nav__link::before {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 2px;
+            height: 0;
+            background: var(--color-accent);
+            border-radius: 2px;
+            transition: height var(--duration-base) ease;
+        }
+
+        .nav__link:hover {
+            color: var(--color-text-primary);
+            background: var(--color-accent-soft);
+        }
+
+        .nav__link--active {
+            color: var(--color-accent);
+            background: var(--color-accent-soft);
+        }
+
+        .nav__link--active::before {
+            height: 24px;
+        }
+
+        .nav__divider {
+            width: 1px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.05);
+            margin: 0 8px;
+        }
+
+        .nav__logout {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: var(--color-danger-soft);
+            border: 1px solid rgba(239, 68, 68, 0.1);
+            border-radius: 10px;
+            color: var(--color-danger);
+            font-size: 13px;
+            font-weight: 600;
+            transition: background-color var(--duration-base) ease,
+                        border-color var(--duration-base) ease,
+                        color var(--duration-base) ease;
+            cursor: pointer;
+            min-height: 40px;
+            font-family: inherit;
+        }
+
+        .nav__logout:hover {
+            background: var(--color-danger-soft-hover);
+            border-color: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+        }
+
+        /* ===== Main ===== */
+        .main {
+            max-width: 72rem;
+            margin: 0 auto;
+            padding: 76px 12px 48px;
+        }
+
+        @media (min-width: 769px) {
+            .main {
+                padding: 112px 16px 64px;
+            }
+        }
+
+        .main__header {
+            margin-bottom: 24px;
+        }
+
+        @media (min-width: 769px) {
+            .main__header {
+                margin-bottom: 48px;
+            }
+        }
+
+        .main__title {
+            font-size: 22px;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        @media (min-width: 769px) {
+            .main__title {
+                font-size: 30px;
+            }
+        }
+
+        @media (min-width: 1025px) {
+            .main__title {
+                font-size: 36px;
+            }
+        }
+
+        .main__title-accent {
+            background: linear-gradient(90deg, var(--color-accent), var(--color-accent-strong));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .main__title-role {
+            font-size: 14px;
+            color: var(--color-text-secondary);
+            font-weight: 400;
+        }
+
+        @media (min-width: 769px) {
+            .main__title-role {
+                font-size: 18px;
+            }
+        }
+
+        .main__subtitle {
+            font-size: 12px;
+            color: var(--color-text-muted);
+        }
+
+        @media (min-width: 769px) {
+            .main__subtitle {
+                font-size: 14px;
+            }
+        }
+
+        /* ===== Stats ===== */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        @media (min-width: 769px) {
+            .stats {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 20px;
+                margin-bottom: 48px;
+            }
+        }
+
+        .stat-card {
+            background: rgba(15, 15, 26, 0.6);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: 14px;
+            position: relative;
+            overflow: hidden;
+            contain: layout style;
+            transition: transform var(--duration-slow) var(--ease-out),
+                        border-color var(--duration-slow) var(--ease-out),
+                        box-shadow var(--duration-slow) var(--ease-out);
+        }
+
+        @media (min-width: 769px) {
+            .stat-card {
+                padding: 24px;
+            }
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(167, 139, 250, 0.03) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .stat-card:hover {
+            border-color: var(--color-border-strong);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px -12px rgba(124, 58, 237, 0.15);
+        }
+
+        .stat-card__head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        @media (min-width: 769px) {
+            .stat-card__head {
+                margin-bottom: 16px;
+            }
+        }
+
+        .stat-card__icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            background: var(--color-accent-soft);
+            color: var(--color-accent);
+            transition: background-color var(--duration-base) ease,
+                        transform var(--duration-base) ease;
+            flex-shrink: 0;
+        }
+
+        @media (min-width: 769px) {
+            .stat-card__icon {
+                width: 42px;
+                height: 42px;
+                font-size: 18px;
+                border-radius: 12px;
+            }
+        }
+
+        .stat-card:hover .stat-card__icon {
+            background: var(--color-accent-soft-hover);
+            transform: scale(1.05);
+        }
+
+        .stat-card__value {
+            font-size: 18px;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 2px;
+            font-variant-numeric: tabular-nums;
+            line-height: 1.2;
+        }
+
+        @media (min-width: 769px) {
+            .stat-card__value {
+                font-size: 26px;
+            }
+        }
+
+        @media (min-width: 1025px) {
+            .stat-card__value {
+                font-size: 30px;
+            }
+        }
+
+        .stat-card__label {
+            font-size: 10px;
+            color: var(--color-text-muted);
+        }
+
+        @media (min-width: 769px) {
+            .stat-card__label {
+                font-size: 12px;
+            }
+        }
+
+        /* ===== Badges ===== */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            line-height: 1.4;
+            white-space: nowrap;
+        }
+
+        .badge--accent {
+            background: var(--color-accent-soft);
+            color: var(--color-accent);
+        }
+
+        .badge--paid {
+            background: var(--color-success-soft);
+            color: var(--color-success);
+        }
+
+        .badge--pending {
+            background: var(--color-warning-soft);
+            color: var(--color-warning);
+        }
+
+        /* ===== Cards ===== */
+        .cards {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        @media (min-width: 769px) {
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 24px;
+            }
+        }
+
+        .card {
+            background: rgba(15, 15, 26, 0.4);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            contain: layout style;
+        }
+
+        @media (min-width: 769px) {
+            .card {
+                padding: 24px;
+            }
+        }
+
+        .card__head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+            gap: 10px;
+        }
+
+        @media (min-width: 769px) {
+            .card__head {
+                margin-bottom: 20px;
+            }
+        }
+
+        .card__head-inner {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .card__icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            background: var(--color-accent-soft);
+            color: var(--color-accent);
+            flex-shrink: 0;
+        }
+
+        @media (min-width: 769px) {
+            .card__icon {
+                width: 42px;
+                height: 42px;
+                font-size: 18px;
+                border-radius: 12px;
+            }
+        }
+
+        .card__title {
+            font-size: 13px;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.3;
+        }
+
+        @media (min-width: 769px) {
+            .card__title {
+                font-size: 16px;
+            }
+        }
+
+        .card__subtitle {
+            font-size: 10px;
+            color: var(--color-text-muted);
+        }
+
+        @media (min-width: 769px) {
+            .card__subtitle {
+                font-size: 12px;
+            }
+        }
+
+        .card__body {
+            flex: 1;
+        }
+
+        .card__footer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--color-border);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--color-accent);
+            text-decoration: none;
+            transition: color var(--duration-fast) ease;
+            min-height: 44px;
+        }
+
+        @media (min-width: 769px) {
+            .card__footer {
+                margin-top: 16px;
+                padding-top: 16px;
+            }
+        }
+
+        .card__footer:hover {
+            color: #c4b5fd;
+        }
+
+        .card__footer-icon {
+            transition: transform var(--duration-fast) ease;
+        }
+
+        .card__footer:hover .card__footer-icon {
+            transform: translateX(-3px);
+        }
+
+        /* ===== Activity ===== */
+        .activity {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .activity__item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 6px;
+            border-bottom: 1px solid rgba(167, 139, 250, 0.04);
+            border-radius: 8px;
+            transition: background-color var(--duration-fast) ease;
+            content-visibility: auto;
+            contain-intrinsic-size: auto 60px;
+        }
+
+        .activity__item:last-child {
+            border-bottom: none;
+        }
+
+        .activity__item:hover {
+            background: rgba(167, 139, 250, 0.03);
+        }
+
+        .activity__avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 13px;
+            color: #fff;
+            flex-shrink: 0;
+            background: linear-gradient(135deg, var(--color-accent-strong), var(--color-accent));
+            contain: layout style;
+        }
+
+        @media (min-width: 769px) {
+            .activity__avatar {
+                width: 40px;
+                height: 40px;
+                font-size: 14px;
+            }
+        }
+
+        .activity__avatar--success {
+            background: linear-gradient(135deg, #059669, #34d399);
+        }
+
+        .activity__body {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .activity__title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #fff;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        @media (min-width: 769px) {
+            .activity__title {
+                font-size: 14px;
+            }
+        }
+
+        .activity__meta {
+            font-size: 10px;
+            color: var(--color-text-muted);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        @media (min-width: 769px) {
+            .activity__meta {
+                font-size: 11px;
+            }
+        }
+
+        .activity__time {
+            font-size: 10px;
+            color: var(--color-text-muted);
+            flex-shrink: 0;
+            font-variant-numeric: tabular-nums;
+        }
+
+        @media (min-width: 769px) {
+            .activity__time {
+                font-size: 11px;
+            }
+        }
+
+        /* ===== Empty State ===== */
+        .empty-state {
+            text-align: center;
+            padding: 32px 16px;
+            color: var(--color-text-muted);
+        }
+
+        .empty-state__icon {
+            font-size: 32px;
+            opacity: 0.5;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .empty-state__text {
+            font-size: 12px;
+        }
+
+        /* ===== Skeleton ===== */
+        .skeleton {
+            background: linear-gradient(
+                90deg,
+                rgba(167, 139, 250, 0.04) 0%,
+                rgba(167, 139, 250, 0.10) 50%,
+                rgba(167, 139, 250, 0.04) 100%
+            );
+            background-size: 200% 100%;
+            border-radius: 6px;
+            display: inline-block;
+            animation: skeleton-shimmer 1.6s ease-in-out infinite;
+        }
+
+        @keyframes skeleton-shimmer {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        .skeleton--value {
+            height: 22px;
+            width: 70%;
+            margin-bottom: 6px;
+        }
+
+        .skeleton--label {
+            height: 10px;
+            width: 50%;
+        }
+
+        .skeleton--title {
+            height: 14px;
+            width: 60%;
+        }
+
+        .skeleton--subtitle {
+            height: 10px;
+            width: 40%;
+        }
+
+        .skeleton--avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            flex-shrink: 0;
+        }
+
+        @media (min-width: 769px) {
+            .skeleton--value {
+                height: 28px;
+            }
+
+            .skeleton--avatar {
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+        [data-loading="true"] .js-content {
+            display: none;
+        }
+
+        [data-loading="false"] .js-content {
+            display: block;
+        }
+
+        [data-loading="true"] .js-skeleton {
+            display: block;
+        }
+
+        [data-loading="false"] .js-skeleton {
+            display: none;
+        }
+
+        .activity__skeleton-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 6px;
+            border-bottom: 1px solid rgba(167, 139, 250, 0.04);
+        }
+
+        .activity__skeleton-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity__skeleton-body {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        /* ===== Modal ===== */
+        .modal {
             position: fixed;
             inset: 0;
             background: rgba(5, 5, 8, 0.85);
-            backdrop-filter: blur(10px);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 200;
             opacity: 0;
             visibility: hidden;
-            transition: all 0.3s ease;
+            pointer-events: none;
+            transition: opacity var(--duration-base) ease,
+                        visibility var(--duration-base) ease;
+            padding: 16px;
         }
-        .modal-overlay.active {
+
+        .modal--active {
             opacity: 1;
             visibility: visible;
-        }
-
-        .modal-dialog {
-            background: #14141f;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 20px;
-            padding: 28px;
-            max-width: 420px;
-            width: 90%;
-            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
-            transform: scale(0.92) translateY(16px);
-            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .modal-overlay.active .modal-dialog {
-            transform: scale(1) translateY(0);
-        }
-
-        @media (max-width: 480px) {
-            .glass-nav .font-extrabold.text-xl {
-                font-size: 14px !important;
-            }
-            .glass-nav .w-9.h-9 {
-                width: 28px !important;
-                height: 28px !important;
-                font-size: 12px !important;
-            }
-            .glass-nav .gap-1.5 {
-                gap: 4px !important;
-            }
-            .glass-nav .px-3 {
-                padding-left: 10px !important;
-                padding-right: 10px !important;
-            }
-            .glass-nav .py-2 {
-                padding-top: 6px !important;
-                padding-bottom: 6px !important;
-            }
-
-            main {
-                padding-top: 80px !important;
-                padding-left: 12px !important;
-                padding-right: 12px !important;
-            }
-
-            .stat-card {
-                padding: 14px !important;
-            }
-            .stat-card .text-2xl {
-                font-size: 18px !important;
-            }
-            .stat-card .text-xl {
-                font-size: 16px !important;
-            }
-            .section-icon {
-                width: 32px !important;
-                height: 32px !important;
-                font-size: 14px !important;
-            }
-            .grid.grid-cols-2 {
-                gap: 8px !important;
-            }
-
-            .sidebar {
-                width: 260px !important;
-                padding: 16px !important;
-            }
-            .sidebar-link {
-                font-size: 13px !important;
-                padding: 8px 12px !important;
-            }
-
-            .nav-link {
-                font-size: 11px !important;
-                padding: 6px 12px !important;
-            }
-            .nav-link i {
-                font-size: 14px !important;
-            }
-            .btn-logout {
-                font-size: 11px !important;
-                padding: 6px 12px !important;
-            }
-            .btn-logout i {
-                font-size: 14px !important;
-            }
-
-            .activity-item {
-                padding: 10px 0 !important;
-                gap: 10px !important;
-            }
-            .activity-avatar {
-                width: 32px !important;
-                height: 32px !important;
-                font-size: 11px !important;
-            }
-            .activity-item .text-sm {
-                font-size: 12px !important;
-            }
-            .activity-item .text-xs {
-                font-size: 9px !important;
-            }
-
-            .card {
-                padding: 14px !important;
-                border-radius: 14px !important;
-            }
-            .card .text-sm {
-                font-size: 13px !important;
-            }
-            .card .text-xs {
-                font-size: 9px !important;
-            }
-
-            .badge-purple {
-                font-size: 9px !important;
-                padding: 1px 8px !important;
-            }
-            .badge-status {
-                font-size: 8px !important;
-                padding: 1px 8px !important;
-            }
-
-            .card-footer-link {
-                font-size: 11px !important;
-                margin-top: 12px !important;
-                padding-top: 12px !important;
-            }
-
-            .modal-dialog {
-                padding: 20px !important;
-                border-radius: 16px !important;
-            }
-            .modal-dialog .flex.gap-3.justify-center {
-                flex-direction: column-reverse !important;
-                gap: 8px !important;
-            }
-            .modal-dialog .flex.gap-3.justify-center button {
-                width: 100% !important;
-                justify-content: center !important;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none !important;
-            }
-            .menu-btn {
-                display: flex !important;
-            }
-
-            .glass-nav {
-                padding: 8px 12px !important;
-                border-radius: 16px !important;
-            }
-            .glass-nav .font-extrabold.text-xl {
-                font-size: 16px !important;
-            }
-            .glass-nav .w-9.h-9 {
-                width: 32px !important;
-                height: 32px !important;
-                font-size: 14px !important;
-            }
-
-            main {
-                padding-top: 90px !important;
-                padding-left: 14px !important;
-                padding-right: 14px !important;
-            }
-
-            .stat-card {
-                padding: 16px !important;
-            }
-            .stat-card .text-2xl {
-                font-size: 20px !important;
-            }
-            .section-icon {
-                width: 36px !important;
-                height: 36px !important;
-                font-size: 16px !important;
-            }
-            .grid.grid-cols-2 {
-                gap: 10px !important;
-            }
-            .card {
-                padding: 18px !important;
-                border-radius: 16px !important;
-            }
-            .grid.md\:grid-cols-2 {
-                gap: 16px !important;
-            }
-
-            .sidebar {
-                width: 280px !important;
-            }
-
-            .activity-avatar {
-                width: 36px !important;
-                height: 36px !important;
-                font-size: 13px !important;
-            }
-
-            .card-footer-link {
-                font-size: 12px !important;
-                padding-top: 14px !important;
-            }
-
-            .modal-dialog {
-                padding: 20px !important;
-                border-radius: 16px !important;
-            }
-            .modal-dialog .flex.gap-3.justify-center {
-                flex-direction: column-reverse !important;
-                gap: 8px !important;
-            }
-            .modal-dialog .flex.gap-3.justify-center button {
-                width: 100% !important;
-                justify-content: center !important;
-            }
+            pointer-events: auto;
         }
 
         @media (min-width: 769px) {
-            .sidebar-overlay,
-            .sidebar,
-            .menu-btn {
-                display: none !important;
-            }
-
-            .card-footer-link {
-                margin-top: 20px !important;
-                padding-top: 16px !important;
+            .modal {
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
             }
         }
 
-        @media (min-width: 769px) and (max-width: 1024px) {
+        .modal__dialog {
+            background: var(--color-surface-elevated);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: var(--radius-xl);
+            padding: 28px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
+            transform: scale(0.92) translateY(16px);
+            transition: transform 0.35s var(--ease-spring);
+            text-align: center;
+        }
+
+        .modal--active .modal__dialog {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal__icon {
+            width: 64px;
+            height: 64px;
+            background: rgba(239, 68, 68, 0.1);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: #f87171;
+            font-size: 24px;
+        }
+
+        .modal__title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .modal__desc {
+            font-size: 14px;
+            color: var(--color-text-secondary);
+            margin-bottom: 24px;
+        }
+
+        .modal__actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .modal__btn {
+            min-height: 44px;
+            padding: 10px 24px;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: background-color var(--duration-fast) ease,
+                        border-color var(--duration-fast) ease;
+            font-family: inherit;
+        }
+
+        .modal__btn--secondary {
+            color: var(--color-text-primary);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal__btn--secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .modal__btn--danger {
+            color: #fff;
+            background: #dc2626;
+        }
+
+        .modal__btn--danger:hover {
+            background: #ef4444;
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 480px) {
+            .main {
+                padding: 70px 10px 24px;
+            }
+
             .stat-card {
-                padding: 18px !important;
+                padding: 12px;
             }
-            .stat-card .text-2xl {
-                font-size: 22px !important;
+
+            .stat-card__value {
+                font-size: 17px;
             }
-            .grid.grid-cols-2 {
-                gap: 14px !important;
+
+            .stat-card__icon {
+                width: 30px;
+                height: 30px;
+                font-size: 13px;
+            }
+
+            .card {
+                padding: 12px;
+            }
+
+            .modal__dialog {
+                padding: 20px;
+            }
+
+            .modal__actions {
+                flex-direction: column-reverse;
+            }
+
+            .modal__actions .modal__btn {
+                width: 100%;
             }
         }
 
-        @media (min-width: 1025px) {
-            .stat-card {
-                padding: 24px !important;
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
             }
-            .stat-card .text-2xl {
-                font-size: 28px !important;
+
+            .stat-card:hover {
+                transform: none;
             }
-            .grid.grid-cols-2 {
-                gap: 20px !important;
+
+            .skeleton {
+                animation: none;
+                background: rgba(167, 139, 250, 0.06);
+            }
+
+            .sidebar {
+                transition: none;
             }
         }
     </style>
 </head>
-<body class="antialiased bg-[#050508]">
+<body>
 
-    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+    <a href="#main-content" class="skip-link">پرش به محتوای اصلی</a>
 
-    <div class="sidebar" id="sidebar">
+    <!-- ===== Sidebar Overlay ===== -->
+    <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
+    <!-- ===== Sidebar ===== -->
+    <div class="sidebar" id="sidebar" aria-label="منوی ناوبری موبایل" aria-hidden="true">
         <div class="sidebar-header">
             <a href="/admin/dashboard" class="sidebar-logo">
-                <div class="logo-box">ا</div>
+                <div class="logo-box" aria-hidden="true">ا</div>
                 <span>پنل ادمین</span>
             </a>
-            <button class="sidebar-close" onclick="closeSidebar()">&times;</button>
+            <button type="button" class="sidebar-close" onclick="closeSidebar()" aria-label="بستن منو">
+                <i class="bi bi-x-lg" aria-hidden="true"></i>
+            </button>
         </div>
 
         <div class="space-y-1">
-            <a href="/admin/dashboard" class="sidebar-link active">
+            <a href="/admin/dashboard" class="sidebar-link active" aria-current="page">
                 <i class="bi bi-speedometer2"></i> داشبورد
             </a>
             <a href="/admin/users" class="sidebar-link">
@@ -685,6 +1316,12 @@
             <a href="/admin/plans" class="sidebar-link">
                 <i class="bi bi-collection"></i> پلن‌ها
             </a>
+
+            <% if (user && (user.role === 'admin' || user.role === 'moderator')) { %>
+            <a href="/admin/deletion-requests" class="sidebar-link">
+                <i class="bi bi-trash3"></i> درخواست‌های حذف
+            </a>
+            <% } %>
         </div>
 
         <div class="sidebar-divider"></div>
@@ -692,267 +1329,444 @@
         <a href="/dashboard" class="sidebar-link">
             <i class="bi bi-globe"></i> داشبورد کاربر
         </a>
-        <button onclick="openLogoutModal()" class="sidebar-link" style="color: #f87171; width: 100%; text-align: right; border: none; background: transparent; cursor: pointer;">
+        <button type="button" onclick="openLogoutModal()" class="sidebar-link" style="color: #f87171; width: 100%; text-align: right; border: none; background: transparent; cursor: pointer;">
             <i class="bi bi-box-arrow-right" style="color: #f87171;"></i> خروج
         </button>
     </div>
 
-    <nav class="fixed top-0 right-0 left-0 z-50 px-3 md:px-6 py-3 md:py-5">
-        <div class="max-w-6xl mx-auto glass-nav admin rounded-2xl px-3 md:px-6 py-2 md:py-3 flex items-center justify-between">
-            <div class="flex items-center gap-2 md:gap-3">
-                <button class="menu-btn" onclick="openSidebar()">
-                    <i class="bi bi-list text-xl"></i>
+    <!-- ===== Navbar ===== -->
+    <header class="nav" role="banner">
+        <div class="nav__container">
+            <a href="/admin/dashboard" class="nav__brand">
+                <div class="nav__logo" aria-hidden="true">ا</div>
+                <span class="nav__title">پنل ادمین</span>
+            </a>
+
+            <div class="nav__mobile-actions">
+                <button type="button" class="nav__icon-btn nav__icon-btn--danger" onclick="openLogoutModal()" aria-label="خروج از حساب کاربری">
+                    <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
                 </button>
-                <a href="/admin/dashboard" class="flex items-center gap-2 md:gap-2.5 no-underline shrink-0 group">
-                    <div class="w-8 h-8 md:w-9 md:h-9 bg-gradient-to-br from-accent-600 to-accent-400 rounded-lg flex items-center justify-center text-white font-extrabold text-sm md:text-lg transition-transform group-hover:scale-105 shadow-lg shadow-accent-600/30">
-                        ا
-                    </div>
-                    <span class="font-extrabold text-base md:text-xl lg:text-2xl text-white tracking-tight">پنل ادمین</span>
-                </a>
-            </div>
-
-            <div class="nav-links flex items-center gap-1 md:gap-1.5">
-                <a href="/admin/dashboard" class="nav-link active">
-                    <i class="bi bi-speedometer2"></i> <span class="hidden sm:inline">داشبورد</span>
-                </a>
-                <a href="/admin/users" class="nav-link">
-                    <i class="bi bi-people"></i> <span class="hidden sm:inline">کاربران</span>
-                </a>
-                <a href="/admin/invoices" class="nav-link">
-                    <i class="bi bi-receipt"></i> <span class="hidden sm:inline">فاکتورها</span>
-                </a>
-                <a href="/admin/plans" class="nav-link hidden lg:inline-flex">
-                    <i class="bi bi-collection"></i> پلن‌ها
-                </a>
-
-                <div class="w-px h-6 bg-white/5 mx-1 md:mx-2 hidden lg:block"></div>
-
-                <a href="/dashboard" class="nav-link hidden md:inline-flex">
-                    <i class="bi bi-globe"></i> <span class="hidden lg:inline">داشبورد کاربر</span>
-                </a>
-                <button onclick="openLogoutModal()" class="btn-logout">
-                    <i class="bi bi-box-arrow-right"></i>
-                    <span class="hidden sm:inline">خروج</span>
+                <button type="button" class="nav__icon-btn" onclick="openSidebar()" aria-label="باز کردن منو" aria-expanded="false" aria-controls="sidebar" id="menuBtn">
+                    <i class="bi bi-list" aria-hidden="true"></i>
                 </button>
             </div>
+
+            <nav class="nav__links" aria-label="ناوبری اصلی">
+                <a href="/admin/dashboard" class="nav__link nav__link--active" aria-current="page">
+                    <i class="bi bi-speedometer2" aria-hidden="true"></i> داشبورد
+                </a>
+                <a href="/admin/users" class="nav__link">
+                    <i class="bi bi-people" aria-hidden="true"></i> کاربران
+                </a>
+                <a href="/admin/invoices" class="nav__link">
+                    <i class="bi bi-receipt" aria-hidden="true"></i> فاکتورها
+                </a>
+                <a href="/admin/plans" class="nav__link">
+                    <i class="bi bi-collection" aria-hidden="true"></i> پلن‌ها
+                </a>
+
+                <% if (user && (user.role === 'admin' || user.role === 'moderator')) { %>
+                <a href="/admin/deletion-requests" class="nav__link">
+                    <i class="bi bi-trash3" aria-hidden="true"></i> درخواست‌های حذف
+                </a>
+                <% } %>
+
+                <div class="nav__divider" role="separator"></div>
+
+                <a href="/dashboard" class="nav__link">
+                    <i class="bi bi-globe" aria-hidden="true"></i> داشبورد کاربر
+                </a>
+                <button type="button" onclick="openLogoutModal()" class="nav__logout" aria-label="خروج از حساب کاربری">
+                    <i class="bi bi-box-arrow-right" aria-hidden="true"></i> خروج
+                </button>
+            </nav>
         </div>
-    </nav>
+    </header>
 
-    <main class="max-w-6xl mx-auto px-3 md:px-4 pt-24 md:pt-28 pb-12 md:pb-16">
-
-        <div class="mb-8 md:mb-12">
-            <h1 class="text-2xl md:text-3xl lg:text-4xl font-black text-white mb-1 md:mb-2 flex items-center gap-3">
-                <span class="bg-gradient-to-r from-accent-400 to-accent-600 bg-clip-text text-transparent">داشبورد</span>
-                <span class="text-gray-400 text-base md:text-lg font-normal"><%= user.role === "admin" ? "ادمین" : user.role === "moderator" ? "مدیر ارشد" : "مشکوک میزنیا شیطون" %></span>
+    <!-- ===== Main ===== -->
+    <main id="main-content" class="main">
+        <header class="main__header">
+            <h1 class="main__title">
+                <span class="main__title-accent">داشبورد</span>
+                <span class="main__title-role">
+                    <%= user && user.role === "admin" ? "ادمین" : user && user.role === "moderator" ? "مدیر ارشد" : "کاربر" %>
+                </span>
             </h1>
-            <p class="text-gray-500 text-xs md:text-sm">نمای کلی سیستم و آمار</p>
-        </div>
+            <p class="main__subtitle">نمای کلی سیستم و آمار</p>
+        </header>
 
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5 mb-8 md:mb-12">
-            <div class="stat-card">
-                <div class="flex items-center justify-between mb-2 md:mb-4">
-                    <div class="section-icon">
-                        <i class="bi bi-people"></i>
+        <!-- Stats -->
+        <section aria-label="آمار کلی">
+            <div class="stats">
+                <div class="stat-card" data-loading="true">
+                    <div class="stat-card__head">
+                        <div class="stat-card__icon"><i class="bi bi-people" aria-hidden="true"></i></div>
+                        <span class="badge badge--accent">کل</span>
                     </div>
-                    <span class="badge-purple">کل</span>
-                </div>
-                <div class="text-xl md:text-2xl lg:text-3xl font-black text-white mb-0.5 md:mb-1">
-                    <%= totalUsers.toLocaleString("fa-IR-u-nu-latn") %>
-                </div>
-                <div class="text-[10px] md:text-xs text-gray-500">کاربر ثبت‌نام شده</div>
-            </div>
-
-            <div class="stat-card">
-                <div class="flex items-center justify-between mb-2 md:mb-4">
-                    <div class="section-icon">
-                        <i class="bi bi-receipt"></i>
-                    </div>
-                    <span class="badge-purple">کل</span>
-                </div>
-                <div class="text-xl md:text-2xl lg:text-3xl font-black text-white mb-0.5 md:mb-1">
-                    <%= totalInvoices.toLocaleString("fa-IR-u-nu-latn") %>
-                </div>
-                <div class="text-[10px] md:text-xs text-gray-500">فاکتور صادر شده</div>
-            </div>
-
-            <div class="stat-card">
-                <div class="flex items-center justify-between mb-2 md:mb-4">
-                    <div class="section-icon">
-                        <i class="bi bi-collection"></i>
-                    </div>
-                    <span class="badge-purple">فعال</span>
-                </div>
-                <div class="text-xl md:text-2xl lg:text-3xl font-black text-white mb-0.5 md:mb-1">
-                    <%= totalPlans.toLocaleString("fa-IR-u-nu-latn") %>
-                </div>
-                <div class="text-[10px] md:text-xs text-gray-500">پلن تعریف شده</div>
-            </div>
-
-            <div class="stat-card">
-                <div class="flex items-center justify-between mb-2 md:mb-4">
-                    <div class="section-icon">
-                        <i class="bi bi-cash-stack"></i>
-                    </div>
-                    <span class="badge-purple">تومان</span>
-                </div>
-                <div class="text-xl md:text-2xl lg:text-3xl font-black text-white mb-0.5 md:mb-1">
-                    <%= totalRevenue.toLocaleString("fa-IR-u-nu-latn") %>
-                </div>
-                <div class="text-[10px] md:text-xs text-gray-500">درآمد کل</div>
-            </div>
-        </div>
-
-        <div class="grid md:grid-cols-2 gap-4 md:gap-6">
-
-            <div class="card rounded-2xl p-4 md:p-6 flex flex-col">
-                <div class="flex items-center justify-between mb-4 md:mb-5">
-                    <div class="flex items-center gap-3">
-                        <div class="section-icon">
-                            <i class="bi bi-person-plus"></i>
+                    <div class="js-content">
+                        <div class="stat-card__value">
+                            <%= (typeof totalUsers !== 'undefined' ? totalUsers : 0).toLocaleString("fa-IR-u-nu-latn") %>
                         </div>
+                        <div class="stat-card__label">کاربر ثبت‌نام شده</div>
+                    </div>
+                    <div class="js-skeleton" aria-hidden="true">
+                        <div class="skeleton skeleton--value"></div>
+                        <div class="skeleton skeleton--label"></div>
+                    </div>
+                </div>
+
+                <div class="stat-card" data-loading="true">
+                    <div class="stat-card__head">
+                        <div class="stat-card__icon"><i class="bi bi-receipt" aria-hidden="true"></i></div>
+                        <span class="badge badge--accent">کل</span>
+                    </div>
+                    <div class="js-content">
+                        <div class="stat-card__value">
+                            <%= (typeof totalInvoices !== 'undefined' ? totalInvoices : 0).toLocaleString("fa-IR-u-nu-latn") %>
+                        </div>
+                        <div class="stat-card__label">فاکتور صادر شده</div>
+                    </div>
+                    <div class="js-skeleton" aria-hidden="true">
+                        <div class="skeleton skeleton--value"></div>
+                        <div class="skeleton skeleton--label"></div>
+                    </div>
+                </div>
+
+                <div class="stat-card" data-loading="true">
+                    <div class="stat-card__head">
+                        <div class="stat-card__icon"><i class="bi bi-collection" aria-hidden="true"></i></div>
+                        <span class="badge badge--accent">فعال</span>
+                    </div>
+                    <div class="js-content">
+                        <div class="stat-card__value">
+                            <%= (typeof totalPlans !== 'undefined' ? totalPlans : 0).toLocaleString("fa-IR-u-nu-latn") %>
+                        </div>
+                        <div class="stat-card__label">پلن تعریف شده</div>
+                    </div>
+                    <div class="js-skeleton" aria-hidden="true">
+                        <div class="skeleton skeleton--value"></div>
+                        <div class="skeleton skeleton--label"></div>
+                    </div>
+                </div>
+
+                <div class="stat-card" data-loading="true">
+                    <div class="stat-card__head">
+                        <div class="stat-card__icon"><i class="bi bi-cash-stack" aria-hidden="true"></i></div>
+                        <span class="badge badge--accent">تومان</span>
+                    </div>
+                    <div class="js-content">
+                        <div class="stat-card__value">
+                            <%= (typeof totalRevenue !== 'undefined' ? totalRevenue : 0).toLocaleString("fa-IR-u-nu-latn") %>
+                        </div>
+                        <div class="stat-card__label">درآمد کل</div>
+                    </div>
+                    <div class="js-skeleton" aria-hidden="true">
+                        <div class="skeleton skeleton--value"></div>
+                        <div class="skeleton skeleton--label"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="cards">
+            <!-- Recent Users -->
+            <section class="card" aria-labelledby="recent-users-title" data-loading="true">
+                <div class="card__head">
+                    <div class="card__head-inner">
+                        <div class="card__icon"><i class="bi bi-person-plus" aria-hidden="true"></i></div>
                         <div>
-                            <h2 class="text-sm md:text-base font-extrabold text-white">آخرین کاربران</h2>
-                            <p class="text-[10px] md:text-xs text-gray-500">کاربران جدید ثبت‌نام شده</p>
+                            <h2 id="recent-users-title" class="card__title">آخرین کاربران</h2>
+                            <p class="card__subtitle">کاربران جدید ثبت‌نام شده</p>
                         </div>
                     </div>
-                    <span class="badge-purple text-xs">
-                        <i class="bi bi-people"></i> <%= typeof recentUsers !== 'undefined' ? recentUsers.length : 0 %>
+                    <span class="badge badge--accent">
+                        <i class="bi bi-people" aria-hidden="true"></i>
+                        <span><%= typeof recentUsers !== 'undefined' ? recentUsers.length : 0 %></span>
                     </span>
                 </div>
 
-                <div class="flex-1">
-                    <% if (typeof recentUsers !== 'undefined' && recentUsers.length > 0) { %>
-                        <% recentUsers.forEach(function(u) { %>
-                        <div class="activity-item">
-                            <div class="activity-avatar" style="background: linear-gradient(135deg, #7c3aed, #a78bfa);">
-                                <%= u.username ? u.username.charAt(0).toUpperCase() : '?' %>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <div class="text-sm font-semibold text-white truncate"><%= u.username %></div>
-                                <div class="text-[10px] md:text-xs text-gray-500 truncate"><%= u.email %></div>
-                            </div>
-                            <span class="text-[10px] md:text-xs text-gray-500 flex-shrink-0">
-                                <%= u.createdAt ? new Date(u.createdAt).toLocaleDateString("fa-IR-u-nu-latn") : '' %>
-                            </span>
-                        </div>
-                        <% }); %>
-                    <% } else { %>
-                        <div class="text-center py-6 md:py-8 text-gray-500 text-xs md:text-sm">هنوز کاربری ثبت‌نام نکرده</div>
-                    <% } %>
-                </div>
-
-                <a href="/admin/users" class="card-footer-link">
-                    مشاهده همه کاربران <i class="bi bi-arrow-left"></i>
-                </a>
-            </div>
-
-            <div class="card rounded-2xl p-4 md:p-6 flex flex-col">
-                <div class="flex items-center justify-between mb-4 md:mb-5">
-                    <div class="flex items-center gap-3">
-                        <div class="section-icon">
-                            <i class="bi bi-receipt-cutoff"></i>
-                        </div>
-                        <div>
-                            <h2 class="text-sm md:text-base font-extrabold text-white">آخرین فاکتورها</h2>
-                            <p class="text-[10px] md:text-xs text-gray-500">فاکتورهای جدید صادر شده</p>
-                        </div>
-                    </div>
-                    <span class="badge-purple text-xs">
-                        <i class="bi bi-receipt"></i> <%= typeof recentInvoices !== 'undefined' ? recentInvoices.length : 0 %>
-                    </span>
-                </div>
-
-                <div class="flex-1">
-                    <% if (typeof recentInvoices !== 'undefined' && recentInvoices.length > 0) { %>
-                        <% recentInvoices.forEach(function(inv) { %>
-                        <div class="activity-item">
-                            <div class="activity-avatar" style="background: linear-gradient(135deg, #059669, #34d399);">
-                                <i class="bi bi-receipt text-sm"></i>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <div class="text-sm font-semibold text-white truncate"><%= inv.member?.name || 'بدون نام' %></div>
-                                <div class="text-[10px] md:text-xs text-gray-500 truncate">
-                                    <%= inv.user?.username || inv.user?.clubName || '—' %>
-                                    <span class="badge-status <%= inv.isPaid ? 'paid' : 'pending' %> mx-1">
-                                        <%= inv.isPaid ? 'پرداخت شده' : 'در انتظار' %>
-                                    </span>
+                <div class="card__body">
+                    <div class="js-content">
+                        <% if (typeof recentUsers !== 'undefined' && recentUsers.length > 0) { %>
+                        <div class="activity">
+                            <% recentUsers.forEach(function(u) { %>
+                            <div class="activity__item">
+                                <div class="activity__avatar" aria-hidden="true">
+                                    <%= u.username ? u.username.charAt(0).toUpperCase() : '?' %>
                                 </div>
+                                <div class="activity__body">
+                                    <div class="activity__title"><%= u.username %></div>
+                                    <div class="activity__meta"><%= u.email %></div>
+                                </div>
+                                <time class="activity__time">
+                                    <%= u.createdAt ? new Date(u.createdAt).toLocaleDateString("fa-IR-u-nu-latn") : '' %>
+                                </time>
                             </div>
-                            <span class="text-[10px] md:text-xs text-gray-500 flex-shrink-0">
-                                <%= inv.createdAt ? new Date(inv.createdAt).toLocaleDateString("fa-IR-u-nu-latn") : '' %>
-                            </span>
+                            <% }); %>
                         </div>
-                        <% }); %>
-                    <% } else { %>
-                        <div class="text-center py-6 md:py-8 text-gray-500 text-xs md:text-sm">هنوز فاکتوری صادر نشده</div>
-                    <% } %>
+                        <% } else { %>
+                        <div class="empty-state">
+                            <i class="bi bi-person-x empty-state__icon" aria-hidden="true"></i>
+                            <p class="empty-state__text">هنوز کاربری ثبت‌نام نکرده</p>
+                        </div>
+                        <% } %>
+                    </div>
+
+                    <div class="js-skeleton" aria-hidden="true">
+                        <div class="activity">
+                            <div class="activity__skeleton-item">
+                                <div class="skeleton skeleton--avatar"></div>
+                                <div class="activity__skeleton-body">
+                                    <div class="skeleton skeleton--title" style="width: 50%;"></div>
+                                    <div class="skeleton skeleton--subtitle" style="width: 70%;"></div>
+                                </div>
+                                <div class="skeleton" style="width: 50px; height: 10px;"></div>
+                            </div>
+                            <div class="activity__skeleton-item">
+                                <div class="skeleton skeleton--avatar"></div>
+                                <div class="activity__skeleton-body">
+                                    <div class="skeleton skeleton--title" style="width: 40%;"></div>
+                                    <div class="skeleton skeleton--subtitle" style="width: 60%;"></div>
+                                </div>
+                                <div class="skeleton" style="width: 50px; height: 10px;"></div>
+                            </div>
+                            <div class="activity__skeleton-item">
+                                <div class="skeleton skeleton--avatar"></div>
+                                <div class="activity__skeleton-body">
+                                    <div class="skeleton skeleton--title" style="width: 55%;"></div>
+                                    <div class="skeleton skeleton--subtitle" style="width: 65%;"></div>
+                                </div>
+                                <div class="skeleton" style="width: 50px; height: 10px;"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <a href="/admin/invoices" class="card-footer-link">
-                    مشاهده همه فاکتورها <i class="bi bi-arrow-left"></i>
+                <a href="/admin/users" class="card__footer">
+                    مشاهده همه کاربران
+                    <i class="bi bi-arrow-left card__footer-icon" aria-hidden="true"></i>
                 </a>
-            </div>
+            </section>
 
+            <!-- Recent Invoices -->
+            <section class="card" aria-labelledby="recent-invoices-title" data-loading="true">
+                <div class="card__head">
+                    <div class="card__head-inner">
+                        <div class="card__icon"><i class="bi bi-receipt-cutoff" aria-hidden="true"></i></div>
+                        <div>
+                            <h2 id="recent-invoices-title" class="card__title">آخرین فاکتورها</h2>
+                            <p class="card__subtitle">فاکتورهای جدید صادر شده</p>
+                        </div>
+                    </div>
+                    <span class="badge badge--accent">
+                        <i class="bi bi-receipt" aria-hidden="true"></i>
+                        <span><%= typeof recentInvoices !== 'undefined' ? recentInvoices.length : 0 %></span>
+                    </span>
+                </div>
+
+                <div class="card__body">
+                    <div class="js-content">
+                        <% if (typeof recentInvoices !== 'undefined' && recentInvoices.length > 0) { %>
+                        <div class="activity">
+                            <% recentInvoices.forEach(function(inv) { %>
+                            <div class="activity__item">
+                                <div class="activity__avatar activity__avatar--success" aria-hidden="true">
+                                    <i class="bi bi-receipt" style="font-size: 13px;"></i>
+                                </div>
+                                <div class="activity__body">
+                                    <div class="activity__title"><%= inv.member?.name || 'بدون نام' %></div>
+                                    <div class="activity__meta">
+                                        <span><%= inv.user?.username || inv.user?.clubName || '-' %></span>
+                                        <span class="badge <%= inv.isPaid ? 'badge--paid' : 'badge--pending' %>">
+                                            <%= inv.isPaid ? 'پرداخت شده' : 'در انتظار' %>
+                                        </span>
+                                    </div>
+                                </div>
+                                <time class="activity__time">
+                                    <%= inv.createdAt ? new Date(inv.createdAt).toLocaleDateString("fa-IR-u-nu-latn") : '' %>
+                                </time>
+                            </div>
+                            <% }); %>
+                        </div>
+                        <% } else { %>
+                        <div class="empty-state">
+                            <i class="bi bi-receipt empty-state__icon" aria-hidden="true"></i>
+                            <p class="empty-state__text">هنوز فاکتوری صادر نشده</p>
+                        </div>
+                        <% } %>
+                    </div>
+
+                    <div class="js-skeleton" aria-hidden="true">
+                        <div class="activity">
+                            <div class="activity__skeleton-item">
+                                <div class="skeleton skeleton--avatar"></div>
+                                <div class="activity__skeleton-body">
+                                    <div class="skeleton skeleton--title" style="width: 45%;"></div>
+                                    <div class="skeleton skeleton--subtitle" style="width: 65%;"></div>
+                                </div>
+                                <div class="skeleton" style="width: 50px; height: 10px;"></div>
+                            </div>
+                            <div class="activity__skeleton-item">
+                                <div class="skeleton skeleton--avatar"></div>
+                                <div class="activity__skeleton-body">
+                                    <div class="skeleton skeleton--title" style="width: 60%;"></div>
+                                    <div class="skeleton skeleton--subtitle" style="width: 55%;"></div>
+                                </div>
+                                <div class="skeleton" style="width: 50px; height: 10px;"></div>
+                            </div>
+                            <div class="activity__skeleton-item">
+                                <div class="skeleton skeleton--avatar"></div>
+                                <div class="activity__skeleton-body">
+                                    <div class="skeleton skeleton--title" style="width: 50%;"></div>
+                                    <div class="skeleton skeleton--subtitle" style="width: 70%;"></div>
+                                </div>
+                                <div class="skeleton" style="width: 50px; height: 10px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="/admin/invoices" class="card__footer">
+                    مشاهده همه فاکتورها
+                    <i class="bi bi-arrow-left card__footer-icon" aria-hidden="true"></i>
+                </a>
+            </section>
         </div>
     </main>
 
-    <div class="modal-overlay" id="logoutModal">
-        <div class="modal-dialog text-center">
-            <div class="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5">
-                <i class="bi bi-box-arrow-right text-red-400 text-2xl"></i>
+    <!-- ===== Logout Modal ===== -->
+    <div class="modal" id="logoutModal" role="dialog" aria-modal="true" aria-labelledby="logout-title" aria-hidden="true">
+        <div class="modal__dialog">
+            <div class="modal__icon" aria-hidden="true">
+                <i class="bi bi-box-arrow-right"></i>
             </div>
-            <h3 class="text-lg font-bold text-white mb-2">خروج از حساب</h3>
-            <p class="text-gray-400 text-sm mb-6">آیا مطمئن هستید که می‌خواهید خارج شوید؟</p>
-            <div class="flex gap-3 justify-center">
-                <button onclick="closeModal('logoutModal')" class="px-6 py-2.5 rounded-xl text-gray-300 font-semibold text-sm bg-white/5 border border-white/10 hover:bg-white/10 transition-all">
-                    انصراف
-                </button>
-                <a href="/auth/logout" class="px-6 py-2.5 rounded-xl text-white font-semibold text-sm bg-red-600 hover:bg-red-500 transition-all no-underline">
-                    خروج
-                </a>
+            <h2 id="logout-title" class="modal__title">خروج از حساب</h2>
+            <p class="modal__desc">آیا مطمئن هستید که می‌خواهید خارج شوید؟</p>
+            <div class="modal__actions">
+                <button type="button" onclick="closeModal('logoutModal')" class="modal__btn modal__btn--secondary">انصراف</button>
+                <a href="/auth/logout" class="modal__btn modal__btn--danger">خروج</a>
             </div>
         </div>
     </div>
 
     <script>
+        let lastFocusedElement = null;
+
+        // ===== Sidebar =====
         function openSidebar() {
-            document.getElementById('sidebar').classList.add('open');
-            document.getElementById('sidebarOverlay').classList.add('active');
+            lastFocusedElement = document.activeElement;
+            var sidebar = document.getElementById('sidebar');
+            var menuBtn = document.getElementById('menuBtn');
+            var overlay = document.getElementById('sidebarOverlay');
+
+            if (!sidebar) return;
+
+            sidebar.classList.add('open');
+            sidebar.setAttribute('aria-hidden', 'false');
+            sidebar.removeAttribute('inert');
+            if (overlay) {
+                overlay.classList.add('sidebar-overlay--active');
+                overlay.setAttribute('aria-hidden', 'false');
+            }
+            if (menuBtn) menuBtn.setAttribute('aria-expanded', 'true');
             document.body.style.overflow = 'hidden';
         }
 
         function closeSidebar() {
-            document.getElementById('sidebar').classList.remove('open');
-            document.getElementById('sidebarOverlay').classList.remove('active');
+            var sidebar = document.getElementById('sidebar');
+            var menuBtn = document.getElementById('menuBtn');
+            var overlay = document.getElementById('sidebarOverlay');
+
+            if (!sidebar) return;
+
+            sidebar.classList.remove('open');
+            sidebar.setAttribute('aria-hidden', 'true');
+            if (overlay) {
+                overlay.classList.remove('sidebar-overlay--active');
+                overlay.setAttribute('aria-hidden', 'true');
+            }
+            if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false');
             document.body.style.overflow = '';
+
+            if (lastFocusedElement && lastFocusedElement.focus) {
+                lastFocusedElement.focus();
+            }
         }
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeSidebar();
-                closeModal('logoutModal');
-            }
-        });
-
+        // ===== Modal =====
         function openModal(id) {
-            document.getElementById(id).classList.add('active');
+            lastFocusedElement = document.activeElement;
+            var modal = document.getElementById(id);
+
+            if (!modal) return;
+
+            modal.classList.add('modal--active');
+            modal.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+
+            requestAnimationFrame(function() {
+                var first = modal.querySelector('button, a');
+                if (first) first.focus();
+            });
         }
 
         function closeModal(id) {
-            document.getElementById(id).classList.remove('active');
+            var modal = document.getElementById(id);
+
+            if (!modal) return;
+
+            modal.classList.remove('modal--active');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+
+            if (lastFocusedElement && lastFocusedElement.focus) {
+                lastFocusedElement.focus();
+            }
         }
 
         function openLogoutModal() {
+            closeSidebar();
             openModal('logoutModal');
         }
 
-        document.querySelectorAll('.modal-overlay').forEach(overlay => {
-            overlay.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    this.classList.remove('active');
+        // ===== DOM Ready =====
+        document.addEventListener('DOMContentLoaded', function() {
+            var sidebar = document.getElementById('sidebar');
+            var overlay = document.getElementById('sidebarOverlay');
+
+            // Overlay click -> close sidebar
+            if (overlay) {
+                overlay.addEventListener('click', closeSidebar);
+            }
+
+            // Sidebar link click -> close sidebar
+            if (sidebar) {
+                sidebar.addEventListener('click', function(e) {
+                    if (e.target.closest('a[href]')) {
+                        closeSidebar();
+                    }
+                });
+            }
+
+            // Close on Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeSidebar();
+                    closeModal('logoutModal');
                 }
             });
+
+            // Reveal content after load
+            setTimeout(function() {
+                document.querySelectorAll('[data-loading="true"]').forEach(function(el) {
+                    if (el.querySelector('.js-content')) {
+                        el.setAttribute('data-loading', 'false');
+                    }
+                });
+            }, 400);
         });
     </script>
+    <script src="/socket.io/socket.io.js" defer></script>
+    <script src="/realtime.js" defer></script>
 </body>
 </html>

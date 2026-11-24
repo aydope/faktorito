@@ -1,0 +1,338 @@
+<%- include('partials/head') %>
+<body class="antialiased bg-[#050508] grid-bg">
+<%- include('partials/shell') %>
+
+<%
+    const fa = (n) => Number(n).toLocaleString('fa-IR-u-nu-latn');
+
+    const dayLabel = (iso) => new Date(iso + 'T12:00:00').toLocaleDateString('fa-IR-u-nu-latn', {
+        month: 'short',
+        day: 'numeric'
+    });
+
+    const maxBreak = Math.max(1, ...report.breakdown.map(function (b) {
+        return b.revenue;
+    }));
+
+    const KPIS = [
+        ['امروز', fa(report.today.revenue) + ' تومان', fa(report.today.count) + ' فروش', 'bi-sun'],
+        ['درآمد ' + fa(report.days) + ' روز اخیر', fa(report.totalRevenue) + ' تومان', fa(report.totalCount) + ' فاکتور پرداخت‌شده', 'bi-graph-up-arrow'],
+        ['میانگین هر فاکتور', fa(report.average) + ' تومان', '', 'bi-calculator'],
+        ['مطالبات معوق', fa(report.unpaidTotal) + ' تومان', fa(report.unpaidCount) + ' فاکتور پرداخت‌نشده', 'bi-hourglass-split']
+    ];
+%>
+
+<style>
+    .chart-bar {
+        position: relative;
+        flex: 1;
+        display: flex;
+        align-items: flex-end;
+    }
+
+    .chart-bar .bar {
+        width: 100%;
+        border-radius: 4px 4px 0 0;
+        background: rgba(139, 92, 246, 0.8);
+        transition: all 0.2s ease;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .chart-bar .bar:hover {
+        background: #a78bfa;
+        transform: scaleY(1.03);
+    }
+
+    .chart-bar .bar.is-empty {
+        background: rgba(139, 92, 246, 0.2);
+        cursor: default;
+    }
+
+    .chart-bar .bar.is-empty:hover {
+        transform: none;
+    }
+
+    /* ===== Tooltip ===== */
+    .chart-tooltip {
+        position: absolute;
+        bottom: calc(100% + 8px);
+        left: 50%;
+        transform: translateX(-50%) translateY(4px);
+        background: #14141f;
+        border: 1px solid rgba(139, 92, 246, 0.4);
+        color: #fff;
+        padding: 8px 12px;
+        border-radius: 10px;
+        font-size: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.2s ease;
+        pointer-events: none;
+        z-index: 20;
+        box-shadow: 0 10px 24px -8px rgba(0, 0, 0, 0.7);
+        text-align: center;
+        line-height: 1.6;
+    }
+
+    .chart-tooltip::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 5px solid transparent;
+        border-top-color: rgba(139, 92, 246, 0.4);
+    }
+
+    .chart-bar:hover .chart-tooltip,
+    .chart-bar.tapped .chart-tooltip {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(-50%) translateY(0);
+    }
+
+    .chart-tooltip .tt-date {
+        color: #c4b5fd;
+        font-size: 10px;
+        margin-bottom: 3px;
+    }
+
+    .chart-tooltip .tt-revenue {
+        color: #fff;
+        font-size: 12px;
+        margin-bottom: 2px;
+    }
+
+    .chart-tooltip .tt-count {
+        color: #9ca3af;
+        font-size: 10px;
+        font-weight: 600;
+    }
+
+    @media (max-width: 640px) {
+        .chart-tooltip {
+            font-size: 10px;
+            padding: 6px 9px;
+        }
+
+        .chart-tooltip .tt-revenue {
+            font-size: 11px;
+        }
+    }
+</style>
+
+<main class="max-w-5xl mx-auto px-4 pt-28 pb-16 relative z-10">
+<div data-live="invoices reports" data-live-id="reports-main">
+    <div class="mb-6 flex items-end justify-between gap-3 flex-wrap">
+        <div>
+            <h1 class="text-3xl md:text-4xl font-black text-white tracking-tight mb-1">گزارش فروش</h1>
+            <p class="text-gray-500 text-sm">فقط فاکتورهای پرداخت‌شده حساب می‌شوند (به وقت تهران).</p>
+        </div>
+        <div class="inline-flex rounded-xl border border-white/10 overflow-hidden text-xs font-bold" id="daysFilter">
+            <% [7, 30, 90].forEach(function (d) { %>
+            <button type="button" data-days="<%= d %>" class="px-4 py-2 <%= report.days === d ? 'bg-accent-700/30 text-white' : 'text-gray-400 hover:text-white hover:bg-white/5' %> transition"><%= fa(d) %> روز</button>
+            <% }); %>
+        </div>
+    </div>
+
+    <div id="reportsContent">
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+            <% KPIS.forEach(function (k) { %>
+            <div class="card rounded-2xl p-4">
+                <div class="text-xs text-gray-500 mb-1"><i class="bi <%= k[3] %> text-accent-400"></i> <%= k[0] %></div>
+                <div class="text-lg font-extrabold text-white"><%= k[1] %></div>
+                <% if (k[2]) { %><div class="text-[11px] text-gray-500 mt-0.5"><%= k[2] %></div><% } %>
+            </div>
+            <% }); %>
+        </div>
+
+        <div class="card rounded-2xl p-5 mb-6">
+            <h2 class="text-sm font-bold text-white mb-4">درآمد روزانه</h2>
+            <div class="flex items-end gap-[3px]" style="height:160px" role="img" aria-label="نمودار درآمد روزانه">
+                <% report.series.forEach(function (s) { const h = Math.round(s.revenue / report.peak * 100); %>
+                <div class="chart-bar" style="height:100%">
+                    <div class="bar <%= s.revenue ? '' : 'is-empty' %>" style="height:<%= Math.max(h, s.revenue ? 3 : 1) %>%">
+                        <div class="chart-tooltip">
+                            <div class="tt-date"><%= dayLabel(s.day) %></div>
+                            <div class="tt-revenue"><%= fa(s.revenue) %> تومان</div>
+                            <div class="tt-count"><%= fa(s.count) %> فاکتور</div>
+                        </div>
+                    </div>
+                </div>
+                <% }); %>
+            </div>
+            <div class="flex justify-between text-[10px] text-gray-600 mt-2">
+                <span><%= dayLabel(report.series[0].day) %></span>
+                <span><%= dayLabel(report.series[report.series.length - 1].day) %></span>
+            </div>
+        </div>
+
+        <div class="card rounded-2xl p-5">
+            <h2 class="text-sm font-bold text-white mb-4"><%= report.breakdownTitle %></h2>
+            <% if (report.breakdown.length === 0) { %>
+                <div class="text-sm text-gray-500">در این بازه فروشی ثبت نشده است.</div>
+            <% } else { %>
+            <div class="space-y-3">
+                <% report.breakdown.forEach(function (b) { %>
+                <div>
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-gray-200"><%= b.name %></span>
+                        <span class="text-gray-500"><%= fa(b.revenue) %> تومان، <%= fa(b.count) %> بار</span>
+                    </div>
+                    <div class="h-1.5 rounded-full bg-white/10 overflow-hidden">
+                        <div class="h-full rounded-full bg-accent-500" style="width:<%= Math.round(b.revenue / maxBreak * 100) %>%"></div>
+                    </div>
+                </div>
+                <% }); %>
+            </div>
+            <% } %>
+        </div>
+    </div>
+
+    <div id="reportsLoading" class="hidden">
+        <div class="card rounded-2xl p-5 mb-6">
+            <div class="skeleton h-5 w-32 mb-4 rounded"></div>
+            <div class="skeleton h-40 w-full rounded-xl"></div>
+        </div>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+            <div class="skeleton h-20 rounded-2xl"></div>
+            <div class="skeleton h-20 rounded-2xl"></div>
+            <div class="skeleton h-20 rounded-2xl"></div>
+            <div class="skeleton h-20 rounded-2xl"></div>
+        </div>
+    </div>
+</div>
+</main>
+
+<%- include('partials/modals-common') %>
+
+<script>
+    // ====== Sidebar ======
+    function openSidebar() {
+        document.getElementById('sidebar').classList.add('open');
+        document.getElementById('sidebarOverlay').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeSidebar() {
+        document.getElementById('sidebar').classList.remove('open');
+        document.getElementById('sidebarOverlay').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    // ====== Mega Menu ======
+    function toggleMegaMenu() {
+        const menu = document.getElementById('megaMenu');
+        const caret = document.getElementById('megaCaret');
+        menu?.classList.toggle('active');
+        if (caret) caret.style.transform = menu?.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
+    }
+
+    function closeMegaMenu() {
+        const menu = document.getElementById('megaMenu');
+        const caret = document.getElementById('megaCaret');
+        if (menu) {
+            menu.classList.remove('active');
+            if (caret) caret.style.transform = 'rotate(0deg)';
+        }
+    }
+
+    // ====== Chart tooltip: tap on mobile ======
+    function initChartTooltips() {
+        document.querySelectorAll('.chart-bar').forEach(function (bar) {
+            bar.addEventListener('click', function (e) {
+                e.stopPropagation();
+                document.querySelectorAll('.chart-bar.tapped').forEach(function (b) {
+                    if (b !== bar) b.classList.remove('tapped');
+                });
+                bar.classList.toggle('tapped');
+            });
+        });
+
+        document.addEventListener('click', function () {
+            document.querySelectorAll('.chart-bar.tapped').forEach(function (b) {
+                b.classList.remove('tapped');
+            });
+        });
+    }
+
+    initChartTooltips();
+
+    // ====== Live filter (AJAX) ======
+    (function () {
+        var currentDays = <%= report.days %>;
+        var isLoading = false;
+
+        document.querySelectorAll('#daysFilter button').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var days = parseInt(btn.dataset.days, 10);
+                if (days === currentDays || isLoading) return;
+                loadReports(days);
+            });
+        });
+
+        async function loadReports(days) {
+            isLoading = true;
+
+            document.querySelectorAll('#daysFilter button').forEach(function (b) {
+                var active = parseInt(b.dataset.days, 10) === days;
+                b.classList.toggle('bg-accent-700/30', active);
+                b.classList.toggle('text-white', active);
+                b.classList.toggle('text-gray-400', !active);
+            });
+
+            var content = document.getElementById('reportsContent');
+            var loading = document.getElementById('reportsLoading');
+            content.style.opacity = '0.4';
+            content.style.pointerEvents = 'none';
+            loading.classList.remove('hidden');
+
+            try {
+                var res = await fetch('/reports?days=' + days, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                    cache: 'no-store'
+                });
+
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+
+                var contentType = res.headers.get('content-type') || '';
+
+                if (contentType.includes('application/json')) {
+                    var data = await res.json();
+                    if (!data.success) throw new Error(data.message || 'خطا');
+                    window.location.href = '/reports?days=' + days;
+                    return;
+                }
+
+                var html = await res.text();
+                var doc = new DOMParser().parseFromString(html, 'text/html');
+                var newContent = doc.getElementById('reportsContent');
+
+                if (newContent) {
+                    content.innerHTML = newContent.innerHTML;
+                    initChartTooltips();
+                }
+
+                var url = new URL(window.location.href);
+                url.searchParams.set('days', days);
+                window.history.replaceState({}, '', url.toString());
+                currentDays = days;
+            } catch (err) {
+                console.error('reports load failed:', err);
+                window.location.href = '/reports?days=' + days;
+            } finally {
+                loading.classList.add('hidden');
+                content.style.opacity = '';
+                content.style.pointerEvents = '';
+                isLoading = false;
+            }
+        }
+    })();
+
+    <%- include('partials/scripts-common') %>
+</script>
+</body>
+</html>

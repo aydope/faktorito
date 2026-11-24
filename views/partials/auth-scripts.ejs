@@ -1,0 +1,105 @@
+<div id="toast" class="toast"></div>
+
+<script>
+    function escapeHtml(s) {
+        const d = document.createElement("div");
+        d.appendChild(document.createTextNode(s || ""));
+        return d.innerHTML;
+    }
+
+    function toast(msg, type) {
+        const t = document.getElementById("toast");
+        t.textContent = msg;
+        t.style.display = "block";
+
+        const map = {
+            error:   ["rgba(127,29,29,.95)",  "rgba(239,68,68,.4)",  "#fca5a5"],
+            success: ["rgba(6,78,59,.95)",    "rgba(16,185,129,.4)", "#6ee7b7"],
+        }[type] || ["rgba(20,20,31,.95)", "rgba(139,92,246,.4)", "#fff"];
+
+        t.style.background  = map[0];
+        t.style.borderColor = map[1];
+        t.style.color       = map[2];
+
+        clearTimeout(t._t);
+        t._t = setTimeout(() => (t.style.display = "none"), 3200);
+    }
+
+    function showErrors(list) {
+        const b = document.getElementById("errorBox");
+        if (!b) return;
+
+        const arr = [].concat(list || []).filter(Boolean);
+
+        b.innerHTML = arr
+            .map((e) => `<p><i class="bi bi-exclamation-circle"></i>${escapeHtml(String(e))}</p>`)
+            .join("");
+
+        b.classList.toggle("show", arr.length > 0);
+    }
+
+    function errorsFrom(data) {
+        if (data && data.validationErrors) {
+            return Object.values(data.validationErrors);
+        }
+        return [data && data.message || "خطایی رخ داده است"];
+    }
+
+    async function postJson(url, body) {
+        const res = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-Requested-With": "XMLHttpRequest",
+            },
+            body: JSON.stringify(body || {}),
+        });
+
+        let data = {};
+        try {
+            data = await res.json();
+        } catch {}
+
+        return { ok: res.ok && data.success !== false, status: res.status, data };
+    }
+
+    function busy(btn, on, label) {
+        if (on) {
+            btn._h = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML =
+                '<span class="loader-spinner"></span>' +
+                '<span>' + (label || "لطفاً صبر کنید...") + '</span>';
+        } else {
+            btn.disabled = false;
+            if (btn._h) btn.innerHTML = btn._h;
+        }
+    }
+
+    function startCooldown(btn, seconds, label) {
+        let s = seconds;
+        btn.disabled = true;
+
+        const tick = () => {
+            if (s <= 0) {
+                btn.disabled = false;
+                btn.textContent = label;
+                return;
+            }
+            btn.textContent = label + " (" + s + ")";
+            s--;
+            setTimeout(tick, 1000);
+        };
+
+        tick();
+    }
+
+    function onlyDigits(el) {
+        el.addEventListener("input", () => {
+            el.value = el.value
+                .replace(/[۰-۹]/g, (d) => String(d.charCodeAt(0) - 0x06f0))
+                .replace(/\D/g, "")
+                .slice(0, 6);
+        });
+    }
+</script>

@@ -1,421 +1,953 @@
+<%
+  const sh = sheet;
+
+  const money = (n) => Number(n || 0).toLocaleString('fa-IR-u-nu-latn');
+
+  const faDate = (d) => {
+    if (!d) return { date: '-', time: '-' };
+    try {
+      const date = new Date(d);
+      return {
+        date: date.toLocaleDateString('fa-IR-u-nu-latn', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+        }),
+        time: date.toLocaleTimeString('fa-IR-u-nu-latn', {
+          hour: '2-digit',
+          minute: '2-digit',
+        }),
+      };
+    } catch (e) {
+      return { date: '-', time: '-' };
+    }
+  };
+
+  const dt = faDate(sh.date);
+%>
 <!DOCTYPE html>
-<html lang="fa" dir="rtl" class="dark">
+<html lang="fa" dir="rtl" data-theme="<%= sh.theme %>">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>فاکتور <%= invoice.invoiceNumber %> | فاکتوریتو</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#0b0b14" />
+  <title>فاکتور <%= sh.number %> | <%= sh.club %></title>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/sahel-font@v3.4.0/dist/font-face.css" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/sahel-font@v3.4.0/dist/font-face.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
 
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        'sahel': ['Sahel', 'Vazirmatn', 'system-ui', 'sans-serif'],
-                    },
-                    colors: {
-                        ink: {
-                            950: '#050508', 900: '#0c0c14', 800: '#14141f', 700: '#1c1c2a',
-                            600: '#28283a', 500: '#36364c', 400: '#4a4a63',
-                        },
-                        accent: {
-                            400: '#a78bfa', 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9', 800: '#5b21b6', 900: '#4c1d95',
-                        },
-                        gold: { 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309' },
-                        success: { 300: '#6ee7b7', 400: '#34d399', 500: '#10b981', 600: '#059669' },
-                    },
-                    boxShadow: {
-                        'glow': '0 0 32px rgba(124, 58, 237, 0.35)',
-                        'glow-lg': '0 8px 40px rgba(124, 58, 237, 0.45)',
-                        'card': '0 10px 40px -10px rgba(0, 0, 0, 0.4)',
-                    },
-                    borderRadius: { 'xl': '12px', '2xl': '16px', '3xl': '24px' },
-                    keyframes: {
-                        shimmer: { '0%': { backgroundPosition: '200% 0' }, '100%': { backgroundPosition: '-200% 0' } },
-                        toastIn: { '0%': { opacity: '0', transform: 'translateX(-50%) translateY(8px)' }, '100%': { opacity: '1', transform: 'translateX(-50%) translateY(0)' } },
-                        spin: { '0%': { transform: 'rotate(0deg)' }, '100%': { transform: 'rotate(360deg)' } },
-                        slideIn: { '0%': { transform: 'translateX(110%)' }, '100%': { transform: 'translateX(0)' } },
-                    },
-                    animation: {
-                        shimmer: 'shimmer 1.8s infinite',
-                        toastIn: 'toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-                        spin: 'spin 0.6s linear infinite',
-                        slideIn: 'slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-                    },
-                }
-            }
-        }
-    </script>
+  <%- include('partials/invoice-sheet-css') %>
 
-    <style>
-        * { font-family: 'Sahel', 'Vazirmatn', system-ui, sans-serif !important; margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #050508; color: #d1d5db; line-height: 1.8; overflow-x: hidden; min-height: 100vh; }
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: #050508; }
-        ::-webkit-scrollbar-thumb { background: #1c1c2a; border-radius: 10px; }
-        .grid-bg { background-image: linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px); background-size: 60px 60px; }
-        .glass-header { background: rgba(12,12,20,0.85); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.04); box-shadow: 0 10px 40px -10px rgba(0,0,0,0.4); }
-        .btn-primary { background: #7c3aed; box-shadow: 0 8px 30px -8px rgba(124,58,237,0.4); border: 1px solid rgba(139,92,246,0.3); transition: all 0.4s; }
-        .btn-primary:hover { background: #8b5cf6; transform: translateY(-2px); }
-        .btn-submit { background: #059669; border: 1px solid rgba(16,185,129,0.3); }
-        .btn-generate { display: inline-flex; align-items: center; gap: 6px; padding: 11px 16px; background: rgba(139,92,246,0.08); border: 1px solid rgba(139,92,246,0.2); border-radius: 12px; color: #a78bfa; font-size: 12px; font-weight: 600; cursor: pointer; }
-        .nav-link { color: #9ca3af; font-size: 14px; padding: 8px 16px; border-radius: 10px; text-decoration: none; display: flex; align-items: center; gap: 8px; }
-        .nav-link:hover { color: #fff; background: rgba(255,255,255,0.04); }
-        .nav-link.active { color: #c4b5fd; background: rgba(139,92,246,0.08); }
-        .sidebar { position: fixed; top: 0; right: 0; bottom: 0; width: 85%; max-width: 320px; background: #0c0c14; z-index: 300; padding: 20px; transform: translateX(110%); transition: transform 0.4s; }
-        .sidebar.open { transform: translateX(0); }
-        .sidebar-overlay { position: fixed; inset: 0; background: rgba(5,5,8,0.7); z-index: 290; opacity: 0; visibility: hidden; }
-        .sidebar-overlay.active { opacity: 1; visibility: visible; }
-        .sidebar-link { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 12px; color: #9ca3af; font-size: 14px; text-decoration: none; }
-        .sidebar-link:hover { background: rgba(255,255,255,0.04); color: #fff; }
-        .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: rgba(20,20,31,0.95); color: #fff; padding: 12px 24px; border-radius: 50px; font-size: 13px; z-index: 500; display: none; }
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Sahel', 'Vazirmatn', system-ui, sans-serif;
+    }
 
-        .invoice-card { background: #0c0c14; border: 1px solid rgba(255, 255, 255, 0.04); border-radius: 20px; padding: 0; position: relative; overflow: hidden; box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.5); }
-        .invoice-card::before { content: ''; position: absolute; top: 0; right: 0; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, #7c3aed, #a78bfa, #7c3aed, transparent); }
+    body {
+      min-height: 100vh;
+      padding: 20px 14px 60px;
+      background: #07060f;
+      color: #f3f4f6;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
 
-        .invoice-header { padding: 24px 28px; background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(124, 58, 237, 0.02)); border-bottom: 1px solid rgba(255, 255, 255, 0.05); display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
-        .brand-icon { width: 44px; height: 44px; background: linear-gradient(135deg, #7c3aed, #a78bfa); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 900; color: #fff; box-shadow: 0 8px 20px rgba(124, 58, 237, 0.3); }
-        .brand-name { font-size: 18px; font-weight: 800; color: #fff; }
-        .brand-meta { font-size: 11px; color: #6b7280; margin-top: 2px; display: flex; gap: 10px; flex-wrap: wrap; }
-        .brand-meta i { font-size: 12px; color: #a78bfa; }
-        .tracking-label { font-size: 9px; color: #6b7280; font-weight: 600; }
-        .tracking-code { font-family: 'Courier New', monospace; font-size: 18px; font-weight: 900; color: #a78bfa; letter-spacing: 2px; }
+    /* Theme-specific page backgrounds */
+    html[data-theme="aurora"] body {
+      background:
+        #07060f radial-gradient(900px 420px at 85% -10%, rgba(139, 92, 246, 0.30), transparent 60%),
+        radial-gradient(700px 380px at -10% 110%, rgba(34, 211, 238, 0.10), transparent 60%);
+    }
 
-        .invoice-body { padding: 24px 28px; }
-        .status-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
-        .status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 50px; font-size: 11px; font-weight: 700; }
-        .status-paid { background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2); color: #34d399; }
-        .status-pending { background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2); color: #fbbf24; }
-        .status-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; animation: pulse 2s infinite; }
-        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
-        .invoice-number-badge { font-size: 12px; color: #6b7280; }
-        .invoice-number-badge strong { color: #a78bfa; font-size: 14px; }
+    html[data-theme="midnight"] body {
+      background: #030712 radial-gradient(900px 420px at 85% -10%, rgba(56, 189, 248, 0.26), transparent 60%);
+    }
 
-        .member-section {
-            background: #0f0f1a;
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            border-radius: 14px;
-            padding: 16px 20px;
-            margin-bottom: 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 16px;
-            flex-wrap: wrap;
-            position: relative;
-            overflow: hidden;
-        }
-        .member-section::before {
-            content: '';
-            position: absolute;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            width: 3px;
-            background: linear-gradient(180deg, #7c3aed, #a78bfa);
-        }
-        .member-left { display: flex; align-items: center; gap: 14px; }
-        .member-avatar {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(124, 58, 237, 0.1));
-            border: 1px solid rgba(139, 92, 246, 0.25);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            font-weight: 800;
-            color: #a78bfa;
-            flex-shrink: 0;
-        }
-        .member-info .member-name { font-size: 16px; font-weight: 800; color: #fff; }
-        .member-info .member-details { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 4px; }
-        .member-info .member-detail {
-            font-size: 11px;
-            color: #6b7280;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        .member-info .member-detail i { font-size: 12px; color: #a78bfa; }
-        .member-right { text-align: left; }
-        .member-right .member-label { font-size: 9px; color: #6b7280; font-weight: 600; }
-        .member-right .member-id { font-size: 13px; font-weight: 700; color: #a78bfa; font-family: 'Courier New', monospace; letter-spacing: 1px; }
+    html[data-theme="mono"] body {
+      background: #ececef;
+      color: #111827;
+    }
 
-        .plan-box {
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.06), rgba(124, 58, 237, 0.02));
-            border: 1px solid rgba(139, 92, 246, 0.15);
-            border-radius: 14px;
-            padding: 16px 20px;
-            margin-bottom: 16px;
-            position: relative;
-            overflow: hidden;
-        }
-        .plan-box::after { content: ''; position: absolute; left: -20px; top: -20px; width: 80px; height: 80px; background: radial-gradient(circle, rgba(139, 92, 246, 0.1), transparent); border-radius: 50%; }
-        .plan-content { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; position: relative; z-index: 1; }
-        .plan-left { display: flex; align-items: center; gap: 10px; }
-        .plan-icon { width: 36px; height: 36px; background: rgba(139, 92, 246, 0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; color: #a78bfa; }
-        .plan-info .plan-label { font-size: 9px; color: #6b7280; font-weight: 600; }
-        .plan-info .plan-name { font-size: 15px; font-weight: 800; color: #a78bfa; }
-        .plan-price { font-size: 18px; font-weight: 900; color: #fff; }
-        .plan-price small { font-size: 11px; color: #6b7280; font-weight: 400; }
+    html[data-theme="luxe"] body {
+      background:
+        #050506 radial-gradient(900px 480px at 80% -12%, rgba(232, 200, 114, 0.20), transparent 60%),
+        radial-gradient(700px 380px at -10% 110%, rgba(184, 134, 11, 0.14), transparent 60%);
+    }
 
-        .items-section { margin-bottom: 16px; }
-        .items-title { font-size: 10px; font-weight: 700; color: #6b7280; display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
-        .items-title i { font-size: 13px; color: #a78bfa; }
-        .items-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .items-column { display: flex; flex-direction: column; gap: 8px; }
-        .items-column-title { font-size: 9px; font-weight: 700; color: #6b7280; margin-bottom: 4px; display: flex; align-items: center; gap: 5px; }
-        .items-column-title i { font-size: 11px; }
-        .cafe-column .items-column-title { color: #34d399; }
-        .discount-column .items-column-title { color: #f87171; }
-        .item-card { background: #0f0f1a; border: 1px solid rgba(255, 255, 255, 0.04); border-radius: 10px; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; }
-        .item-name { color: #9ca3af; font-size: 11px; }
-        .item-price { font-weight: 700; font-size: 12px; }
-        .cafe-column .item-price { color: #34d399; }
-        .discount-column .item-price { color: #f87171; }
+    .wrap {
+      max-width: 520px;
+      margin: 0 auto;
+    }
 
-        .note-box { background: rgba(245, 158, 11, 0.04); border: 1px dashed rgba(245, 158, 11, 0.15); border-radius: 10px; padding: 10px 14px; color: #fcd34d; font-size: 11px; display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+    /* ===== Toolbar ===== */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 16px;
+      padding: 10px 12px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 16px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
 
-        .invoice-footer { padding: 16px 28px; border-top: 1px solid rgba(255, 255, 255, 0.05); background: rgba(0, 0, 0, 0.2); display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
-        .footer-date { font-size: 11px; color: #6b7280; }
-        .total-label { font-size: 10px; color: #6b7280; font-weight: 600; }
-        .total-amount { font-size: 24px; font-weight: 900; color: #a78bfa; }
-        .total-amount small { font-size: 13px; color: #6b7280; font-weight: 400; }
+    html[data-theme="mono"] .toolbar {
+      background: rgba(0, 0, 0, 0.03);
+      border-color: rgba(0, 0, 0, 0.08);
+    }
 
-        @media (max-width: 768px) {
-            .invoice-header { padding: 16px; }
-            .invoice-body { padding: 16px; }
-            .invoice-footer { padding: 12px 16px; }
-            .items-grid { grid-template-columns: 1fr !important; }
-            .member-section { flex-direction: column; align-items: flex-start; }
-            .member-right { text-align: right; width: 100%; }
-            .plan-content { flex-direction: column; align-items: flex-start; }
-        }
+    .toolbar-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 14px;
+      border-radius: 11px;
+      font-size: 12.5px;
+      font-weight: 700;
+      text-decoration: none;
+      color: inherit;
+      background: rgba(127, 127, 127, 0.08);
+      border: 1px solid rgba(127, 127, 127, 0.18);
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
 
-        @media print {
-            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color: #000 !important; background: #fff !important; border-color: transparent !important; box-shadow: none !important; }
-            body { font-size: 8px !important; line-height: 1.5 !important; }
-            .no-print { display: none !important; }
-            .grid-bg { background: none !important; }
-            main { padding: 0 !important; margin: 0 !important; max-width: 100% !important; }
-            #invoiceContainer { display: none !important; }
-            #printClone { display: block !important; background: #fff !important; padding: 10px !important; margin: 0 !important; width: 100% !important; font-family: 'Courier New', 'Sahel', monospace !important; }
-            #printClone .print-brand { display: table !important; width: 100% !important; margin-bottom: 5px !important; }
-            #printClone .brand-name { display: table-cell !important; text-align: center !important; font-size: 12px !important; font-weight: 900 !important; padding: 2px !important; }
-            #printClone .brand-address { display: table-cell !important; text-align: center !important; font-size: 7px !important; padding: 2px !important; }
-            #printClone .print-table { width: 100% !important; border-collapse: collapse !important; margin: 3px 0 !important; border: none !important; }
-            #printClone .print-table tr { border: none !important; }
-            #printClone .print-table td { padding: 3px 4px !important; font-size: 8px !important; border: none !important; }
-            #printClone .label-cell { font-weight: 700 !important; width: 30% !important; }
-            #printClone .value-cell { text-align: left !important; }
-            #printClone .print-items { width: 100% !important; border-collapse: collapse !important; margin: 3px 0 !important; border: none !important; }
-            #printClone .print-items tr { border: none !important; }
-            #printClone .print-items td { padding: 2px 4px !important; font-size: 8px !important; border: none !important; }
-            #printClone .item-name-cell { text-align: right !important; }
-            #printClone .item-price-cell { text-align: left !important; font-weight: 600 !important; }
-            #printClone .print-footer { display: table !important; width: 100% !important; margin-top: 5px !important; border: none !important; }
-            #printClone .footer-left { display: table-cell !important; text-align: right !important; font-size: 8px !important; padding: 3px !important; border: none !important; }
-            #printClone .footer-right { display: table-cell !important; text-align: left !important; font-size: 11px !important; font-weight: 900 !important; padding: 3px !important; border: none !important; }
-            #printClone .print-watermark { display: table !important; width: 100% !important; text-align: center !important; margin-top: 5px !important; font-size: 7px !important; color: #666 !important; border: none !important; }
-            @page { size: A5 portrait; margin: 5mm; }
-        }
+    .toolbar-back:hover {
+      background: rgba(127, 127, 127, 0.14);
+      transform: translateY(-1px);
+    }
 
-        @media (max-width: 768px) {
-            .hamburger-btn { display: flex !important; }
-            .desktop-nav { display: none !important; }
-            main { padding-top: 90px !important; }
-        }
-        @media (min-width: 769px) { .hamburger-btn { display: none !important; } }
-    </style>
+    .toolbar-back i {
+      font-size: 14px;
+    }
+
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .tool-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      height: 38px;
+      padding: 0 13px;
+      border-radius: 11px;
+      font-size: 12.5px;
+      font-weight: 700;
+      font-family: inherit;
+      text-decoration: none;
+      cursor: pointer;
+      color: inherit;
+      background: rgba(127, 127, 127, 0.06);
+      border: 1px solid rgba(127, 127, 127, 0.16);
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .tool-btn:hover {
+      background: rgba(127, 127, 127, 0.12);
+      border-color: rgba(127, 127, 127, 0.28);
+      transform: translateY(-1px);
+    }
+
+    .tool-btn:active {
+      transform: scale(0.97);
+    }
+
+    .tool-btn i {
+      font-size: 14px;
+    }
+
+    .tool-btn.icon-only {
+      width: 38px;
+      padding: 0;
+    }
+
+    .tool-btn-primary {
+      color: #fff;
+      background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+      border: none;
+      box-shadow: 0 4px 14px -4px rgba(124, 58, 237, 0.55);
+      padding: 0 15px;
+      gap: 7px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tool-btn-primary::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), transparent 40%);
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      pointer-events: none;
+    }
+
+    .tool-btn-primary:hover {
+      background: linear-gradient(135deg, #8b5cf6 0%, #c4b5fd 100%);
+      box-shadow: 0 8px 22px -6px rgba(124, 58, 237, 0.7);
+      transform: translateY(-1px);
+    }
+
+    .tool-btn-primary:hover::before {
+      opacity: 1;
+    }
+
+    .tool-btn-primary:active {
+      transform: scale(0.97);
+    }
+
+    .tool-btn-primary i,
+    .tool-btn-primary span {
+      position: relative;
+      z-index: 1;
+    }
+
+    .tool-btn-primary i {
+      font-size: 15px;
+    }
+
+    /* Primary button theme overrides */
+    html[data-theme="midnight"] .tool-btn-primary {
+      background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%);
+      box-shadow: 0 4px 14px -4px rgba(2, 132, 199, 0.55);
+    }
+
+    html[data-theme="midnight"] .tool-btn-primary:hover {
+      background: linear-gradient(135deg, #0ea5e9 0%, #7dd3fc 100%);
+      box-shadow: 0 8px 22px -6px rgba(2, 132, 199, 0.7);
+    }
+
+    html[data-theme="mono"] .tool-btn-primary {
+      color: #fff;
+      background: #111827;
+      box-shadow: 0 4px 12px -4px rgba(0, 0, 0, 0.3);
+    }
+
+    html[data-theme="mono"] .tool-btn-primary:hover {
+      background: #1f2937;
+    }
+
+    html[data-theme="luxe"] .tool-btn-primary {
+      color: #1a1405;
+      background: linear-gradient(135deg, #b8860b 0%, #f0d98a 50%, #b8860b 100%);
+      box-shadow: 0 4px 16px -4px rgba(184, 134, 11, 0.5);
+    }
+
+    html[data-theme="luxe"] .tool-btn-primary:hover {
+      background: linear-gradient(135deg, #d4a017 0%, #f6e7a8 50%, #d4a017 100%);
+      box-shadow: 0 8px 22px -6px rgba(184, 134, 11, 0.6);
+    }
+
+    .tool-btn-primary.is-loading {
+      pointer-events: none;
+      opacity: 0.85;
+    }
+
+    .tool-btn-primary.is-loading i {
+      animation: spin 0.9s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* ===== Toast ===== */
+    #toast {
+      position: fixed;
+      bottom: 22px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #111827;
+      color: #fff;
+      padding: 10px 22px;
+      border-radius: 99px;
+      font-size: 12.5px;
+      font-weight: 700;
+      display: none;
+      z-index: 50;
+      box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.6);
+    }
+
+    /* ===== Responsive toolbar ===== */
+    @media (max-width: 480px) {
+      body {
+        padding: 12px 10px 50px;
+      }
+
+      .toolbar {
+        padding: 8px 10px;
+        gap: 6px;
+        border-radius: 14px;
+      }
+
+      .toolbar-back {
+        padding: 7px 10px;
+        font-size: 12px;
+      }
+
+      .toolbar-back span {
+        display: none;
+      }
+
+      .toolbar-back i {
+        font-size: 15px;
+      }
+
+      .tool-btn {
+        height: 36px;
+        padding: 0 10px;
+        font-size: 12px;
+      }
+
+      .tool-btn.icon-only {
+        width: 36px;
+      }
+
+      .tool-btn i {
+        font-size: 13px;
+      }
+
+      .tool-btn-primary {
+        padding: 0 12px;
+        gap: 6px;
+      }
+
+      .tool-btn-primary span {
+        font-size: 12px;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .tool-btn-primary span {
+        display: none;
+      }
+
+      .tool-btn-primary {
+        width: 36px;
+        padding: 0;
+      }
+
+      .toolbar-back {
+        padding: 7px 8px;
+      }
+    }
+
+    /* ===== Receipt print ===== */
+    .receipt {
+      display: none;
+    }
+
+    @media print {
+      @page {
+        size: 80mm auto;
+        margin: 4mm;
+      }
+
+      html,
+      body {
+        background: #fff !important;
+        color: #000 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 80mm !important;
+        min-height: auto !important;
+      }
+
+      .toolbar,
+      #toast,
+      .invoice-main {
+        display: none !important;
+      }
+
+      .receipt {
+        display: block !important;
+      }
+
+      .receipt,
+      .receipt * {
+        background: #fff !important;
+        background-image: none !important;
+        color: #000 !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
+        border-color: #000 !important;
+        filter: none !important;
+        backdrop-filter: none !important;
+        opacity: 1 !important;
+        font-family: 'Sahel', 'Vazirmatn', system-ui, sans-serif !important;
+      }
+
+      .receipt {
+        width: 100% !important;
+        max-width: 80mm !important;
+        margin: 0 auto !important;
+        padding: 0 !important;
+        font-size: 11px !important;
+        line-height: 1.55 !important;
+        direction: rtl !important;
+        text-align: right !important;
+      }
+
+      /* Receipt header */
+      .rcpt-logo {
+        text-align: center !important;
+        padding: 6px 0 8px !important;
+        border-bottom: 1px dashed #000 !important;
+        margin-bottom: 6px !important;
+      }
+
+      .rcpt-logo .rcpt-logo-mark {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 34px !important;
+        height: 34px !important;
+        border: 1px solid #000 !important;
+        border-radius: 50% !important;
+        font-size: 16px !important;
+        font-weight: 900 !important;
+        margin-bottom: 4px !important;
+      }
+
+      .rcpt-logo .rcpt-store {
+        font-size: 14px !important;
+        font-weight: 900 !important;
+        letter-spacing: -0.3px !important;
+        line-height: 1.3 !important;
+      }
+
+      .rcpt-logo .rcpt-store-sub {
+        font-size: 10px !important;
+        margin-top: 2px !important;
+      }
+
+      .rcpt-store-info {
+        text-align: center !important;
+        font-size: 10px !important;
+        line-height: 1.7 !important;
+        padding: 0 4px !important;
+        margin-bottom: 6px !important;
+      }
+
+      .rcpt-divider {
+        border-top: 1px dashed #000 !important;
+        margin: 6px 0 !important;
+        height: 0 !important;
+      }
+
+      /* Receipt rows */
+      .rcpt-row {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        gap: 6px !important;
+        font-size: 10.5px !important;
+        padding: 2px 0 !important;
+      }
+
+      .rcpt-row .lbl {
+        color: #000 !important;
+        font-weight: 600 !important;
+      }
+
+      .rcpt-row .val {
+        color: #000 !important;
+        font-weight: 700 !important;
+        font-variant-numeric: tabular-nums !important;
+        direction: ltr !important;
+      }
+
+      /* Receipt items */
+      .rcpt-items-head {
+        display: flex !important;
+        justify-content: space-between !important;
+        font-size: 10px !important;
+        font-weight: 900 !important;
+        padding: 3px 0 !important;
+        border-bottom: 1px solid #000 !important;
+      }
+
+      .rcpt-items-head .col-name {
+        flex: 1 !important;
+        text-align: right !important;
+      }
+
+      .rcpt-items-head .col-qty {
+        width: 40px !important;
+        text-align: center !important;
+      }
+
+      .rcpt-items-head .col-price {
+        width: 75px !important;
+        text-align: left !important;
+        direction: ltr !important;
+      }
+
+      .rcpt-item {
+        display: flex !important;
+        justify-content: space-between !important;
+        gap: 6px !important;
+        font-size: 10.5px !important;
+        padding: 3px 0 !important;
+        border-bottom: 1px dotted #000 !important;
+        align-items: baseline !important;
+      }
+
+      .rcpt-item:last-child {
+        border-bottom: none !important;
+      }
+
+      .rcpt-item .col-name {
+        flex: 1 !important;
+        text-align: right !important;
+        word-break: break-word !important;
+      }
+
+      .rcpt-item .col-qty {
+        width: 40px !important;
+        text-align: center !important;
+        font-variant-numeric: tabular-nums !important;
+      }
+
+      .rcpt-item .col-price {
+        width: 75px !important;
+        text-align: left !important;
+        font-variant-numeric: tabular-nums !important;
+        direction: ltr !important;
+        font-weight: 700 !important;
+      }
+
+      /* Receipt totals */
+      .rcpt-total-block {
+        margin-top: 4px !important;
+        padding-top: 4px !important;
+        border-top: 3px double #000 !important;
+      }
+
+      .rcpt-total-row {
+        display: flex !important;
+        justify-content: space-between !important;
+        font-size: 11px !important;
+        padding: 2px 0 !important;
+      }
+
+      .rcpt-total-row.big {
+        font-size: 13px !important;
+        font-weight: 900 !important;
+        padding-top: 4px !important;
+        margin-top: 4px !important;
+        border-top: 1px dashed #000 !important;
+      }
+
+      .rcpt-total-row .val {
+        direction: ltr !important;
+        font-variant-numeric: tabular-nums !important;
+        font-weight: 700 !important;
+      }
+
+      .rcpt-total-row.big .val {
+        font-size: 13px !important;
+        font-weight: 900 !important;
+      }
+
+      /* Receipt status and extras */
+      .rcpt-status {
+        text-align: center !important;
+        padding: 6px 0 !important;
+        font-size: 11px !important;
+        font-weight: 900 !important;
+        letter-spacing: 0.5px !important;
+        border-top: 1px dashed #000 !important;
+        border-bottom: 1px dashed #000 !important;
+        margin: 6px 0 !important;
+      }
+
+      .rcpt-qr {
+        text-align: center !important;
+        padding: 6px 0 !important;
+        margin-top: 4px !important;
+      }
+
+      .rcpt-qr svg {
+        display: inline-block !important;
+        width: 30mm !important;
+        height: 30mm !important;
+      }
+
+      .rcpt-qr-label {
+        font-size: 9px !important;
+        margin-top: 3px !important;
+        text-align: center !important;
+      }
+
+      .rcpt-sign {
+        text-align: center !important;
+        font-size: 9.5px !important;
+        padding: 4px 0 !important;
+      }
+
+      .rcpt-footer {
+        text-align: center !important;
+        padding: 8px 0 4px !important;
+        border-top: 1px dashed #000 !important;
+        margin-top: 6px !important;
+      }
+
+      .rcpt-footer .thanks {
+        font-size: 11px !important;
+        font-weight: 900 !important;
+        margin-bottom: 3px !important;
+      }
+
+      .rcpt-footer .msg {
+        font-size: 9.5px !important;
+        line-height: 1.7 !important;
+      }
+
+      .rcpt-footer .brand {
+        font-size: 8.5px !important;
+        margin-top: 4px !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.5px !important;
+      }
+
+      .rcpt-item,
+      .rcpt-row,
+      .rcpt-total-row {
+        page-break-inside: avoid !important;
+      }
+    }
+  </style>
 </head>
-<body class="antialiased bg-[#050508] grid-bg">
+<body>
+  <main class="wrap">
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <% if (isOwner) { %>
+        <a class="toolbar-back" href="/invoices">
+          <i class="bi bi-arrow-right"></i><span>فاکتورها</span>
+        </a>
+      <% } else { %>
+        <span class="toolbar-back" style="cursor:default">
+          <i class="bi bi-receipt"></i><span>فاکتور</span>
+        </span>
+      <% } %>
 
-    <div class="sidebar-overlay no-print" id="sidebarOverlay" onclick="closeSidebar()"></div>
-    <div class="sidebar no-print md:hidden" id="sidebar">
-        <div class="flex items-center justify-between mb-6 pb-4 border-b border-white/5">
-            <a href="/dashboard" class="flex items-center gap-2.5 no-underline"><div class="w-9 h-9 bg-gradient-to-br from-accent-700 to-accent-500 rounded-xl flex items-center justify-center text-white font-extrabold">ف</div><span class="font-extrabold text-xl text-white">فاکتوریتو</span></a>
-            <button onclick="closeSidebar()" class="btn-logout"><i class="bi bi-x-lg"></i></button>
-        </div>
-        <div class="space-y-1">
-            <a href="/dashboard" class="sidebar-link"><i class="bi bi-speedometer2"></i> داشبورد</a>
-            <a href="/invoices" class="sidebar-link active"><i class="bi bi-receipt"></i> فاکتورها</a>
-            <a href="/plans" class="sidebar-link"><i class="bi bi-collection"></i> پلن‌ها</a>
-        </div>
+      <div class="toolbar-actions">
+        <button class="tool-btn icon-only" type="button" id="shareBtn" title="اشتراک‌گذاری">
+          <i class="bi bi-share"></i>
+        </button>
+        <button class="tool-btn icon-only" type="button" onclick="window.print()" title="چاپ فاکتور">
+          <i class="bi bi-printer"></i>
+        </button>
+        <button class="tool-btn tool-btn-primary" type="button" id="dlBtn" title="دانلود تصویر">
+          <i class="bi bi-download" id="dlIcon"></i><span id="dlText">تصویر</span>
+        </button>
+      </div>
     </div>
 
-    <header class="fixed top-0 right-0 left-0 z-50 px-4 md:px-6 py-4 no-print">
-        <div class="max-w-5xl mx-auto glass-header rounded-2xl px-4 md:px-5 py-2.5 flex items-center justify-between">
-            <a href="/dashboard" class="flex items-center gap-2.5 no-underline"><div class="w-9 h-9 bg-gradient-to-br from-accent-700 to-accent-500 rounded-xl flex items-center justify-center text-white font-extrabold">ف</div><span class="font-extrabold text-xl text-white">فاکتوریتو</span></a>
-            <div class="hidden md:flex items-center gap-1 desktop-nav">
-                <a href="/dashboard" class="nav-link"><i class="bi bi-speedometer2"></i> داشبورد</a>
-                <a href="/invoices" class="nav-link active"><i class="bi bi-receipt"></i> فاکتورها</a>
-            </div>
-            <div class="flex items-center gap-2.5">
-                <button onclick="downloadInvoice()" class="btn-primary btn-submit inline-flex items-center gap-2 px-4 py-2 rounded-xl text-white font-semibold text-sm"><i class="bi bi-download"></i></button>
-                <button onclick="window.print()" class="btn-generate"><i class="bi bi-printer"></i><span>چاپ</span></button>
-                <button onclick="openSidebar()" class="btn-logout hamburger-btn md:hidden"><i class="bi bi-list"></i></button>
-            </div>
+    <!-- Invoice sheet -->
+    <div class="invoice-main">
+      <%- include('partials/invoice-sheet', { sheet: sh }) %>
+    </div>
+
+    <!-- Print receipt (visible only on print) -->
+    <div class="receipt" dir="rtl">
+      <div class="rcpt-logo">
+        <div class="rcpt-logo-mark">ف</div>
+        <div class="rcpt-store"><%= sh.club %></div>
+        <% if (sh.address || sh.phone) { %>
+          <div class="rcpt-store-sub">رسید فروش</div>
+        <% } %>
+      </div>
+
+      <% if (sh.address || sh.phone) { %>
+      <div class="rcpt-store-info">
+        <% if (sh.address) { %><div><%= sh.address %></div><% } %>
+        <% if (sh.phone) { %><div style="direction:ltr">تلفن: <%= sh.phone %></div><% } %>
+      </div>
+      <% } %>
+
+      <div class="rcpt-divider"></div>
+
+      <div class="rcpt-row"><span class="lbl">شماره رسید</span><span class="val"><%= sh.number %></span></div>
+      <div class="rcpt-row"><span class="lbl">تاریخ</span><span class="val"><%= dt.date %></span></div>
+      <div class="rcpt-row"><span class="lbl">ساعت</span><span class="val"><%= dt.time %></span></div>
+      <% if (sh.tracking) { %>
+        <div class="rcpt-row"><span class="lbl">کد پیگیری</span><span class="val"><%= sh.tracking %></span></div>
+      <% } %>
+
+      <div class="rcpt-divider"></div>
+
+      <div class="rcpt-row"><span class="lbl">مشتری</span><span class="val"><%= sh.member.name %></span></div>
+      <% if (sh.member.code && sh.member.code !== '-') { %>
+        <div class="rcpt-row"><span class="lbl">کد عضویت</span><span class="val"><%= sh.member.code %></span></div>
+      <% } %>
+      <% if (sh.member.phone && sh.member.phone !== '-') { %>
+        <div class="rcpt-row"><span class="lbl">تلفن</span><span class="val" style="direction:ltr"><%= sh.member.phone %></span></div>
+      <% } %>
+
+      <div class="rcpt-divider"></div>
+
+      <div class="rcpt-items-head">
+        <span class="col-name">شرح</span>
+        <span class="col-qty">تعداد</span>
+        <span class="col-price">مبلغ (تومان)</span>
+      </div>
+
+      <% if (sh.plan) { %>
+      <div class="rcpt-item">
+        <span class="col-name"><%= sh.plan.name %><% if (sh.plan.period) { %> (<%= sh.plan.period %>)<% } %></span>
+        <span class="col-qty">1</span>
+        <span class="col-price"><%= money(sh.plan.price) %></span>
+      </div>
+      <% } %>
+
+      <% if (sh.extras && sh.extras.length) { %>
+        <% sh.extras.forEach(function (it) { %>
+        <div class="rcpt-item">
+          <span class="col-name"><%= it.name %></span>
+          <span class="col-qty">1</span>
+          <span class="col-price"><%= money(it.price) %></span>
         </div>
-    </header>
+        <% }); %>
+      <% } %>
 
-    <main class="max-w-4xl mx-auto px-4 pt-28 pb-16 relative z-10">
-        <div id="invoiceContainer" class="invoice-card">
-            <div class="invoice-header">
-                <div style="display:flex;align-items:center;gap:12px;">
-                    <div class="brand-icon">ف</div>
-                    <div>
-                        <div class="brand-name"><%= invoice.user && invoice.user.clubName ? invoice.user.clubName : 'باشگاه' %></div>
-                        <div class="brand-meta">
-                            <span><i class="bi bi-telephone"></i> <%= invoice.user && invoice.user.clubPhone ? invoice.user.clubPhone : '---' %></span>
-                            <span><i class="bi bi-geo-alt"></i> <%= invoice.user && invoice.user.clubAddress ? invoice.user.clubAddress : '---' %></span>
-                        </div>
-                    </div>
-                </div>
-                <div style="text-align:center;">
-                    <div class="tracking-label">کد پیگیری</div>
-                    <div class="tracking-code"><%= invoice.trackingCode %></div>
-                </div>
-            </div>
+      <div class="rcpt-divider"></div>
 
-            <div class="invoice-body">
-                <div class="status-row">
-                    <span class="status-badge <%= invoice.isPaid ? 'status-paid' : 'status-pending' %>">
-                        <span class="status-dot"></span>
-                        <%= invoice.isPaid ? 'پرداخت شده' : 'در انتظار پرداخت' %>
-                    </span>
-                    <span class="invoice-number-badge">فاکتور <strong><%= invoice.invoiceNumber %></strong></span>
-                </div>
-
-                <div class="member-section">
-                    <div class="member-left">
-                        <div class="member-avatar"><%= invoice.member.name ? invoice.member.name.charAt(0) : '؟' %></div>
-                        <div class="member-info">
-                            <div class="member-name"><%= invoice.member.name %></div>
-                            <div class="member-details">
-                                <span class="member-detail"><i class="bi bi-telephone"></i> <%= invoice.member.phone %></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="member-right">
-                        <div class="member-label">کد عضویت</div>
-                        <div class="member-id"><%= invoice.member.memberId %></div>
-                    </div>
-                </div>
-
-                <div class="plan-box">
-                    <div class="plan-content">
-                        <div class="plan-left">
-                            <div class="plan-icon"><i class="bi bi-tag"></i></div>
-                            <div class="plan-info">
-                                <div class="plan-label">پلن انتخابی</div>
-                                <div class="plan-name"><%= invoice.plan.name %></div>
-                            </div>
-                        </div>
-                        <div class="plan-price"><%= invoice.plan.price.toLocaleString("fa-IR-u-nu-latn") %> <small>تومان</small></div>
-                    </div>
-                </div>
-
-                <% if (invoice.extraItems && invoice.extraItems.length > 0) { %>
-                <div class="items-section">
-                    <div class="items-title"><i class="bi bi-plus-slash-minus"></i> آیتم‌ها</div>
-                    <div class="items-grid">
-                        <div class="items-column cafe-column">
-                            <div class="items-column-title"><i class="bi bi-plus-circle"></i> آیتم‌های اضافه</div>
-                            <% invoice.extraItems.filter(function(i) { return i.type === 'cafe'; }).forEach(function(item) { %>
-                            <div class="item-card">
-                                <span class="item-name"><%= item.name %></span>
-                                <span class="item-price"><%= item.price.toLocaleString("fa-IR-u-nu-latn") %> تومان</span>
-                            </div>
-                            <% }); %>
-                        </div>
-                        <div class="items-column discount-column">
-                            <div class="items-column-title"><i class="bi bi-percent"></i> تخفیف‌ها</div>
-                            <% invoice.extraItems.filter(function(i) { return i.type === 'discount'; }).forEach(function(item) { %>
-                            <div class="item-card">
-                                <span class="item-name"><%= item.name %></span>
-                                <span class="item-price"><%= item.price.toLocaleString("fa-IR-u-nu-latn") %> تومان</span>
-                            </div>
-                            <% }); %>
-                        </div>
-                    </div>
-                </div>
-                <% } %>
-
-                <% if (invoice.note) { %>
-                <div class="note-box"><i class="bi bi-pencil"></i> <%= invoice.note %></div>
-                <% } %>
-            </div>
-
-            <div class="invoice-footer">
-                <div class="footer-date"><i class="bi bi-calendar3"></i> <%= invoice.invoiceDate %></div>
-                <div style="text-align:left;">
-                    <div class="total-label">مبلغ قابل پرداخت</div>
-                    <div class="total-amount"><%= invoice.totalAmount.toLocaleString("fa-IR-u-nu-latn") %> <small>تومان</small></div>
-                </div>
-            </div>
+      <div class="rcpt-total-block">
+        <% if (sh.plan) { %>
+        <div class="rcpt-total-row">
+          <span class="lbl">جمع اقلام</span>
+          <span class="val"><%= money(sh.plan.price + (sh.extras || []).reduce(function(s,i){return s + i.price;}, 0)) %></span>
         </div>
+        <% } %>
 
-        <div id="printClone" style="display: none;">
-            <table class="print-brand">
-                <tr><td class="brand-name"><%= invoice.user && invoice.user.clubName ? invoice.user.clubName : 'باشگاه' %></td></tr>
-                <tr><td class="brand-address"><%= invoice.user && invoice.user.clubPhone ? invoice.user.clubPhone : '' %><%= invoice.user && invoice.user.clubAddress ? ' | ' + invoice.user.clubAddress : '' %></td></tr>
-            </table>
+        <% if (sh.discounts && sh.discounts.length) { %>
+          <% sh.discounts.forEach(function (d) { %>
+          <div class="rcpt-total-row">
+            <span class="lbl">تخفیف: <%= d.name %></span>
+            <span class="val">- <%= money(Math.abs(d.price)) %></span>
+          </div>
+          <% }); %>
+        <% } %>
 
-            <table class="print-table">
-                <tr><td class="label-cell">کد پیگیری:</td><td class="value-cell"><%= invoice.trackingCode %></td></tr>
-                <tr><td class="label-cell">وضعیت:</td><td class="value-cell"><%= invoice.isPaid ? 'پرداخت شده' : 'در انتظار پرداخت' %></td></tr>
-                <tr><td class="label-cell">شماره باشگاه:</td><td class="value-cell"><%= invoice.user && invoice.user.clubPhone ? invoice.user.clubPhone : '---' %></td></tr>
-                <tr><td class="label-cell">نام عضو:</td><td class="value-cell"><%= invoice.member.name %></td></tr>
-                <tr><td class="label-cell">شماره عضو:</td><td class="value-cell"><%= invoice.member.phone %></td></tr>
-                <tr><td class="label-cell">کد عضو:</td><td class="value-cell"><%= invoice.member.memberId %></td></tr>
-                <tr><td class="label-cell">پلن:</td><td class="value-cell"><%= invoice.plan.name %> - <%= invoice.plan.price.toLocaleString("fa-IR-u-nu-latn") %> تومان</td></tr>
-            </table>
-
-            <% if (invoice.extraItems && invoice.extraItems.length > 0) { %>
-            <table class="print-items">
-                <tr><td colspan="2" style="font-weight:700;">آیتم‌ها:</td></tr>
-                <% invoice.extraItems.forEach(function(item) { %>
-                <tr>
-                    <td class="item-name-cell"><%= item.type === 'cafe' ? 'آیتم اضافه' : 'تخفیف' %>: <%= item.name %></td>
-                    <td class="item-price-cell"><%= item.price.toLocaleString("fa-IR-u-nu-latn") %> تومان</td>
-                </tr>
-                <% }); %>
-            </table>
-            <% } %>
-
-            <table class="print-footer">
-                <tr>
-                    <td class="footer-left"><%= invoice.invoiceDate %><br><%= invoice.invoiceNumber %></td>
-                    <td class="footer-right"><%= invoice.totalAmount.toLocaleString("fa-IR-u-nu-latn") %> تومان</td>
-                </tr>
-            </table>
-
-            <table class="print-watermark">
-                <tr><td>این فاکتور توسط فاکتوریتو صادر شده است</td></tr>
-            </table>
+        <div class="rcpt-total-row big">
+          <span>مبلغ نهایی قابل پرداخت</span>
+          <span class="val"><%= money(sh.total) %> ریال</span>
         </div>
-    </main>
+      </div>
 
-    <div id="toast" class="toast no-print"></div>
+      <div class="rcpt-divider"></div>
 
-    <script>
-        function openSidebar() { document.getElementById('sidebar').classList.add('open'); document.getElementById('sidebarOverlay').classList.add('active'); }
-        function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('active'); }
-        function toast(msg, type) { const t = document.getElementById('toast'); t.textContent = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3000); }
-        function downloadInvoice() {
-            html2canvas(document.getElementById('invoiceContainer'), { scale: 2.5, backgroundColor: '#0c0c14' }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = 'فاکتور-<%= invoice.invoiceNumber %>.png';
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-            });
+      <div class="rcpt-status">
+        <%= sh.isPaid ? '✓ پرداخت شده' + (sh.paidDate ? ' — ' + sh.paidDate : '') : '⏳ در انتظار پرداخت' %>
+      </div>
+
+      <% if (sh.note) { %>
+        <div class="rcpt-row">
+          <span class="lbl">یادداشت</span>
+          <span class="val" style="text-align:left"><%= sh.note %></span>
+        </div>
+      <% } %>
+
+      <% if (sh.qrSvg) { %>
+        <div class="rcpt-qr">
+          <%- sh.qrSvg %>
+          <div class="rcpt-qr-label">اسکن کنید</div>
+        </div>
+      <% } %>
+
+      <% if (sh.signature) { %>
+        <div class="rcpt-sign">امضاء و مهر: <%= sh.signature.name || sh.club %></div>
+      <% } %>
+
+      <div class="rcpt-footer">
+        <div class="thanks">از خرید شما سپاسگزاریم</div>
+        <div class="msg">لطفاً رسید خود را تا پایان دوره نگهداری کنید</div>
+        <div class="brand">صادر شده با فاکتوریتو</div>
+      </div>
+    </div>
+  </main>
+
+  <div id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
+
+  <script>
+    (function () {
+      /* Show a brief toast message */
+      var toast = function (m) {
+        var t = document.getElementById('toast');
+        t.textContent = m;
+        t.style.display = 'block';
+        clearTimeout(t._t);
+        t._t = setTimeout(function () { t.style.display = 'none'; }, 2600);
+      };
+
+      /* Inline SVG paths for icons that html-to-image needs to render as real SVG */
+      var ICON_SVG_MAP = {
+        'bi-download': '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/></svg>',
+        'bi-arrow-right': '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/></svg>',
+        'bi-arrow-left': '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/></svg>',
+        'bi-receipt': '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16"><path d="M.5 1a.5.5 0 0 0-.5.5v12.5a.5.5 0 0 0 .5.5H3v-1H1V2h2v1h1V1H.5z"/><path d="M3.5 0a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5H7V0H3.5z"/><path d="M5 6a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5A.5.5 0 0 1 5 6zm0 2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5A.5.5 0 0 1 5 8zm0 2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5A.5.5 0 0 1 5 10z"/><path d="M8 4h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1H8z"/></svg>',
+        'bi-share': '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16"><path d="M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5zm-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm0-11a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/></svg>',
+        'bi-printer': '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16"><path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/><path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2H5zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4V3zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2H5zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1z"/></svg>',
+        'bi-telephone': '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16"><path d="M3.654 1.328a.678.678 0 0 0-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.568 17.568 0 0 0 4.168 6.608 17.569 17.569 0 0 0 6.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 0 0-.063-1.015l-2.307-1.794a.678.678 0 0 0-.58-.122l-2.19.547a1.745 1.745 0 0 1-1.657-.459L5.482 8.062a1.745 1.745 0 0 1-.46-1.657l.548-2.19a.678.678 0 0 0-.122-.58L3.654 1.328zM1.884.511a1.745 1.745 0 0 1 2.612.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z"/></svg>',
+        'bi-geo-alt': '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16"><path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z"/><path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>',
+        'bi-calendar-event': '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16"><path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1z"/><path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/></svg>',
+        'bi-tag': '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16"><path d="M2 1a1 1 0 0 0-1 1v4.586a1 1 0 0 0 .293.707l7 7a1 1 0 0 0 1.414 0l4.586-4.586a1 1 0 0 0 0-1.414l-7-7A1 1 0 0 0 6.586 1H2zm1 1h3.586L13 8.414 8.414 13 2 6.586V2zm2 1a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/></svg>',
+        'bi-check-circle': '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/></svg>',
+        'bi-check-circle-fill': '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/></svg>',
+        'bi-clock': '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16"><path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/></svg>',
+        'bi-clock-fill': '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/></svg>',
+        'bi-x-circle-fill': '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"/></svg>',
+        'bi-person': '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16"><path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/></svg>',
+        'bi-hash': '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16"><path d="M4.318 2.687a.5.5 0 0 1 .365-.61l.705-.175a.5.5 0 0 1 .61.365l.184.744H8v-.5a.5.5 0 0 1 1 0v.5h1.158l.184-.744a.5.5 0 0 1 .61-.365l.705.175a.5.5 0 0 1 .365.61l-.184.744h.676a.5.5 0 0 1 0 1H12.23l.28 1.132h.832a.5.5 0 0 1 0 1h-.526l.28 1.132h.588a.5.5 0 0 1 0 1h-.282l.184.744a.5.5 0 0 1-.365.61l-.705.175a.5.5 0 0 1-.61-.365L11.722 12H8v.5a.5.5 0 0 1-1 0V12H5.842l-.184.744a.5.5 0 0 1-.61.365l-.705-.175a.5.5 0 0 1-.365-.61l.184-.744h-.676a.5.5 0 0 1 0-1h.882l-.28-1.132H3.5a.5.5 0 0 1 0-1h.526l-.28-1.132H3.158a.5.5 0 0 1 0-1h.282l-.184-.744a.5.5 0 0 1 .365-.61zM6.284 5H8v1H5.72l.28 1.132H8v1H6.204l.28 1.132H8v.5a.5.5 0 0 0 1 0V9.264h1.876l-.28-1.132H9v-1h2.156L10.876 6H9V5.5a.5.5 0 0 0-1 0V6H6.484L6.2 4.868 5.92 5.744l.364.256z"/></svg>',
+        'bi-pencil': '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16"><path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/></svg>',
+        'bi-award': '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16"><path d="M9.669.864 8 0 6.331.864l-1.858.282-.842 1.68-1.337 1.32L2.6 6l-.306 1.854 1.337 1.32.842 1.68 1.858.282L8 12l1.669-.864 1.858-.282.842-1.68 1.337-1.32L13.4 6l.306-1.854-1.337-1.32-.842-1.68L9.669.864zm1.196 1.193.684 1.365 1.51.229.684 1.365.684-1.365 1.51-.229.684-1.365-1.51-.229-.684-1.365-.684 1.365-1.51.229zm-1.196 5.833L7.698 6.194l-1.858-.282-.842-1.68-1.337-1.32L4.2 4.5l.306 1.854L3.169 7.674l.842 1.68 1.858.282L7.698 10.5l1.669-.864 1.858-.282.842-1.68 1.337-1.32L13.4 4.5l-.306-1.854 1.337-1.32-.842-1.68-1.858-.282L9.669 2.5 8 3.364l-1.669-.864L4.473 2.218 3.631.538 2.294-.782 2.6-.782l.306-1.854L1.569-3.956l-.842-1.68-1.858-.282L-2.8 2.5-4.669 3.364l-1.858.282-.842 1.68L-8.706 6.646-9.012 8.5l1.337 1.32.842 1.68 1.858.282L-3.306 12.5 8 12l1.669-.864 1.858-.282.842-1.68 1.337-1.32L13.4 8.5l-.306-1.854 1.337-1.32-.842-1.68-1.858-.282L9.669 2.5 8 3.364l-1.669-.864L4.473 2.218"/></svg>',
+        'bi-award-fill': '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16"><path d="m8 0 1.669.864 1.858.282.842 1.68 1.337 1.32L13.4 6l.306 1.854-1.337 1.32-.842 1.68-1.858.282L8 12l-1.669-.864-1.858-.282-.842-1.68-1.337-1.32L2.6 6l-.306-1.854 1.337-1.32.842-1.68L6.331.864 8 0z"/><path d="M4 11.794V16l4-1 4 1v-4.206l-2.018.306L8 13.126 6.018 12.1 4 11.794z"/></svg>',
+      };
+
+      /**
+       * Replace Bootstrap Icons <i> tags with inline SVGs
+       * so html-to-image renders them correctly.
+       * Returns a restore function to put the originals back.
+       */
+      function replaceIconsWithSvg(root) {
+        var icons = root.querySelectorAll('i[class*="bi-"]');
+        var originals = [];
+
+        icons.forEach(function (icon) {
+          var biClass = Array.from(icon.classList).find(function (c) {
+            return c.startsWith('bi-') && c !== 'bi';
+          });
+          if (!biClass) return;
+
+          var svg = ICON_SVG_MAP[biClass];
+          if (!svg) return;
+
+          originals.push({
+            el: icon,
+            html: icon.innerHTML,
+            className: icon.className,
+          });
+
+          // Clear font classes to avoid rendering an empty box
+          icon.className = '';
+          icon.innerHTML = svg;
+          icon.style.display = 'inline-flex';
+          icon.style.alignItems = 'center';
+          icon.style.justifyContent = 'center';
+          icon.style.width = '1em';
+          icon.style.height = '1em';
+          icon.style.verticalAlign = '-0.125em';
+        });
+
+        return function restore() {
+          originals.forEach(function (o) {
+            o.el.innerHTML = o.html;
+            o.el.className = o.className;
+            o.el.style.display = '';
+            o.el.style.alignItems = '';
+            o.el.style.justifyContent = '';
+            o.el.style.width = '';
+            o.el.style.height = '';
+            o.el.style.verticalAlign = '';
+          });
+        };
+      }
+
+      /* Share invoice link via native share or clipboard */
+      document.getElementById('shareBtn').addEventListener('click', function () {
+        var data = {
+          title: <%- JSON.stringify('فاکتور ' + sh.number) %>,
+          text: <%- JSON.stringify(sh.club + ': ' + money(sh.total) + ' تومان').replace(/</g, '\\u003c') %>,
+          url: location.href,
+        };
+
+        if (navigator.share) {
+          navigator.share(data).catch(function () {});
+          return;
         }
-    </script>
+
+        (navigator.clipboard ? navigator.clipboard.writeText(location.href) : Promise.reject())
+          .then(function () { toast('لینک فاکتور کپی شد'); })
+          .catch(function () { toast('کپی نشد'); });
+      });
+
+      /* Download invoice as PNG */
+      document.getElementById('dlBtn').addEventListener('click', async function () {
+        if (typeof htmlToImage === 'undefined') {
+          return toast('کمی بعد دوباره تلاش کنید');
+        }
+
+        var btn = this;
+        var icon = document.getElementById('dlIcon');
+        var text = document.getElementById('dlText');
+        var originalIcon = icon.className;
+        var originalText = text ? text.textContent : '';
+
+        btn.classList.add('is-loading');
+        icon.className = 'bi bi-arrow-clockwise';
+        if (text) text.textContent = 'در حال ساخت...';
+
+        var restoreIcons = null;
+
+        try {
+          // Wait for fonts to load so the PNG looks correct
+          if (document.fonts && document.fonts.ready) {
+            await document.fonts.ready;
+          }
+          await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+          var node = document.getElementById('invoiceContainer');
+
+          // Swap icon fonts for inline SVGs before rendering
+          restoreIcons = replaceIconsWithSvg(node);
+
+          await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+          var dataUrl = await htmlToImage.toPng(node, {
+            pixelRatio: 2.5,
+            backgroundColor: null,
+            cacheBust: true,
+            style: {
+              fontFamily: "'Sahel', 'Vazirmatn', system-ui, sans-serif",
+              textRendering: 'geometricPrecision',
+            },
+          });
+
+          var a = document.createElement('a');
+          a.download = <%- JSON.stringify('invoice-' + sh.number + '.png').replace(/</g, '\\u003c') %>;
+          a.href = dataUrl;
+          a.click();
+          toast('تصویر ذخیره شد');
+        } catch (err) {
+          console.error('html-to-image error:', err);
+          toast('ساخت تصویر ناموفق بود');
+        } finally {
+          if (restoreIcons) restoreIcons();
+          btn.classList.remove('is-loading');
+          icon.className = originalIcon;
+          if (text) text.textContent = originalText;
+        }
+      });
+    })();
+  </script>
 </body>
 </html>

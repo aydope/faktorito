@@ -1,0 +1,141 @@
+// ====== Dropdown ======
+function toggleDropdown(e) {
+    e.stopPropagation();
+    const menu = document.getElementById('dropdownMenu');
+    const caret = document.getElementById('dropdownCaret');
+    menu?.classList.toggle('active');
+    if (caret) {
+        const icon = caret.querySelector('i');
+        if (icon) icon.style.transform = menu?.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
+    }
+}
+
+function closeDropdown() {
+    const menu = document.getElementById('dropdownMenu');
+    const caret = document.getElementById('dropdownCaret');
+    if (menu) {
+        menu.classList.remove('active');
+        if (caret) {
+            const icon = caret.querySelector('i');
+            if (icon) icon.style.transform = 'rotate(0deg)';
+        }
+    }
+}
+
+// ====== Mega Menu ======
+function toggleMegaMenu() {
+    const menu = document.getElementById('megaMenu');
+    const caret = document.getElementById('megaCaret');
+    menu?.classList.toggle('active');
+    if (caret) caret.style.transform = menu?.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
+}
+
+function closeMegaMenu() {
+    const menu = document.getElementById('megaMenu');
+    const caret = document.getElementById('megaCaret');
+    if (menu) {
+        menu.classList.remove('active');
+        if (caret) caret.style.transform = 'rotate(0deg)';
+    }
+}
+
+// ====== Sidebar ======
+function openSidebar() {
+    document.getElementById('sidebar').classList.add('open');
+    document.getElementById('sidebarOverlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+// ====== Modals ======
+window.openModal = (id) => document.getElementById(id)?.classList.add('active');
+window.closeModal = (id) => document.getElementById(id)?.classList.remove('active');
+
+function openLogoutModal() {
+    closeDropdown();
+    closeMegaMenu();
+    closeSidebar();
+    openModal('logoutModal');
+}
+
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', function (e) {
+        if (e.target === this) this.classList.remove('active');
+    });
+});
+
+// ====== Global click handlers ======
+document.addEventListener('click', (e) => {
+    const userDropdown = document.getElementById('userDropdown');
+    if (userDropdown && !userDropdown.contains(e.target)) closeDropdown();
+
+    const megaMenu = document.getElementById('megaMenu');
+    const megaBtn = document.getElementById('megaMenuBtn');
+    if (megaMenu && megaBtn && !megaMenu.contains(e.target) && !megaBtn.contains(e.target)) {
+        closeMegaMenu();
+    }
+});
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        closeDropdown();
+        closeMegaMenu();
+        closeSidebar();
+        document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+    }
+});
+
+// ====== Toast ======
+function toast(msg, type) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.style.display = 'block';
+    if (type === 'error') {
+        t.style.background = 'rgba(127,29,29,0.95)';
+        t.style.borderColor = 'rgba(239,68,68,0.4)';
+        t.style.color = '#fca5a5';
+    } else if (type === 'success') {
+        t.style.background = 'rgba(6,78,59,0.95)';
+        t.style.borderColor = 'rgba(16,185,129,0.4)';
+        t.style.color = '#6ee7b7';
+    } else {
+        t.style.background = 'rgba(20,20,31,0.95)';
+        t.style.borderColor = 'rgba(139,92,246,0.4)';
+        t.style.color = '#fff';
+    }
+    clearTimeout(t._t);
+    t._t = setTimeout(() => t.style.display = 'none', 3000);
+}
+
+// ====== Format ======
+function fmt(n) {
+    return parseInt(n).toLocaleString('fa-IR-u-nu-latn');
+}
+
+function unfmt(s) {
+    return parseInt(s.replace(/,/g, '')) || 0;
+}
+
+// ====== Clear Errors ======
+function clearErrors() {
+    document.querySelectorAll('.error-text').forEach(el => {
+        el.textContent = '';
+        el.classList.remove('show');
+    });
+    document.querySelectorAll('.input-field.error').forEach(el => el.classList.remove('error'));
+}
+
+function showError(fieldId, message) {
+    const field = document.getElementById(fieldId);
+    const errorEl = document.getElementById(fieldId + 'Error');
+    if (field) field.classList.add('error');
+    if (errorEl) {
+        errorEl.textContent = message;
+        errorEl.classList.add('show');
+    }
+}

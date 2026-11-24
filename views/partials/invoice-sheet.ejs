@@ -1,0 +1,117 @@
+<%
+  const sh = sheet;
+  const fx = (n) => Number(n || 0).toLocaleString('fa-IR-u-nu-latn');
+  const oneCol = !(sh.discounts && sh.discounts.length) || !(sh.extras && sh.extras.length);
+  const hasItems = (sh.extras && sh.extras.length) || (sh.discounts && sh.discounts.length);
+%>
+<article class="fx-sheet<%= sh.sample ? ' fx-sample' : '' %>" data-fx-theme="<%= sh.theme %>"<% if (sh.domId) { %> id="<%= sh.domId %>"<% } %>>
+    <header class="fx-head">
+        <div class="fx-brand">
+            <div class="fx-avatar-wrap"><%- sh.avatar %></div>
+            <div>
+                <div class="fx-name"><%= sh.club %></div>
+                <% if (sh.phone || sh.address) { %>
+                <div class="fx-meta">
+                    <% if (sh.phone) { %><span><i class="bi bi-telephone"></i> <span class="fx-num"><%= sh.phone %></span></span><% } %>
+                    <% if (sh.address) { %><span><i class="bi bi-geo-alt"></i> <%= sh.address %></span><% } %>
+                </div>
+                <% } %>
+            </div>
+        </div>
+        <div class="fx-track">
+            <div class="fx-tl">کد پیگیری</div>
+            <div class="fx-tc"><%= sh.tracking %></div>
+        </div>
+    </header>
+
+    <div class="fx-body">
+        <div class="fx-status-row">
+            <% if (sh.isPaid) { %>
+            <span class="fx-status fx-status-paid"><span class="fx-dot"></span> پرداخت شده<% if (sh.paidDate) { %>، <%= sh.paidDate %><% } %></span>
+            <% } else { %>
+            <span class="fx-status fx-status-pending"><span class="fx-dot"></span> در انتظار پرداخت</span>
+            <% } %>
+            <span class="fx-number">فاکتور <strong><%= sh.number %></strong></span>
+        </div>
+
+        <div class="fx-member">
+            <div class="fx-member-left">
+                <div class="fx-initial"><%= sh.member.initial %></div>
+                <div>
+                    <div class="fx-member-name"><%= sh.member.name %></div>
+                    <% if (sh.member.phone && sh.member.phone !== '-') { %><div class="fx-detail"><i class="bi bi-telephone"></i> <span class="fx-num"><%= sh.member.phone %></span></div><% } %>
+                </div>
+            </div>
+            <% if (sh.member.code && sh.member.code !== '-') { %>
+            <div class="fx-member-right">
+                <div class="fx-member-label">کد عضویت</div>
+                <div class="fx-member-id"><%= sh.member.code %></div>
+            </div>
+            <% } %>
+        </div>
+
+        <% if (sh.plan) { %>
+        <div class="fx-plan">
+            <div class="fx-plan-content">
+                <div class="fx-plan-left">
+                    <div class="fx-plan-icon"><i class="bi bi-tag"></i></div>
+                    <div>
+                        <div class="fx-plan-label">پلن انتخابی</div>
+                        <div class="fx-plan-name"><%= sh.plan.name %><% if (sh.plan.period) { %><small>تمدید اشتراک: <%= sh.plan.period %></small><% } %></div>
+                    </div>
+                </div>
+                <div class="fx-plan-price"><span class="fx-num"><%= fx(sh.plan.price) %></span> <small>تومان</small></div>
+            </div>
+        </div>
+        <% } %>
+
+        <% if (hasItems) { %>
+        <div class="fx-items">
+            <div class="fx-items-title"><i class="bi bi-plus-slash-minus"></i> آیتم‌ها و تخفیف‌ها</div>
+            <div class="fx-items-grid<%= oneCol ? ' fx-one' : '' %>">
+                <% if (sh.extras && sh.extras.length) { %>
+                <div class="fx-col fx-add">
+                    <div class="fx-col-title"><i class="bi bi-plus-circle"></i> آیتم‌های اضافه</div>
+                    <% sh.extras.forEach(function (it) { %>
+                    <div class="fx-item"><span class="fx-item-name"><%= it.name %></span><span class="fx-item-price"><span class="fx-num"><%= fx(it.price) %></span> تومان</span></div>
+                    <% }); %>
+                </div>
+                <% } %>
+                <% if (sh.discounts && sh.discounts.length) { %>
+                <div class="fx-col fx-sub">
+                    <div class="fx-col-title"><i class="bi bi-percent"></i> تخفیف‌ها</div>
+                    <% sh.discounts.forEach(function (it) { %>
+                    <div class="fx-item"><span class="fx-item-name"><%= it.name %></span><span class="fx-item-price">-<span class="fx-num"><%= fx(Math.abs(it.price)) %></span> تومان</span></div>
+                    <% }); %>
+                </div>
+                <% } %>
+            </div>
+        </div>
+        <% } %>
+
+        <% if (sh.note) { %><div class="fx-note"><i class="bi bi-pencil"></i> <%= sh.note %></div><% } %>
+    </div>
+
+    <footer class="fx-footer">
+        <div class="fx-footer-date"><i class="bi bi-calendar3"></i> <%= sh.date %></div>
+        <div class="fx-total">
+            <div class="fx-total-label">مبلغ قابل پرداخت</div>
+            <div class="fx-total-amount"><span class="fx-num"><%= fx(sh.total) %></span> <small>تومان</small></div>
+        </div>
+    </footer>
+
+    <% if (sh.qrSvg || sh.signature) { %>
+    <section class="fx-auth">
+        <div class="fx-qr" title="لینک این فاکتور"><%- sh.qrSvg || '' %></div>
+        <div class="fx-sign fx-pos-<%= sh.signature ? sh.signature.position : 'right' %>">
+            <% if (sh.signature) { %>
+            <svg viewBox="0 0 600 240" role="img" aria-label="امضا" fill="none" stroke="<%= sh.signature.color %>" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="<%= sh.signature.path %>"/></svg>
+            <div class="fx-sign-line"><%= sh.signature.name || sh.club %></div>
+            <% } else { %>
+            <div class="fx-sign-line" style="margin-top: 46px">مهر و امضا</div>
+            <% } %>
+        </div>
+    </section>
+    <% } %>
+    <div class="fx-by">صادر شده با <a href="/">فاکتوریتو</a></div>
+</article>

@@ -1,0 +1,246 @@
+<%- include('../partials/auth-head') %>
+
+<main class="max-w-md mx-auto px-5 relative z-10 flex items-center justify-center"
+      style="min-height:100vh;padding:30px 0;">
+    <div class="w-full">
+        <div class="text-center mb-7">
+            <div class="w-14 h-14 bg-gradient-to-br from-accent-700 to-accent-500 rounded-2xl flex items-center justify-center text-white text-2xl shadow-glow mx-auto mb-4">
+                <i class="bi bi-shield-lock"></i>
+            </div>
+
+            <h1 class="text-xl md:text-2xl font-black text-white mb-1">
+                تعیین رمز عبور جدید
+            </h1>
+
+            <p class="text-gray-400 text-xs">
+                کد ارسال‌شده به ایمیل و رمز جدید خود را وارد کنید
+            </p>
+        </div>
+
+        <div class="error-box" id="errorBox"></div>
+
+        <div class="login-card">
+            <form id="f" novalidate>
+                <div class="float-group">
+                    <i class="bi bi-envelope float-icon"></i>
+                    <input type="email"
+                           id="email"
+                           value="<%= email %>"
+                           autocomplete="email"
+                           class="float-input"
+                           placeholder=" " />
+                    <label class="float-label" for="email">ایمیل</label>
+                </div>
+
+                <!-- OTP code field: custom design -->
+                <div class="otp-wrap">
+                    <label class="otp-label" for="code">کد تأیید ۶ رقمی</label>
+                    <div class="otp-boxes" id="otpBoxes" aria-hidden="true">
+                        <span class="otp-box"></span>
+                        <span class="otp-box"></span>
+                        <span class="otp-box"></span>
+                        <span class="otp-box"></span>
+                        <span class="otp-box"></span>
+                        <span class="otp-box"></span>
+                    </div>
+                    <input type="text"
+                           id="code"
+                           inputmode="numeric"
+                           autocomplete="one-time-code"
+                           maxlength="6"
+                           class="otp-input"
+                           aria-label="کد تأیید ۶ رقمی" />
+                </div>
+
+                <div class="float-group">
+                    <i class="bi bi-lock float-icon"></i>
+                    <input type="password"
+                           id="pw"
+                           autocomplete="new-password"
+                           class="float-input"
+                           placeholder=" " />
+                    <label class="float-label" for="pw">رمز عبور جدید</label>
+                </div>
+
+                <p class="text-[11px] text-gray-500 -mt-3 mb-5">
+                    حداقل 6 کاراکتر شامل حرف بزرگ، کوچک، عدد و یک کاراکتر خاص
+                </p>
+
+                <button type="submit"
+                        class="btn-primary w-full py-3 rounded-xl text-white font-bold text-sm flex items-center justify-center gap-2"
+                        id="btn">
+                    <i class="bi bi-check2-circle"></i>
+                    <span>تغییر رمز عبور</span>
+                </button>
+            </form>
+
+            <div class="mt-4 text-center">
+                <a href="/auth/forgot" class="link-btn no-underline">دریافت کد جدید</a>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="/auth/login"
+               class="text-gray-500 hover:text-gray-300 text-xs no-underline inline-flex items-center gap-1">
+                <i class="bi bi-arrow-right"></i>
+                بازگشت به ورود
+            </a>
+        </div>
+    </div>
+</main>
+
+<%- include('../partials/auth-scripts') %>
+
+<style>
+    /* ===== OTP field ===== */
+    .otp-wrap {
+        position: relative;
+        margin-bottom: 20px;
+    }
+
+    .otp-label {
+        display: block;
+        font-size: 11px;
+        color: #9ca3af;
+        margin-bottom: 8px;
+        font-weight: 600;
+    }
+
+    .otp-boxes {
+        display: flex;
+        gap: 8px;
+        justify-content: space-between;
+        direction: ltr;
+    }
+
+    .otp-box {
+        flex: 1;
+        height: 54px;
+        border-radius: 12px;
+        border: 1px solid rgba(167, 139, 250, 0.15);
+        background: rgba(15, 15, 26, 0.6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        font-weight: 800;
+        color: #fff;
+        font-variant-numeric: tabular-nums;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    }
+
+    .otp-box.is-filled {
+        border-color: rgba(167, 139, 250, 0.4);
+        background: rgba(124, 58, 237, 0.08);
+    }
+
+    .otp-box.is-active {
+        border-color: #7c3aed;
+        box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+        background: rgba(124, 58, 237, 0.06);
+    }
+
+    /* The real input is transparent and sits on top of the boxes */
+    .otp-input {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        border: none;
+        outline: none;
+        background: transparent;
+        letter-spacing: 20px;
+        font-size: 16px;
+        color: transparent;
+        caret-color: transparent;
+        cursor: text;
+        padding: 0;
+    }
+
+    .otp-input:focus {
+        outline: none;
+    }
+
+    @media (max-width: 380px) {
+        .otp-box {
+            height: 48px;
+            font-size: 18px;
+            border-radius: 10px;
+        }
+        .otp-boxes {
+            gap: 6px;
+        }
+    }
+</style>
+
+<script>
+    const code = document.getElementById("code");
+    const otpBoxes = Array.from(document.querySelectorAll("#otpBoxes .otp-box"));
+
+    onlyDigits(code);
+
+    // Sync the visual boxes with the hidden input value
+    function renderOtp() {
+        const value = code.value.replace(/\D/g, "");
+        code.value = value;
+
+        otpBoxes.forEach((box, i) => {
+            box.textContent = value[i] || "";
+            box.classList.toggle("is-filled", Boolean(value[i]));
+            box.classList.toggle("is-active", i === value.length && document.activeElement === code);
+        });
+    }
+
+    // Clicking the visual boxes focuses the hidden input
+    document.getElementById("otpBoxes").addEventListener("click", () => code.focus());
+
+    code.addEventListener("input", renderOtp);
+    code.addEventListener("focus", renderOtp);
+    code.addEventListener("blur", renderOtp);
+
+    document.getElementById("f").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        showErrors([]);
+
+        const email = document.getElementById("email").value.trim().toLowerCase();
+        const pw = document.getElementById("pw").value;
+        const btn = document.getElementById("btn");
+
+        const errs = [];
+        if (!email) errs.push("ایمیل الزامی است");
+        if (!/^\d{6}$/.test(code.value)) errs.push("کد باید 6 رقم باشد");
+        if (!pw) errs.push("رمز جدید الزامی است");
+        if (errs.length) return showErrors(errs);
+
+        busy(btn, true, "در حال ذخیره...");
+
+        try {
+            const r = await postJson("/auth/reset", {
+                email,
+                code: code.value,
+                newPassword: pw,
+            });
+
+            if (r.ok) {
+                toast(r.data.message, "success");
+                setTimeout(() => {
+                    location.href = r.data.redirect || "/auth/login";
+                }, 900);
+                return;
+            }
+
+            showErrors(errorsFrom(r.data));
+        } catch {
+            toast("خطا در ارتباط با سرور", "error");
+        }
+
+        busy(btn, false);
+    });
+
+    // Initial render on page load
+    renderOtp();
+</script>
+
+</body>
+</html>

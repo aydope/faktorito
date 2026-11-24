@@ -1,0 +1,334 @@
+<%- include('partials/head') %>
+<body class="antialiased bg-[#050508] grid-bg">
+<%- include('partials/shell') %>
+
+<%
+    const fa = (n) => Number(n).toLocaleString('fa-IR-u-nu-latn');
+    const when = (d) => new Date(d).toLocaleString('fa-IR-u-nu-latn', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+    const HOUR_LABEL = {
+        1: '1 ساعت',
+        6: '6 ساعت',
+        12: '12 ساعت',
+        24: '24 ساعت (پیش‌فرض)',
+        48: '2 روز',
+        72: '3 روز',
+        168: '7 روز'
+    };
+%>
+
+<style>
+    /* Custom Select */
+    .cs-wrap {
+        position: relative;
+    }
+
+    .cs-trigger {
+        width: 100%;
+        padding: 12px 14px;
+        background: #0c0c14;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 12px;
+        color: #fff;
+        font-size: 14px;
+        text-align: right;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        outline: none;
+    }
+
+    .cs-trigger:hover {
+        border-color: rgba(139, 92, 246, 0.3);
+    }
+
+    .cs-trigger.open {
+        border-color: rgba(139, 92, 246, 0.5);
+        box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.08);
+    }
+
+    .cs-trigger i {
+        color: #6b7280;
+        font-size: 12px;
+        transition: transform 0.25s ease;
+    }
+
+    .cs-trigger.open i {
+        transform: rotate(180deg);
+        color: #a78bfa;
+    }
+
+    .cs-menu {
+        position: absolute;
+        top: calc(100% + 6px);
+        right: 0;
+        left: 0;
+        background: #14141f;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        padding: 6px;
+        z-index: 50;
+        box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-6px);
+        transition: all 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+        max-height: 260px;
+        overflow-y: auto;
+    }
+
+    .cs-menu.open {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .cs-option {
+        padding: 9px 12px;
+        border-radius: 8px;
+        font-size: 13px;
+        color: #9ca3af;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .cs-option:hover {
+        background: rgba(139, 92, 246, 0.08);
+        color: #c4b5fd;
+    }
+
+    .cs-option.selected {
+        background: rgba(139, 92, 246, 0.12);
+        color: #c4b5fd;
+        font-weight: 600;
+    }
+
+    .cs-option.selected::after {
+        content: '\F26E';
+        font-family: 'bootstrap-icons';
+        font-size: 12px;
+        color: #a78bfa;
+    }
+</style>
+
+<main class="max-w-4xl mx-auto px-4 pt-28 pb-16 relative z-10">
+    <div class="mb-6">
+        <h1 class="text-3xl md:text-4xl font-black text-white tracking-tight mb-1">اعلان‌ها</h1>
+        <p class="text-gray-500 text-sm">اعلان شما فوراً در پنل اعضای دارای حساب نمایش داده می‌شود و بعد از مدت انتخابی خودکار از پنل آن‌ها برداشته می‌شود</p>
+    </div>
+
+    <div class="card rounded-2xl p-6 mb-8">
+        <div class="text-xs text-gray-500 mb-4">
+            <i class="bi bi-people"></i> مخاطب: <b class="text-white"><%= fa(audience) %></b> عضو دارای حساب کاربری
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-sm font-semibold text-gray-300 mb-2" for="annTitle">عنوان</label>
+            <input id="annTitle" class="input-field" maxlength="60" placeholder="مثلاً: تعطیلی باشگاه در روز جمعه">
+            <div class="error-text" id="annTitleError"></div>
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-sm font-semibold text-gray-300 mb-2" for="annBody">متن</label>
+            <textarea id="annBody" class="input-field" rows="3" maxlength="500" placeholder="متن اعلان..."></textarea>
+            <div class="error-text" id="annBodyError"></div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row sm:items-end gap-3">
+            <div class="flex-1">
+                <label class="block text-sm font-semibold text-gray-300 mb-2">مدت نمایش</label>
+                <div class="cs-wrap" id="annHoursWrap">
+                    <button type="button" class="cs-trigger" id="annHoursTrigger" aria-haspopup="listbox" aria-expanded="false">
+                        <span id="annHoursLabel"><%= HOUR_LABEL[defaultHours] || (fa(defaultHours) + ' ساعت') %></span>
+                        <i class="bi bi-chevron-down"></i>
+                    </button>
+                    <div class="cs-menu" id="annHoursMenu" role="listbox">
+                        <% durations.forEach(function (h) { %>
+                        <div class="cs-option <%= h === defaultHours ? 'selected' : '' %>" role="option" data-value="<%= h %>"><%= HOUR_LABEL[h] || (fa(h) + ' ساعت') %></div>
+                        <% }); %>
+                    </div>
+                    <input type="hidden" id="annHours" value="<%= defaultHours %>">
+                </div>
+            </div>
+            <button id="annSend" type="button" class="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-white font-semibold text-sm">
+                <i class="bi bi-megaphone"></i> ارسال اعلان
+            </button>
+        </div>
+    </div>
+
+    <div data-live="announcements" data-live-id="ann-list">
+        <h2 class="text-base font-bold text-white mb-3"><i class="bi bi-clock-history text-accent-400"></i> اعلان‌های اخیر</h2>
+        <% if (items.length === 0) { %>
+            <div class="card rounded-2xl p-10 text-center text-gray-500 text-sm">هنوز اعلانی ثبت نکرده‌اید</div>
+        <% } else { %>
+        <div class="space-y-3">
+            <% items.forEach(function (a) { %>
+            <div class="card rounded-2xl p-5">
+                <div class="flex items-start justify-between gap-3">
+                    <div class="min-w-0">
+                        <div class="flex items-center gap-2 flex-wrap mb-1">
+                            <span class="font-bold text-white"><%= a.title %></span>
+                            <span class="state-badge <%= a.isActive ? 'state-active' : 'state-inactive' %>"><%= a.isActive ? 'در حال نمایش' : 'پایان‌یافته' %></span>
+                        </div>
+                        <p class="text-sm text-gray-400 leading-7 break-words"><%= a.body %></p>
+                        <div class="text-xs text-gray-600 mt-2">ثبت: <%= when(a.createdAt) %>، <%= a.isActive ? 'تا' : 'پایان' %>: <%= when(a.expiresAt) %></div>
+                    </div>
+                    <button type="button" class="action-btn delete shrink-0" title="حذف" data-del="<%= a._id %>"><i class="bi bi-trash"></i></button>
+                </div>
+            </div>
+            <% }); %>
+        </div>
+        <% } %>
+    </div>
+</main>
+
+<!-- Delete Modal -->
+<div class="modal-overlay" id="annDeleteModal">
+    <div class="modal-dialog text-center">
+        <div class="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5">
+            <i class="bi bi-trash text-red-400 text-3xl"></i>
+        </div>
+        <h3 class="text-xl font-extrabold text-white mb-2">حذف اعلان</h3>
+        <p class="text-gray-400 text-sm mb-8">این اعلان از پنل اعضا حذف شود؟ این عمل قابل بازگشت نیست.</p>
+        <div class="flex gap-3 justify-center">
+            <button onclick="closeModal('annDeleteModal')" class="px-6 py-2.5 rounded-xl text-gray-300 font-semibold text-sm bg-white/5 border border-white/10 hover:bg-white/10 transition">انصراف</button>
+            <button id="annDeleteConfirm" class="px-6 py-2.5 rounded-xl text-white font-semibold text-sm bg-red-600 hover:bg-red-500 transition shadow-lg shadow-red-900/30">حذف</button>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/modals-common') %>
+
+<script>
+    <%- include('partials/scripts-common') %>
+
+    const H = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest'
+    };
+
+    // Custom Select
+    (function () {
+        const trigger = document.getElementById('annHoursTrigger');
+        const menu = document.getElementById('annHoursMenu');
+        const label = document.getElementById('annHoursLabel');
+        const hidden = document.getElementById('annHours');
+
+        function toggle(open) {
+            menu.classList.toggle('open', open);
+            trigger.classList.toggle('open', open);
+            trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+        }
+
+        trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggle(!menu.classList.contains('open'));
+        });
+
+        menu.querySelectorAll('.cs-option').forEach(opt => {
+            opt.addEventListener('click', () => {
+                menu.querySelectorAll('.cs-option').forEach(o => o.classList.remove('selected'));
+                opt.classList.add('selected');
+                label.textContent = opt.textContent.trim();
+                hidden.value = opt.dataset.value;
+                toggle(false);
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!document.getElementById('annHoursWrap').contains(e.target)) toggle(false);
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') toggle(false);
+        });
+    })();
+
+    document.getElementById('annSend').addEventListener('click', async (e) => {
+        const btn = e.currentTarget;
+        clearErrors();
+
+        const body = {
+            title: document.getElementById('annTitle').value,
+            body: document.getElementById('annBody').value,
+            hours: Number(document.getElementById('annHours').value)
+        };
+
+        btn.disabled = true;
+
+        try {
+            const res = await fetch('/announcements', {
+                method: 'POST',
+                headers: H,
+                body: JSON.stringify(body)
+            });
+            const r = await res.json();
+
+            if (r.success) {
+                toast(r.message, 'success');
+                setTimeout(() => location.reload(), 700);
+                return;
+            }
+
+            const errs = r.validationErrors || {};
+            if (errs.title) showError('annTitle', errs.title);
+            if (errs.body) showError('annBody', errs.body);
+            toast(r.message || 'خطا در ثبت اعلان', 'error');
+        } catch (err) {
+            toast('خطا در ارتباط با سرور', 'error');
+        } finally {
+            btn.disabled = false;
+        }
+    });
+
+    // Delete with modal instead of confirm()
+    let annDeleteId = null;
+
+    document.addEventListener('click', (e) => {
+        const b = e.target.closest('[data-del]');
+        if (!b) return;
+        annDeleteId = b.dataset.del;
+        openModal('annDeleteModal');
+    });
+
+    document.getElementById('annDeleteConfirm').addEventListener('click', async function () {
+        if (!annDeleteId) return;
+
+        const btn = this;
+        btn.disabled = true;
+        btn.textContent = '...';
+
+        try {
+            const res = await fetch('/announcements/' + annDeleteId, { method: 'DELETE', headers: H });
+            const r = await res.json();
+
+            if (r.success) {
+                toast(r.message, 'success');
+                closeModal('annDeleteModal');
+
+                if (window.fxLive) {
+                    window.fxLive.refresh('announcements');
+                } else {
+                    location.reload();
+                }
+            } else {
+                toast(r.message || 'حذف انجام نشد', 'error');
+            }
+        } catch (err) {
+            toast('خطا در ارتباط با سرور', 'error');
+        }
+
+        btn.disabled = false;
+        btn.textContent = 'حذف';
+        annDeleteId = null;
+    });
+</script>
+</body>
+</html>

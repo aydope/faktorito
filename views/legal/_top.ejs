@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= heading %> | <%= legal.appName %></title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/sahel-font@v3.4.0/dist/font-face.css" />
+
+    <style>
+        body { margin: 0; background: #fff; color: #1f2937; font: 15px/2 Sahel, Tahoma, sans-serif; }
+        .page { max-width: 760px; margin: 0 auto; padding: 24px 20px 56px; }
+        .top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; border-bottom: 1px solid #e5e7eb; padding-bottom: 12px; margin-bottom: 28px; font-size: 14px; }
+        .top a { color: #374151; text-decoration: none; margin-left: 16px; }
+        .top a:hover { text-decoration: underline; }
+        .top .brand { font-weight: 700; color: #111827; }
+        h1 { font-size: 26px; margin: 0 0 4px; color: #111827; }
+        .meta { color: #6b7280; font-size: 13px; margin: 0 0 24px; }
+        h2 { font-size: 17px; margin: 28px 0 6px; color: #111827; }
+        p { margin: 6px 0; }
+        ul { margin: 6px 0; padding-right: 22px; }
+        li { margin: 2px 0; }
+        a { color: #1d4ed8; }
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 14px; }
+        th, td { border: 1px solid #d1d5db; padding: 6px 10px; text-align: right; vertical-align: top; }
+        th { background: #f3f4f6; }
+        .foot { margin-top: 40px; padding-top: 14px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 13px; }
+        .foot a { color: #6b7280; margin-left: 14px; }
+    </style>
+</head>
+<body>
+<div class="page">
+    <header class="top">
+        <a class="brand" href="/"><%= legal.appName %></a>
+        <nav aria-label="legal-pages">
+            <a href="/terms">شرایط استفاده</a>
+            <a href="/privacy">حریم خصوصی</a>
+            <a href="/terms/business">شرایط صاحبان باشگاه</a>
+        </nav>
+    </header>
+
+    <main>
+        <h1><%= heading %></h1>
+        <p class="meta">
+            نسخه <%= legal.version %>، تاریخ آخرین به‌روزرسانی: <%= legal.updated %>
+        </p>

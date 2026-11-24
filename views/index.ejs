@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl" class="dark">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
@@ -19,11 +18,19 @@
                     },
                     colors: {
                         'ink': {
-                            950: '#050508', 900: '#0c0c14', 800: '#14141f', 700: '#1c1c2a',
-                            600: '#28283a', 500: '#36364c', 400: '#4a4a63',
+                            950: '#050508',
+                            900: '#0c0c14',
+                            800: '#14141f',
+                            700: '#1c1c2a',
+                            600: '#28283a',
+                            500: '#36364c',
+                            400: '#4a4a63',
                         },
                         'accent': {
-                            400: '#a78bfa', 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9',
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
                         }
                     },
                 }
@@ -64,6 +71,27 @@
 
         ::-webkit-scrollbar-thumb:hover {
             background: #28283a;
+        }
+
+        /* ===== Global input reset ===== */
+        input,
+        textarea,
+        select {
+            outline: none !important;
+            box-shadow: none;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none !important;
+        }
+
+        input:focus-visible,
+        textarea:focus-visible,
+        select:focus-visible {
+            outline: none !important;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
         }
 
         .glass-nav {
@@ -159,111 +187,6 @@
             border-color: rgba(139, 92, 246, 0.4);
         }
 
-        .dropdown-trigger {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 4px 16px 4px 6px;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: #d1d5db;
-            font-weight: 500;
-            font-size: 14px;
-        }
-
-        .dropdown-trigger:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(139, 92, 246, 0.4);
-        }
-
-        .avatar {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #7c3aed, #a78bfa);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 14px;
-            color: #fff;
-            flex-shrink: 0;
-        }
-
-        .dropdown-menu {
-            position: absolute;
-            top: calc(100% + 10px);
-            left: 0;
-            min-width: 250px;
-            background: #14141f;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 10px;
-            box-shadow: 0 25px 50px -15px rgba(0, 0, 0, 0.6);
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-8px) scale(0.97);
-            transition: all 0.25s cubic-bezier(0.23, 1, 0.32, 1);
-            z-index: 100;
-        }
-
-        .dropdown-menu.active {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0) scale(1);
-        }
-
-        .dropdown-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 14px;
-            border-radius: 10px;
-            color: #9ca3af;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        .dropdown-item:hover {
-            background: rgba(139, 92, 246, 0.08);
-            color: #c4b5fd;
-        }
-
-        .dropdown-item i {
-            font-size: 17px;
-            width: 20px;
-            text-align: center;
-        }
-
-        .dropdown-item.danger:hover {
-            background: rgba(220, 38, 38, 0.12);
-            color: #f87171;
-        }
-
-        .dropdown-divider {
-            height: 1px;
-            background: rgba(255, 255, 255, 0.05);
-            margin: 6px 8px;
-        }
-
-        .dropdown-trigger .chevron-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.3s ease;
-            font-size: 10px;
-            color: #6b7280;
-            width: 16px;
-            height: 16px;
-            line-height: 1;
-        }
-
         .stat-item {
             position: relative;
         }
@@ -319,137 +242,6 @@
             transform: scale(1) translateY(0);
         }
 
-        .modal-icon {
-            width: 56px;
-            height: 56px;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 16px;
-            font-size: 24px;
-        }
-
-        .modal-icon.about {
-            background: rgba(139, 92, 246, 0.12);
-            color: #a78bfa;
-        }
-
-        .modal-icon.contact {
-            background: rgba(52, 211, 153, 0.12);
-            color: #34d399;
-        }
-
-        .modal-icon.privacy {
-            background: rgba(251, 191, 36, 0.12);
-            color: #fbbf24;
-        }
-
-        .modal-title {
-            font-size: 20px;
-            font-weight: 800;
-            color: #fff;
-            text-align: center;
-            margin-bottom: 6px;
-        }
-
-        .modal-subtitle {
-            font-size: 14px;
-            color: #9ca3af;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .modal-body {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 16px;
-        }
-
-        .modal-body p {
-            color: #d1d5db;
-            font-size: 14px;
-            line-height: 1.8;
-        }
-
-        .modal-close-btn {
-            width: 100%;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 12px;
-            color: #9ca3af;
-            font-weight: 600;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .modal-close-btn:hover {
-            background: rgba(255, 255, 255, 0.06);
-            color: #fff;
-        }
-
-        .github-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            padding: 14px 20px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 12px;
-            color: #d1d5db;
-            font-weight: 600;
-            font-size: 15px;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            width: 100%;
-        }
-
-        .github-btn:hover {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: rgba(139, 92, 246, 0.3);
-            transform: translateY(-2px);
-        }
-
-        .github-btn i {
-            font-size: 24px;
-            color: #a78bfa;
-        }
-
-        .github-btn span {
-            color: #fff;
-        }
-
-        .github-btn .external-icon {
-            font-size: 12px;
-            color: #6b7280;
-        }
-
-        .privacy-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .privacy-list li {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            padding: 6px 0;
-            color: #d1d5db;
-            font-size: 14px;
-        }
-
-        .privacy-list li i {
-            color: #34d399;
-            font-size: 14px;
-            margin-top: 3px;
-        }
-
         .logout-btn-danger {
             background: #dc2626;
             transition: all 0.3s ease;
@@ -469,507 +261,6 @@
             background: rgba(255, 255, 255, 0.1);
         }
 
-        .invoice-card {
-            background: #0c0c14;
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            border-radius: 20px;
-            padding: 0;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.5);
-            max-width: 520px;
-            margin: 0 auto;
-            transition: all 0.4s ease;
-        }
-
-        .invoice-card:hover {
-            border-color: rgba(139, 92, 246, 0.2);
-            box-shadow: 0 25px 70px -20px rgba(139, 92, 246, 0.15);
-            transform: translateY(-4px);
-        }
-
-        .invoice-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #7c3aed, #a78bfa, #7c3aed, transparent);
-            background-size: 200% 100%;
-            animation: shimmerBorder 3s linear infinite;
-        }
-
-        @keyframes shimmerBorder {
-            0% {
-                background-position: 200% 0;
-            }
-
-            100% {
-                background-position: -200% 0;
-            }
-        }
-
-        .invoice-header {
-            padding: 20px 24px;
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(124, 58, 237, 0.02));
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 16px;
-            flex-wrap: wrap;
-        }
-
-        .brand-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #7c3aed, #a78bfa);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            font-weight: 900;
-            color: #fff;
-            box-shadow: 0 8px 20px rgba(124, 58, 237, 0.3);
-            flex-shrink: 0;
-        }
-
-        .brand-name {
-            font-size: 16px;
-            font-weight: 800;
-            color: #fff;
-        }
-
-        .brand-meta {
-            font-size: 10px;
-            color: #6b7280;
-            margin-top: 2px;
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .brand-meta i {
-            font-size: 11px;
-            color: #a78bfa;
-        }
-
-        .tracking-label {
-            font-size: 8px;
-            color: #6b7280;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-
-        .tracking-code {
-            font-family: 'Courier New', monospace;
-            font-size: 16px;
-            font-weight: 900;
-            color: #a78bfa;
-            letter-spacing: 2px;
-        }
-
-        .invoice-body {
-            padding: 20px 24px;
-        }
-
-        .status-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 5px 12px;
-            border-radius: 50px;
-            font-size: 10px;
-            font-weight: 700;
-        }
-
-        .status-paid {
-            background: rgba(16, 185, 129, 0.08);
-            border: 1px solid rgba(16, 185, 129, 0.2);
-            color: #34d399;
-        }
-
-        .status-pending {
-            background: rgba(245, 158, 11, 0.08);
-            border: 1px solid rgba(245, 158, 11, 0.2);
-            color: #fbbf24;
-        }
-
-        .status-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: currentColor;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0.4;
-            }
-        }
-
-        .invoice-number-badge {
-            font-size: 11px;
-            color: #6b7280;
-        }
-
-        .invoice-number-badge strong {
-            color: #a78bfa;
-            font-size: 13px;
-        }
-
-        .member-section {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            border-radius: 12px;
-            padding: 14px 18px;
-            margin-bottom: 14px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .member-section::before {
-            content: '';
-            position: absolute;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            width: 3px;
-            background: linear-gradient(180deg, #7c3aed, #a78bfa);
-        }
-
-        .member-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .member-avatar {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(124, 58, 237, 0.1));
-            border: 1px solid rgba(139, 92, 246, 0.25);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            font-weight: 800;
-            color: #a78bfa;
-            flex-shrink: 0;
-        }
-
-        .member-info .member-name {
-            font-size: 14px;
-            font-weight: 800;
-            color: #fff;
-        }
-
-        .member-info .member-details {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-top: 2px;
-        }
-
-        .member-info .member-detail {
-            font-size: 10px;
-            color: #6b7280;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .member-info .member-detail i {
-            font-size: 11px;
-            color: #a78bfa;
-        }
-
-        .member-right {
-            text-align: left;
-        }
-
-        .member-right .member-label {
-            font-size: 8px;
-            color: #6b7280;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-
-        .member-right .member-id {
-            font-size: 12px;
-            font-weight: 700;
-            color: #a78bfa;
-            font-family: 'Courier New', monospace;
-            letter-spacing: 1px;
-        }
-
-        .plan-box {
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.06), rgba(124, 58, 237, 0.02));
-            border: 1px solid rgba(139, 92, 246, 0.15);
-            border-radius: 12px;
-            padding: 14px 18px;
-            margin-bottom: 14px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .plan-box::after {
-            content: '';
-            position: absolute;
-            left: -20px;
-            top: -20px;
-            width: 70px;
-            height: 70px;
-            background: radial-gradient(circle, rgba(139, 92, 246, 0.1), transparent);
-            border-radius: 50%;
-        }
-
-        .plan-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-            position: relative;
-            z-index: 1;
-        }
-
-        .plan-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .plan-icon {
-            width: 32px;
-            height: 32px;
-            background: rgba(139, 92, 246, 0.15);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            color: #a78bfa;
-        }
-
-        .plan-info .plan-label {
-            font-size: 8px;
-            color: #6b7280;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-
-        .plan-info .plan-name {
-            font-size: 13px;
-            font-weight: 800;
-            color: #a78bfa;
-        }
-
-        .plan-price {
-            font-size: 16px;
-            font-weight: 900;
-            color: #fff;
-        }
-
-        .plan-price small {
-            font-size: 10px;
-            color: #6b7280;
-            font-weight: 400;
-        }
-
-        .items-section {
-            margin-bottom: 14px;
-        }
-
-        .items-title {
-            font-size: 9px;
-            font-weight: 700;
-            color: #6b7280;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-bottom: 6px;
-            letter-spacing: 0.5px;
-        }
-
-        .items-title i {
-            font-size: 12px;
-            color: #a78bfa;
-        }
-
-        .items-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 6px;
-        }
-
-        .items-column {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .items-column-title {
-            font-size: 8px;
-            font-weight: 700;
-            color: #6b7280;
-            margin-bottom: 2px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            letter-spacing: 0.3px;
-        }
-
-        .items-column-title i {
-            font-size: 10px;
-        }
-
-        .cafe-column .items-column-title {
-            color: #34d399;
-        }
-
-        .discount-column .items-column-title {
-            color: #f87171;
-        }
-
-        .item-card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            border-radius: 8px;
-            padding: 6px 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .item-name {
-            color: #9ca3af;
-            font-size: 10px;
-        }
-
-        .item-price {
-            font-weight: 700;
-            font-size: 10px;
-        }
-
-        .cafe-column .item-price {
-            color: #34d399;
-        }
-
-        .discount-column .item-price {
-            color: #f87171;
-        }
-
-        .note-box {
-            background: rgba(245, 158, 11, 0.04);
-            border: 1px dashed rgba(245, 158, 11, 0.15);
-            border-radius: 8px;
-            padding: 8px 12px;
-            color: #fcd34d;
-            font-size: 10px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-bottom: 14px;
-        }
-
-        .invoice-footer {
-            padding: 14px 24px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            background: rgba(0, 0, 0, 0.2);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .footer-date {
-            font-size: 10px;
-            color: #6b7280;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .footer-date i {
-            color: #a78bfa;
-        }
-
-        .total-label {
-            font-size: 9px;
-            color: #6b7280;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-
-        .total-amount {
-            font-size: 20px;
-            font-weight: 900;
-            color: #a78bfa;
-        }
-
-        .total-amount small {
-            font-size: 11px;
-            color: #6b7280;
-            font-weight: 400;
-        }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 16px;
-            background: rgba(139, 92, 246, 0.08);
-            border: 1px solid rgba(139, 92, 246, 0.15);
-            border-radius: 50px;
-            font-size: 12px;
-            color: #a78bfa;
-            font-weight: 600;
-            letter-spacing: 0.3px;
-            animation: pulseGlow 2s infinite;
-        }
-
-        .hero-badge i {
-            font-size: 14px;
-        }
-
-        @keyframes pulseGlow {
-
-            0%,
-            100% {
-                box-shadow: 0 0 20px rgba(139, 92, 246, 0.05);
-            }
-
-            50% {
-                box-shadow: 0 0 30px rgba(139, 92, 246, 0.15);
-            }
-        }
-
         .floating-icon {
             position: absolute;
             opacity: 0.06;
@@ -980,7 +271,6 @@
         }
 
         @keyframes float {
-
             0%,
             100% {
                 transform: translateY(0) rotate(0deg);
@@ -1001,7 +291,6 @@
         }
 
         @keyframes floatReverse {
-
             0%,
             100% {
                 transform: translateY(0) rotate(0deg);
@@ -1017,6 +306,7 @@
             font-weight: 900;
             color: #a78bfa;
             font-feature-settings: "tnum";
+            direction: ltr;
         }
 
         @media (min-width: 768px) {
@@ -1047,447 +337,902 @@
             transform: scale(1);
         }
 
+        /* ===== Header CTA (New Invoice Button) ===== */
+        .header-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 18px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+            color: #fff;
+            font-weight: 700;
+            font-size: 13px;
+            text-decoration: none;
+            border: 1px solid rgba(139, 92, 246, 0.4);
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 16px -4px rgba(124, 58, 237, 0.5);
+        }
+
+        .header-cta:hover {
+            background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px -4px rgba(139, 92, 246, 0.6);
+        }
+
+        .header-cta:active {
+            transform: translateY(0) scale(0.97);
+        }
+
+        .header-cta i {
+            font-size: 14px;
+        }
+
+        .header-cta-sm {
+            width: 42px;
+            height: 42px;
+            padding: 0;
+            justify-content: center;
+            border-radius: 12px;
+        }
+
+        /* ===== User Dropdown (New Style) ===== */
+        .dropdown-trigger {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 4px 12px 4px 6px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            color: #e5e7eb;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .dropdown-trigger:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(139, 92, 246, 0.35);
+        }
+
+        .avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+            color: #fff;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px -2px rgba(124, 58, 237, 0.5);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 0;
+            min-width: 260px;
+            background: #14141f;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 10px;
+            box-shadow: 0 25px 50px -15px rgba(0, 0, 0, 0.7);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-8px) scale(0.97);
+            transition: all 0.25s cubic-bezier(0.23, 1, 0.32, 1);
+            z-index: 100;
+        }
+
+        .dropdown-menu.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            color: #9ca3af;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            text-decoration: none;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: right;
+            font-family: 'Sahel', sans-serif !important;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(139, 92, 246, 0.08);
+            color: #c4b5fd;
+        }
+
+        .dropdown-item i {
+            font-size: 17px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .dropdown-item.danger:hover {
+            background: rgba(220, 38, 38, 0.12);
+            color: #f87171;
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.05);
+            margin: 6px 8px;
+        }
+
+        /* ===== Footer (Simple) ===== */
+        .site-footer {
+            background: #08080f;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 48px;
+        }
+
+        .footer-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 20px 24px;
+        }
+
+        @media (min-width: 768px) {
+            .footer-inner {
+                padding: 56px 24px 24px;
+            }
+        }
+
+        .footer-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 24px;
+            padding-bottom: 28px;
+            margin-bottom: 28px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-brand-block {
+            flex: 1;
+            min-width: 0;
+            max-width: 420px;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 900;
+            color: #fff;
+            font-size: 18px;
+            text-decoration: none;
+            margin-bottom: 10px;
+        }
+
+        .footer-logo-box {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 900;
+            font-size: 16px;
+            box-shadow: 0 4px 14px -4px rgba(124, 58, 237, 0.5);
+        }
+
+        .footer-desc {
+            font-size: 13px;
+            color: #6b7280;
+            line-height: 1.9;
+            margin-bottom: 0;
+        }
+
+        .footer-oss {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 16px;
+            border-radius: 10px;
+            background: rgba(139, 92, 246, 0.08);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            color: #c4b5fd;
+            font-size: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            flex-shrink: 0;
+            align-self: flex-start;
+        }
+
+        .footer-oss:hover {
+            background: rgba(139, 92, 246, 0.15);
+            border-color: rgba(139, 92, 246, 0.4);
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+        .footer-oss i:first-child {
+            font-size: 14px;
+        }
+
+        .footer-oss i:last-child {
+            font-size: 11px;
+            opacity: 0.7;
+        }
+
         @media (max-width: 640px) {
-            .invoice-header {
-                padding: 16px;
-            }
-
-            .invoice-body {
-                padding: 16px;
-            }
-
-            .invoice-footer {
-                padding: 12px 16px;
-            }
-
-            .items-grid {
-                grid-template-columns: 1fr !important;
-            }
-
-            .member-section {
+            .footer-top {
                 flex-direction: column;
-                align-items: flex-start;
+                gap: 16px;
             }
 
-            .member-right {
+            .footer-oss {
+                align-self: flex-start;
+            }
+        }
+
+        .footer-sections {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        @media (min-width: 768px) {
+            .footer-sections {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 40px;
+            }
+        }
+
+        .footer-group {
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .footer-group:last-child {
+            border-bottom: none;
+        }
+
+        @media (min-width: 768px) {
+            .footer-group {
+                padding: 0;
+                border-bottom: none;
+            }
+        }
+
+        .footer-col-title {
+            font-size: 12px;
+            font-weight: 800;
+            color: #e5e7eb;
+            margin-bottom: 12px;
+            letter-spacing: 0.4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .footer-col-title i {
+            color: #a78bfa;
+            font-size: 13px;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-links a {
+            color: #6b7280;
+            font-size: 13px;
+            text-decoration: none;
+            transition: color 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 0;
+        }
+
+        .footer-links a:hover {
+            color: #c4b5fd;
+        }
+
+        .footer-links a i {
+            font-size: 13px;
+            opacity: 0.7;
+            width: 16px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .footer-bottom {
+            padding-top: 20px;
+            margin-top: 28px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #4a4a63;
+            text-align: center;
+        }
+
+        @media (min-width: 640px) {
+            .footer-bottom {
+                flex-direction: row;
+                justify-content: space-between;
                 text-align: right;
-                width: 100%;
+                margin-top: 32px;
+            }
+        }
+
+        /* ===== Official modal ===== */
+        .official-modal .modal-dialog {
+            background: #0f0f1a;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 0;
+            max-width: 560px;
+            width: 92%;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            max-height: 90vh;
+        }
+
+        .om-head {
+            padding: 32px 32px 24px;
+            text-align: center;
+            background:
+                radial-gradient(circle at 30% 0%, rgba(139, 92, 246, 0.12), transparent 60%),
+                radial-gradient(circle at 80% 100%, rgba(16, 185, 129, 0.06), transparent 60%),
+                linear-gradient(180deg, rgba(139, 92, 246, 0.04), transparent);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+        }
+
+        .om-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 24px;
+            margin: 0 auto 16px;
+            box-shadow: 0 10px 30px -10px rgba(124, 58, 237, 0.5);
+        }
+
+        .om-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        .om-sub {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .om-body {
+            padding: 28px 32px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .om-text {
+            font-size: 14px;
+            color: #9ca3af;
+            line-height: 2;
+        }
+
+        .om-text strong {
+            color: #c4b5fd;
+            font-weight: 700;
+        }
+
+        .om-contact-card {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px 18px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            text-decoration: none;
+            color: #e5e7eb;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.25s ease;
+            margin-bottom: 12px;
+        }
+
+        .om-contact-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .om-contact-card:hover {
+            background: rgba(139, 92, 246, 0.06);
+            border-color: rgba(139, 92, 246, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .om-contact-card .cc-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: rgba(139, 92, 246, 0.1);
+            color: #c4b5fd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .om-contact-card .cc-text {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .om-contact-card .cc-label {
+            font-size: 11px;
+            color: #6b7280;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .om-contact-card .cc-value {
+            font-size: 13px;
+            color: #c4b5fd;
+            direction: ltr;
+            text-align: right;
+        }
+
+        .om-foot {
+            padding: 20px 32px 24px;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .om-btn-ghost {
+            padding: 10px 22px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #9ca3af;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Sahel', sans-serif !important;
+        }
+
+        .om-btn-ghost:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+        }
+
+        @media (max-width: 640px) {
+            .header-cta span {
+                display: none;
             }
 
-            .plan-content {
-                flex-direction: column;
-                align-items: flex-start;
+            .om-head {
+                padding: 24px 20px 20px;
             }
+
+            .om-body {
+                padding: 20px;
+            }
+
+            .om-foot {
+                padding: 16px 20px 20px;
+            }
+
+            .om-title {
+                font-size: 17px;
+            }
+        }
+    </style>
+
+    <%- include('partials/invoice-sheet-css') %>
+
+    <style>
+        .fx-theme-chip {
+            background: rgba(255, 255, 255, 0.03);
+            cursor: pointer;
+        }
+
+        .fx-theme-chip.is-on {
+            background: rgba(139, 92, 246, 0.18);
+            border-color: rgba(167, 139, 250, 0.55);
+            color: #fff;
+        }
+
+        .fx-theme-chip[data-theme="luxe"].is-on {
+            background: linear-gradient(135deg, rgba(184, 134, 11, 0.35), rgba(232, 200, 114, 0.2));
+            border-color: rgba(232, 200, 114, 0.7);
+            color: #f6e7a8;
         }
     </style>
 </head>
 
 <body class="antialiased bg-[#050508] grid-bg">
 
-    <nav class="fixed top-0 right-0 left-0 z-50 px-4 md:px-6 py-5">
-        <div class="max-w-6xl mx-auto glass-nav rounded-2xl px-4 md:px-6 py-3 flex items-center justify-between">
+    <nav class="fixed top-0 right-0 left-0 z-50 px-4 md:px-6 py-4">
+        <div class="max-w-5xl mx-auto glass-nav rounded-2xl px-4 md:px-5 py-2.5 flex items-center justify-between">
             <a href="/" class="flex items-center gap-2.5 no-underline shrink-0 group">
-                <div
-                    class="w-9 h-9 bg-accent-700 rounded-lg flex items-center justify-center text-white font-extrabold text-lg transition-transform group-hover:scale-105">
+                <div class="w-9 h-9 bg-gradient-to-br from-accent-700 to-accent-500 rounded-xl flex items-center justify-center text-white font-extrabold text-lg shadow-glow group-hover:shadow-glow-lg transition-all">
                     ف
                 </div>
-                <span class="font-extrabold text-xl md:text-2xl text-white tracking-tight">فاکتوریتو</span>
+                <span class="font-extrabold text-xl md:text-2xl text-white tracking-tight group-hover:text-accent-400 transition-colors">فاکتوریتو</span>
             </a>
-            <div class="flex items-center gap-2.5">
-                <% if (typeof user !=='undefined' && user) { %>
-                    <a href="/invoices/new"
-                        class="btn-primary hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-white font-semibold text-sm">
-                        <i class="bi bi-plus-lg"></i> فاکتور جدید
+
+            <div class="flex items-center gap-2">
+                <% if (typeof user !== 'undefined' && user) { %>
+                    <!-- New Invoice Button -->
+                    <a href="/invoices/new" class="header-cta hidden sm:inline-flex">
+                        <i class="bi bi-plus-lg"></i>
+                        <span>فاکتور جدید</span>
                     </a>
-                    <a href="/invoices/new"
-                        class="btn-primary sm:hidden inline-flex items-center justify-center w-10 h-10 rounded-xl text-white">
-                        <i class="bi bi-plus-lg text-lg"></i>
+                    <a href="/invoices/new" class="header-cta header-cta-sm sm:hidden" aria-label="فاکتور جدید">
+                        <i class="bi bi-plus-lg"></i>
                     </a>
+
+                    <!-- User Dropdown -->
                     <div class="relative" id="userDropdown">
-                        <button class="dropdown-trigger" onclick="toggleDropdown(event)" aria-label="User menu">
+                        <button class="dropdown-trigger" onclick="toggleDropdown(event)" aria-label="منوی کاربری">
                             <div class="avatar">
-                                <%= user.username ? user.username.charAt(0).toUpperCase() : 'U' %>
+                                <%= ((user && user.username) || 'U').charAt(0).toUpperCase() %>
                             </div>
                             <span class="hidden sm:block max-w-[90px] truncate text-sm">
-                                <%= user.username || 'کاربر' %>
+                                <%= (user && user.username) || 'کاربر' %>
                             </span>
-                            <span class="chevron-icon hidden sm:inline-flex" id="dropdownCaret">
+                            <span class="hidden sm:inline-flex items-center justify-center transition-transform duration-300 text-[10px] text-gray-500" id="dropdownCaret">
                                 <i class="bi bi-chevron-down"></i>
                             </span>
                         </button>
+
                         <div class="dropdown-menu" id="dropdownMenu">
                             <div class="px-4 py-3">
                                 <div class="flex items-center gap-3 mb-3">
                                     <div class="avatar w-11 h-11 text-base">
-                                        <%= user.username ? user.username.charAt(0).toUpperCase() : 'U' %>
+                                        <%= ((user && user.username) || 'U').charAt(0).toUpperCase() %>
                                     </div>
                                     <div>
-                                        <div class="text-sm font-bold text-white">
-                                            <%= user.username || 'کاربر' %>
-                                        </div>
-                                        <div class="text-xs text-gray-500">
-                                            <%= user.email || '' %>
-                                        </div>
+                                        <div class="text-sm font-bold text-white"><%= (user && user.username) || 'کاربر' %></div>
+                                        <div class="text-xs text-gray-500"><%= user ? user.email : '' %></div>
                                     </div>
                                 </div>
-                                <% if (user.clubName) { %>
-                                    <div
-                                        class="bg-accent-700/10 border border-accent-700/20 rounded-lg px-3 py-2 text-xs text-accent-400 flex items-center gap-2">
-                                        <i class="bi bi-building"></i>
-                                        <%= user.clubName %>
-                                    </div>
-                                    <% } %>
+                                <% if (user && user.clubName) { %>
+                                <div class="bg-accent-700/10 border border-accent-700/20 rounded-lg px-3 py-2 text-xs text-accent-400 flex items-center gap-2">
+                                    <i class="bi bi-building"></i> <%= user.clubName %>
+                                </div>
+                                <% } %>
                             </div>
                             <div class="dropdown-divider"></div>
                             <a href="/dashboard" class="dropdown-item"><i class="bi bi-speedometer2"></i> داشبورد</a>
                             <a href="/profile" class="dropdown-item"><i class="bi bi-person"></i> پروفایل</a>
                             <a href="/invoices" class="dropdown-item"><i class="bi bi-receipt"></i> فاکتورهای من</a>
-                            <a href="/settings" class="dropdown-item"><i class="bi bi-gear"></i> تنظیمات</a>
+                            <a href="/settings" class="dropdown-item"><i class="bi bi-gear"></i> تنظیمات و برندینگ</a>
                             <div class="dropdown-divider"></div>
-                            <button onclick="openModal('logoutConfirmModal'); closeDropdown();"
-                                class="dropdown-item w-full danger">
-                                <i class="bi bi-box-arrow-right"></i> خروج
+                            <button onclick="openModal('logoutConfirmModal'); closeDropdown();" class="dropdown-item danger">
+                                <i class="bi bi-box-arrow-right"></i> خروج از حساب
                             </button>
                         </div>
                     </div>
-                    <% } else { %>
-                        <a href="/auth/login"
-                            class="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-gray-400 hover:text-white hover:bg-white/5 transition-all text-sm">
-                            ورود
-                        </a>
-                        <a href="/auth/register"
-                            class="btn-primary inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-white font-semibold text-sm">
-                            شروع رایگان <i class="bi bi-arrow-left"></i>
-                        </a>
-                        <% } %>
+                <% } else { %>
+                    <a href="/auth/login" class="hidden sm:inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold text-gray-400 hover:text-white hover:bg-white/5 transition-all text-sm">
+                        ورود
+                    </a>
+                    <a href="/auth/register" class="header-cta">
+                        <i class="bi bi-rocket-takeoff"></i>
+                        <span>شروع رایگان</span>
+                    </a>
+                <% } %>
             </div>
         </div>
     </nav>
 
-    <section class="relative pt-36 pb-12 md:pt-48 md:pb-20 px-4 max-w-5xl mx-auto text-center overflow-hidden">
-        <div class="floating-icon" style="top: 10%; right: 5%;"><i class="bi bi-receipt"></i></div>
-        <div class="floating-icon-2" style="bottom: 15%; left: 3%;"><i class="bi bi-calculator"></i></div>
-        <div class="floating-icon" style="top: 20%; left: 8%; font-size: 50px; animation-delay: 2s;"><i
-                class="bi bi-tag"></i></div>
-        <div class="floating-icon-2" style="bottom: 25%; right: 6%; font-size: 60px; animation-delay: 3s;"><i
-                class="bi bi-share"></i></div>
+    <main id="main">
+        <section class="relative pt-36 pb-12 md:pt-48 md:pb-20 px-4 max-w-5xl mx-auto text-center overflow-hidden">
+            <div class="floating-icon" style="top: 10%; right: 5%;"><i class="bi bi-receipt"></i></div>
+            <div class="floating-icon-2" style="bottom: 15%; left: 3%;"><i class="bi bi-calculator"></i></div>
+            <div class="floating-icon" style="top: 20%; left: 8%; font-size: 50px; animation-delay: 2s;"><i class="bi bi-tag"></i></div>
+            <div class="floating-icon-2" style="bottom: 25%; right: 6%; font-size: 60px; animation-delay: 3s;"><i class="bi bi-share"></i></div>
 
-        <div
-            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-accent-700/10 rounded-full blur-[120px] pointer-events-none">
-        </div>
-        <div
-            class="absolute top-1/3 right-0 w-[300px] h-[300px] bg-accent-500/5 rounded-full blur-[100px] pointer-events-none">
-        </div>
-        <div
-            class="absolute bottom-1/3 left-0 w-[300px] h-[300px] bg-emerald-500/5 rounded-full blur-[100px] pointer-events-none">
-        </div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-accent-700/10 rounded-full blur-[120px] pointer-events-none"></div>
+            <div class="absolute top-1/3 right-0 w-[300px] h-[300px] bg-accent-500/5 rounded-full blur-[100px] pointer-events-none"></div>
+            <div class="absolute bottom-1/3 left-0 w-[300px] h-[300px] bg-emerald-500/5 rounded-full blur-[100px] pointer-events-none"></div>
 
-        <div class="relative z-10">
-            <div class="hero-badge mb-6 scroll-reveal">
-                <i class="bi bi-rocket-takeoff"></i>
-                <span>سامانه حرفه‌ای صدور فاکتور</span>
-                <i class="bi bi-check-circle-fill text-emerald-400 text-xs"></i>
-            </div>
+            <div class="relative z-10">
+                <h1 class="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight text-white mb-6 leading-tight scroll-reveal">
+                    فاکتور حرفه‌ای
+                    <br />
+                    <span class="hero-gradient">در یک دقیقه</span>
+                </h1>
+                <p class="text-base md:text-lg text-gray-400 max-w-xl mx-auto mb-8 leading-relaxed scroll-reveal" style="transition-delay: 0.1s;">
+                    فاکتورهای زیبا و استاندارد با شماره خودکار، تخفیف درصدی و مبلغی بسازید،
+                    لینک اختصاصی بگیرید و با کیفیت بالا دانلود کنید.
+                </p>
 
-            <h1
-                class="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight text-white mb-6 leading-tight scroll-reveal">
-                فاکتور حرفه‌ای
-                <br />
-                <span class="hero-gradient">در یک دقیقه</span>
-            </h1>
-            <p class="text-base md:text-lg text-gray-400 max-w-xl mx-auto mb-8 leading-relaxed scroll-reveal"
-                style="transition-delay: 0.1s;">
-                فاکتورهای زیبا و استاندارد با شماره خودکار، تخفیف درصدی و مبلغی بسازید،
-                لینک اختصاصی بگیرید و با کیفیت بالا دانلود کنید.
-            </p>
-
-            <div class="flex items-center justify-center gap-6 mb-8 scroll-reveal" style="transition-delay: 0.15s;">
-                <div class="flex items-center gap-2 text-xs text-gray-500">
-                    <i class="bi bi-shield-check text-emerald-400 text-sm"></i>
-                    <span>امنیت SSL</span>
-                </div>
-                <div class="w-px h-4 bg-white/10"></div>
-                <div class="flex items-center gap-2 text-xs text-gray-500">
-                    <i class="bi bi-clock text-accent-400 text-sm"></i>
-                    <span>پشتیبانی 24/7</span>
-                </div>
-                <div class="w-px h-4 bg-white/10"></div>
-                <div class="flex items-center gap-2 text-xs text-gray-500">
-                    <i class="bi bi-download text-accent-400 text-sm"></i>
-                    <span>خروجی PNG</span>
-                </div>
-            </div>
-
-            <div class="invoice-card mb-12 scroll-reveal-scale" style="transition-delay: 0.2s;">
-                <div class="invoice-header">
-                    <div style="display:flex;align-items:center;gap:12px;">
-                        <div class="brand-icon">ف</div>
-                        <div>
-                            <div class="brand-name">باشگاه ورزشی المپیک</div>
-                            <div class="brand-meta">
-                                <span><i class="bi bi-telephone"></i> 09123456789</span>
-                                <span><i class="bi bi-geo-alt"></i> تهران، خیابان ولیعصر</span>
-                            </div>
-                        </div>
+                <div class="flex items-center justify-center gap-6 mb-8 scroll-reveal" style="transition-delay: 0.15s;">
+                    <div class="flex items-center gap-2 text-xs text-gray-500">
+                        <i class="bi bi-shield-check text-emerald-400 text-sm"></i>
+                        <span>امنیت SSL</span>
                     </div>
-                    <div style="text-align:center;">
-                        <div class="tracking-label">کد پیگیری</div>
-                        <div class="tracking-code">TRK-98765432</div>
+                    <div class="w-px h-4 bg-white/10"></div>
+                    <div class="flex items-center gap-2 text-xs text-gray-500">
+                        <i class="bi bi-clock text-accent-400 text-sm"></i>
+                        <span>پشتیبانی 24/7</span>
+                    </div>
+                    <div class="w-px h-4 bg-white/10"></div>
+                    <div class="flex items-center gap-2 text-xs text-gray-500">
+                        <i class="bi bi-download text-accent-400 text-sm"></i>
+                        <span>خروجی PNG</span>
                     </div>
                 </div>
 
-                <div class="invoice-body">
-                    <div class="status-row">
-                        <span class="status-badge status-paid">
-                            <span class="status-dot"></span>
-                            پرداخت شده
-                        </span>
-                        <span class="invoice-number-badge">فاکتور <strong>INV-1403-0042</strong></span>
-                    </div>
-
-                    <div class="member-section">
-                        <div class="member-left">
-                            <div class="member-avatar">م</div>
-                            <div class="member-info">
-                                <div class="member-name">محمد رضایی</div>
-                                <div class="member-details">
-                                    <span class="member-detail"><i class="bi bi-telephone"></i> 09123456789</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="member-right">
-                            <div class="member-label">کد عضویت</div>
-                            <div class="member-id">M-10042</div>
-                        </div>
-                    </div>
-
-                    <div class="plan-box">
-                        <div class="plan-content">
-                            <div class="plan-left">
-                                <div class="plan-icon"><i class="bi bi-tag"></i></div>
-                                <div class="plan-info">
-                                    <div class="plan-label">پلن انتخابی</div>
-                                    <div class="plan-name">پلن طلایی 3 ماهه</div>
-                                </div>
-                            </div>
-                            <div class="plan-price">2,450,000 <small>تومان</small></div>
-                        </div>
-                    </div>
-
-                    <div class="items-section">
-                        <div class="items-title"><i class="bi bi-plus-slash-minus"></i> آیتم‌ها</div>
-                        <div class="items-grid">
-                            <div class="items-column cafe-column">
-                                <div class="items-column-title"><i class="bi bi-plus-circle"></i> آیتم‌های اضافه</div>
-                                <div class="item-card">
-                                    <span class="item-name">مکمل پروتئین</span>
-                                    <span class="item-price">350,000 تومان</span>
-                                </div>
-                                <div class="item-card">
-                                    <span class="item-name">جلسه مربی خصوصی</span>
-                                    <span class="item-price">450,000 تومان</span>
-                                </div>
-                            </div>
-                            <div class="items-column discount-column">
-                                <div class="items-column-title"><i class="bi bi-percent"></i> تخفیف‌ها</div>
-                                <div class="item-card">
-                                    <span class="item-name">تخفیف ویژه (15٪)</span>
-                                    <span class="item-price">-487,500 تومان</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="note-box">
-                        <i class="bi bi-pencil"></i> این فاکتور شامل تخفیف ویژه اعضای طلایی می‌باشد.
-                    </div>
+                <div class="flex flex-wrap items-center justify-center gap-2 mb-5 scroll-reveal" id="fxThemes" style="transition-delay:.15s;">
+                    <% themes.forEach(function (t) { %>
+                    <button type="button" data-theme="<%= t.key %>" title="<%= t.hint %>"
+                        class="fx-theme-chip px-4 py-1.5 rounded-full text-xs font-bold border border-white/10 text-gray-300 hover:border-white/30 transition <%= t.key === sheet.theme ? 'is-on' : '' %>">
+                        <%= t.label %><% if (t.key === 'luxe') { %> <i class="bi bi-stars"></i><% } %>
+                    </button>
+                    <% }); %>
                 </div>
 
-                <div class="invoice-footer">
-                    <div class="footer-date"><i class="bi bi-calendar3"></i> 1403/06/15</div>
-                    <div style="text-align:left;">
-                        <div class="total-label">مبلغ قابل پرداخت</div>
-                        <div class="total-amount">2,762,500 <small>تومان</small></div>
-                    </div>
+                <div class="mb-12 scroll-reveal-scale" style="transition-delay: 0.2s;">
+                    <%- include('partials/invoice-sheet', { sheet: sheet }) %>
                 </div>
-            </div>
 
-            <div class="flex flex-col sm:flex-row gap-3 justify-center items-center mb-14">
-                <% if (typeof user !=='undefined' && user) { %>
-                    <a href="/invoices/new"
-                        class="btn-primary w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl text-white font-bold text-base scroll-reveal"
-                        style="transition-delay: 0.25s;">
-                        <i class="bi bi-plus-lg"></i> ساخت فاکتور جدید
-                    </a>
+                <div class="flex flex-col sm:flex-row gap-3 justify-center items-center mb-14">
+                    <% if (typeof user !== 'undefined' && user) { %>
+                        <a href="/invoices/new"
+                            class="btn-primary w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl text-white font-bold text-base scroll-reveal"
+                            style="transition-delay: 0.25s;">
+                            <i class="bi bi-plus-lg"></i> ساخت فاکتور جدید
+                        </a>
                     <% } else { %>
                         <a href="/auth/register"
                             class="btn-primary w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl text-white font-bold text-base scroll-reveal"
                             style="transition-delay: 0.25s;">
                             <i class="bi bi-rocket-takeoff"></i> شروع رایگان
                         </a>
-                        <% } %>
-                            <a href="#features"
-                                class="btn-secondary w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl text-gray-300 font-bold text-base scroll-reveal"
-                                style="transition-delay: 0.3s;">
-                                مشاهده امکانات <i class="bi bi-chevron-down"></i>
-                            </a>
-            </div>
-
-            <div
-                class="inline-flex items-stretch bg-[#0c0c14] border border-white/5 rounded-2xl overflow-hidden divide-x divide-white/5">
-                <div class="stat-item px-6 md:px-10 py-4 text-center scroll-reveal" style="transition-delay: 0.3s;">
-                    <div class="counter-number text-2xl md:text-3xl font-black text-accent-400" data-target="120"
-                        data-suffix="+">0</div>
-                    <div class="text-xs text-gray-500 mt-1">کاربر فعال</div>
-                </div>
-                <div class="stat-item px-6 md:px-10 py-4 text-center scroll-reveal" style="transition-delay: 0.35s;">
-                    <div class="counter-number text-2xl md:text-3xl font-black text-accent-400" data-target="8500"
-                        data-suffix="+">0</div>
-                    <div class="text-xs text-gray-500 mt-1">فاکتور صادر شده</div>
-                </div>
-                <div class="px-6 md:px-10 py-4 text-center scroll-reveal" style="transition-delay: 0.4s;">
-                    <div class="counter-number text-2xl md:text-3xl font-black text-accent-400" data-target="99"
-                        data-suffix="%">0</div>
-                    <div class="text-xs text-gray-500 mt-1">رضایت کاربران</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="features" class="py-16 md:py-28 px-4 max-w-6xl mx-auto">
-        <div class="text-center mb-14 md:mb-20">
-            <div
-                class="flex items-center justify-center gap-2 text-xs text-accent-400 font-semibold mb-4 scroll-reveal">
-                <i class="bi bi-stars"></i>
-                <span>امکانات</span>
-            </div>
-            <h2 class="text-3xl md:text-4xl lg:text-5xl font-black text-white mb-4 scroll-reveal">
-                همه چیز برای یک فاکتور حرفه‌ای
-            </h2>
-            <p class="text-gray-400 text-base md:text-lg max-w-lg mx-auto scroll-reveal"
-                style="transition-delay: 0.1s;">
-                ابزارهای کامل برای ساخت فاکتورهای استاندارد و زیبا
-            </p>
-        </div>
-
-        <div class="grid md:grid-cols-3 gap-5 md:gap-6">
-            <div class="feature-card rounded-2xl p-6 md:p-8 scroll-reveal-scale" style="transition-delay: 0.1s;">
-                <div
-                    class="feature-icon w-12 h-12 bg-accent-700/10 rounded-xl flex items-center justify-center text-accent-400 text-2xl mb-5">
-                    <i class="bi bi-receipt"></i>
-                </div>
-                <h3 class="text-lg font-extrabold text-white mb-3">ساخت سریع فاکتور</h3>
-                <p class="text-gray-400 text-sm leading-relaxed mb-6">فاکتورهای حرفه‌ای با شماره خودکار، آیتم‌های دلخواه
-                    و محاسبه خودکار مجموع</p>
-                <ul class="space-y-2.5">
-                    <li class="flex items-center gap-2 text-sm text-gray-300">
-                        <i class="bi bi-check-circle-fill text-emerald-500 text-sm"></i> شماره فاکتور خودکار
-                    </li>
-                    <li class="flex items-center gap-2 text-sm text-gray-300">
-                        <i class="bi bi-check-circle-fill text-emerald-500 text-sm"></i> افزودن آیتم‌های دلخواه
-                    </li>
-                    <li class="flex items-center gap-2 text-sm text-gray-300">
-                        <i class="bi bi-check-circle-fill text-emerald-500 text-sm"></i> محاسبه خودکار مجموع
-                    </li>
-                </ul>
-            </div>
-
-            <div class="feature-card rounded-2xl p-6 md:p-8 scroll-reveal-scale" style="transition-delay: 0.2s;">
-                <div
-                    class="feature-icon w-12 h-12 bg-emerald-700/10 rounded-xl flex items-center justify-center text-emerald-400 text-2xl mb-5">
-                    <i class="bi bi-tag"></i>
-                </div>
-                <h3 class="text-lg font-extrabold text-white mb-3">تخفیف‌های هوشمند</h3>
-                <p class="text-gray-400 text-sm leading-relaxed mb-6">اعمال تخفیف درصدی یا مبلغی روی کل فاکتور یا هر
-                    آیتم به صورت مجزا</p>
-                <ul class="space-y-2.5">
-                    <li class="flex items-center gap-2 text-sm text-gray-300">
-                        <i class="bi bi-check-circle-fill text-emerald-500 text-sm"></i> تخفیف درصدی
-                    </li>
-                    <li class="flex items-center gap-2 text-sm text-gray-300">
-                        <i class="bi bi-check-circle-fill text-emerald-500 text-sm"></i> تخفیف مبلغی
-                    </li>
-                    <li class="flex items-center gap-2 text-sm text-gray-300">
-                        <i class="bi bi-check-circle-fill text-emerald-500 text-sm"></i> تخفیف روی هر آیتم
-                    </li>
-                </ul>
-            </div>
-
-            <div class="feature-card rounded-2xl p-6 md:p-8 scroll-reveal-scale" style="transition-delay: 0.3s;">
-                <div
-                    class="feature-icon w-12 h-12 bg-amber-700/10 rounded-xl flex items-center justify-center text-amber-400 text-2xl mb-5">
-                    <i class="bi bi-share"></i>
-                </div>
-                <h3 class="text-lg font-extrabold text-white mb-3">اشتراک‌گذاری و دانلود</h3>
-                <p class="text-gray-400 text-sm leading-relaxed mb-6">لینک اختصاصی برای هر فاکتور، دانلود با کیفیت PNG و
-                    قابلیت چاپ</p>
-                <ul class="space-y-2.5">
-                    <li class="flex items-center gap-2 text-sm text-gray-300">
-                        <i class="bi bi-check-circle-fill text-emerald-500 text-sm"></i> لینک اختصاصی
-                    </li>
-                    <li class="flex items-center gap-2 text-sm text-gray-300">
-                        <i class="bi bi-check-circle-fill text-emerald-500 text-sm"></i> دانلود PNG با کیفیت
-                    </li>
-                    <li class="flex items-center gap-2 text-sm text-gray-300">
-                        <i class="bi bi-check-circle-fill text-emerald-500 text-sm"></i> قابلیت چاپ مستقیم
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </section>
-
-    <section class="py-16 md:py-24 px-4 max-w-3xl mx-auto">
-        <div
-            class="relative bg-[#0c0c14] border border-white/5 rounded-3xl p-8 md:p-14 text-center overflow-hidden scroll-reveal-scale">
-            <div class="absolute -top-24 -right-24 w-48 h-48 bg-accent-700/8 rounded-full blur-3xl"></div>
-            <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-emerald-700/8 rounded-full blur-3xl"></div>
-            <div class="relative z-10">
-                <div class="flex items-center justify-center gap-2 text-xs text-accent-400 font-semibold mb-4">
-                    <i class="bi bi-rocket-takeoff"></i>
-                    <span>شروع کنید</span>
-                </div>
-                <h2 class="text-2xl md:text-3xl lg:text-4xl font-black text-white mb-4">آماده شروع هستید؟</h2>
-                <p class="text-gray-400 text-base md:text-lg mb-8 max-w-sm mx-auto">
-                    همین حالا رایگان شروع کنید و فاکتورهای زیبا بسازید.
-                </p>
-                <% if (typeof user !=='undefined' && user) { %>
-                    <a href="/invoices/new"
-                        class="btn-primary inline-flex items-center gap-2 px-10 py-4 rounded-2xl text-white font-bold text-base">
-                        ساخت فاکتور جدید <i class="bi bi-plus-lg"></i>
+                    <% } %>
+                    <a href="#features"
+                        class="btn-secondary w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl text-gray-300 font-bold text-base scroll-reveal"
+                        style="transition-delay: 0.3s;">
+                        مشاهده امکانات <i class="bi bi-chevron-down"></i>
                     </a>
+                </div>
+
+                <div class="inline-flex items-stretch bg-[#0c0c14] border border-white/5 rounded-2xl overflow-hidden divide-x divide-white/5">
+                    <div class="stat-item px-6 md:px-10 py-4 text-center scroll-reveal" style="transition-delay: 0.3s;">
+                        <div class="counter-number text-2xl md:text-3xl font-black text-accent-400" data-target="120" data-suffix="+">0</div>
+                        <div class="text-xs text-gray-500 mt-1">کاربر فعال</div>
+                    </div>
+                    <div class="stat-item px-6 md:px-10 py-4 text-center scroll-reveal" style="transition-delay: 0.35s;">
+                        <div class="counter-number text-2xl md:text-3xl font-black text-accent-400" data-target="8500" data-suffix="+">0</div>
+                        <div class="text-xs text-gray-500 mt-1">فاکتور صادر شده</div>
+                    </div>
+                    <div class="px-6 md:px-10 py-4 text-center scroll-reveal" style="transition-delay: 0.4s;">
+                        <div class="counter-number text-2xl md:text-3xl font-black text-accent-400" data-target="99" data-suffix="%">0</div>
+                        <div class="text-xs text-gray-500 mt-1">رضایت کاربران</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="py-16 md:py-28 px-4 max-w-6xl mx-auto">
+            <div class="text-center mb-14 md:mb-20">
+                <div class="flex items-center justify-center gap-2 text-xs text-accent-400 font-semibold mb-4 scroll-reveal">
+                    <i class="bi bi-stars"></i>
+                    <span>امکانات</span>
+                </div>
+                <h2 class="text-3xl md:text-4xl lg:text-5xl font-black text-white mb-4 scroll-reveal">
+                    همه چیز برای یک فاکتور حرفه‌ای
+                </h2>
+                <p class="text-gray-400 text-base md:text-lg max-w-lg mx-auto scroll-reveal" style="transition-delay: 0.1s;">
+                    ابزارهای کامل برای ساخت فاکتورهای استاندارد و زیبا
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-5 md:gap-6">
+                <div class="feature-card rounded-2xl p-6 md:p-8 scroll-reveal-scale" style="transition-delay: 0.1s;">
+                    <div class="feature-icon w-12 h-12 bg-accent-700/10 rounded-xl flex items-center justify-center text-accent-400 text-2xl mb-5">
+                        <i class="bi bi-receipt"></i>
+                    </div>
+                    <h3 class="text-lg font-extrabold text-white mb-3">ساخت سریع فاکتور</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6">فاکتورهای حرفه‌ای با شماره خودکار، آیتم‌های دلخواه و محاسبه خودکار مجموع</p>
+                    <ul class="space-y-2.5">
+                        <li class="flex items-center gap-2 text-sm text-gray-300">
+                            <i class="bi bi-check-circle-fill text-emerald-500 text-sm"></i> شماره فاکتور خودکار
+                        </li>
+                        <li class="flex items-center gap-2 text-sm text-gray-300">
+                            <i class="bi bi-check-circle-fill text-emerald-500 text-sm"></i> افزودن آیتم‌های دلخواه
+                        </li>
+                        <li class="flex items-center gap-2 text-sm text-gray-300">
+                            <i class="bi bi-check-circle-fill text-emerald-500 text-sm"></i> محاسبه خودکار مجموع
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="feature-card rounded-2xl p-6 md:p-8 scroll-reveal-scale" style="transition-delay: 0.2s;">
+                    <div class="feature-icon w-12 h-12 bg-emerald-700/10 rounded-xl flex items-center justify-center text-emerald-400 text-2xl mb-5">
+                        <i class="bi bi-tag"></i>
+                    </div>
+                    <h3 class="text-lg font-extrabold text-white mb-3">تخفیف‌های هوشمند</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6">اعمال تخفیف درصدی یا مبلغی روی کل فاکتور یا هر آیتم به صورت مجزا</p>
+                    <ul class="space-y-2.5">
+                        <li class="flex items-center gap-2 text-sm text-gray-300">
+                            <i class="bi bi-check-circle-fill text-emerald-500 text-sm"></i> تخفیف درصدی
+                        </li>
+                        <li class="flex items-center gap-2 text-sm text-gray-300">
+                            <i class="bi bi-check-circle-fill text-emerald-500 text-sm"></i> تخفیف مبلغی
+                        </li>
+                        <li class="flex items-center gap-2 text-sm text-gray-300">
+                            <i class="bi bi-check-circle-fill text-emerald-500 text-sm"></i> تخفیف روی هر آیتم
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="feature-card rounded-2xl p-6 md:p-8 scroll-reveal-scale" style="transition-delay: 0.3s;">
+                    <div class="feature-icon w-12 h-12 bg-amber-700/10 rounded-xl flex items-center justify-center text-amber-400 text-2xl mb-5">
+                        <i class="bi bi-share"></i>
+                    </div>
+                    <h3 class="text-lg font-extrabold text-white mb-3">اشتراک‌گذاری و دانلود</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6">لینک اختصاصی برای هر فاکتور، دانلود با کیفیت PNG و قابلیت چاپ</p>
+                    <ul class="space-y-2.5">
+                        <li class="flex items-center gap-2 text-sm text-gray-300">
+                            <i class="bi bi-check-circle-fill text-emerald-500 text-sm"></i> لینک اختصاصی
+                        </li>
+                        <li class="flex items-center gap-2 text-sm text-gray-300">
+                            <i class="bi bi-check-circle-fill text-emerald-500 text-sm"></i> دانلود PNG با کیفیت
+                        </li>
+                        <li class="flex items-center gap-2 text-sm text-gray-300">
+                            <i class="bi bi-check-circle-fill text-emerald-500 text-sm"></i> قابلیت چاپ مستقیم
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-16 md:py-24 px-4 max-w-3xl mx-auto">
+            <div class="relative bg-[#0c0c14] border border-white/5 rounded-3xl p-8 md:p-14 text-center overflow-hidden scroll-reveal-scale">
+                <div class="absolute -top-24 -right-24 w-48 h-48 bg-accent-700/8 rounded-full blur-3xl"></div>
+                <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-emerald-700/8 rounded-full blur-3xl"></div>
+                <div class="relative z-10">
+                    <div class="flex items-center justify-center gap-2 text-xs text-accent-400 font-semibold mb-4">
+                        <i class="bi bi-rocket-takeoff"></i>
+                        <span>شروع کنید</span>
+                    </div>
+                    <h2 class="text-2xl md:text-3xl lg:text-4xl font-black text-white mb-4">آماده شروع هستید؟</h2>
+                    <p class="text-gray-400 text-base md:text-lg mb-8 max-w-sm mx-auto">
+                        همین حالا رایگان شروع کنید و فاکتورهای زیبا بسازید.
+                    </p>
+                    <% if (typeof user !== 'undefined' && user) { %>
+                        <a href="/invoices/new" class="btn-primary inline-flex items-center gap-2 px-10 py-4 rounded-2xl text-white font-bold text-base">
+                            ساخت فاکتور جدید <i class="bi bi-plus-lg"></i>
+                        </a>
                     <% } else { %>
-                        <a href="/auth/register"
-                            class="btn-primary inline-flex items-center gap-2 px-10 py-4 rounded-2xl text-white font-bold text-base">
+                        <a href="/auth/register" class="btn-primary inline-flex items-center gap-2 px-10 py-4 rounded-2xl text-white font-bold text-base">
                             ثبت‌نام رایگان <i class="bi bi-arrow-left"></i>
                         </a>
-                        <% } %>
-            </div>
-        </div>
-    </section>
-
-    <footer class="border-t border-white/5 mt-10">
-        <div
-            class="max-w-6xl mx-auto px-4 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-500">
-            <div class="flex items-center gap-2 font-bold text-gray-300">
-                <div class="w-6 h-6 bg-accent-700 rounded-md flex items-center justify-center text-white text-xs">ف
+                    <% } %>
                 </div>
-                فاکتوریتو
             </div>
-            <div class="flex gap-6">
-                <a href="#" onclick="openModal('aboutModal');return false;"
-                    class="hover:text-accent-400 transition-colors cursor-pointer">درباره ما</a>
-                <a href="#" onclick="openModal('contactModal');return false;"
-                    class="hover:text-accent-400 transition-colors cursor-pointer">تماس</a>
-                <a href="#" onclick="openModal('privacyModal');return false;"
-                    class="hover:text-accent-400 transition-colors cursor-pointer">حریم خصوصی</a>
+        </section>
+    </main>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-top">
+                <div class="footer-brand-block">
+                    <a href="/" class="footer-logo">
+                        <span class="footer-logo-box">ف</span>
+                        فاکتوریتو
+                    </a>
+                    <p class="footer-desc">
+                        سامانه حرفه‌ای صدور فاکتور برای باشگاه‌ها و کسب‌وکارها.
+                    </p>
+                </div>
+
+                <a href="https://github.com/aydope/faktorito" target="_blank" rel="noopener noreferrer" class="footer-oss">
+                    <i class="bi bi-code-slash"></i>
+                    <span>متن‌باز در گیت‌هاب</span>
+                    <i class="bi bi-box-arrow-up-right"></i>
+                </a>
             </div>
-            <span>© ۱۴۰۳ تمامی حقوق محفوظ است</span>
+
+            <div class="footer-sections">
+                <% if (typeof user !== 'undefined' && user) { %>
+                    <div class="footer-group">
+                        <div class="footer-col-title"><i class="bi bi-box-seam"></i> محصول</div>
+                        <ul class="footer-links">
+                            <li><a href="/invoices/new"><i class="bi bi-plus-circle"></i> ساخت فاکتور</a></li>
+                            <li><a href="/invoices"><i class="bi bi-receipt"></i> فاکتورهای من</a></li>
+                            <li><a href="/dashboard"><i class="bi bi-speedometer2"></i> داشبورد</a></li>
+                            <li><a href="/plans"><i class="bi bi-collection"></i> پلن‌ها</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-group">
+                        <div class="footer-col-title"><i class="bi bi-person-circle"></i> حساب کاربری</div>
+                        <ul class="footer-links">
+                            <li><a href="/profile"><i class="bi bi-person"></i> پروفایل</a></li>
+                            <li><a href="/settings"><i class="bi bi-gear"></i> تنظیمات</a></li>
+                            <li><a href="/auth/logout"><i class="bi bi-box-arrow-right"></i> خروج</a></li>
+                        </ul>
+                    </div>
+                <% } else { %>
+                    <div class="footer-group">
+                        <div class="footer-col-title"><i class="bi bi-rocket-takeoff"></i> شروع کنید</div>
+                        <ul class="footer-links">
+                            <li><a href="/auth/register"><i class="bi bi-person-plus"></i> ثبت‌نام</a></li>
+                            <li><a href="/auth/login"><i class="bi bi-box-arrow-in-right"></i> ورود</a></li>
+                            <li><a href="/terms"><i class="bi bi-file-text"></i> شرایط استفاده</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-group">
+                        <div class="footer-col-title"><i class="bi bi-book"></i> بیشتر بدانید</div>
+                        <ul class="footer-links">
+                            <li><a href="#" onclick="openModal('aboutModal');return false;"><i class="bi bi-info-circle"></i> درباره ما</a></li>
+                            <li><a href="/privacy"><i class="bi bi-shield-check"></i> حریم خصوصی</a></li>
+                        </ul>
+                    </div>
+                <% } %>
+
+                <div class="footer-group">
+                    <div class="footer-col-title"><i class="bi bi-chat-dots"></i> ارتباط</div>
+                    <ul class="footer-links">
+                        <li><a href="#" onclick="openModal('contactModal');return false;"><i class="bi bi-envelope"></i> تماس با ما</a></li>
+                        <li><a href="https://github.com/aydope/faktorito" target="_blank" rel="noopener noreferrer"><i class="bi bi-github"></i> گیت‌هاب</a></li>
+                        <li><a href="https://t.me/aydope" target="_blank" rel="noopener noreferrer"><i class="bi bi-telegram"></i> تلگرام</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <span>© 2026 فاکتوریتو — تمامی حقوق محفوظ است</span>
+                <span style="display:inline-flex;align-items:center;gap:6px;">
+                    ساخته شده با <i class="bi bi-heart-fill" style="color:#a78bfa;font-size:10px;"></i> برای کسب‌وکارهای ایرانی
+                </span>
+            </div>
         </div>
     </footer>
 
     <button onclick="window.scrollTo({top:0,behavior:'smooth'})"
         class="fixed bottom-6 right-6 w-11 h-11 bg-[#1c1c2a] border border-white/10 rounded-xl flex items-center justify-center text-gray-400 hover:text-white hover:border-accent-500/50 transition-all z-40 opacity-0 invisible"
-        id="scrollTopBtn">
+        id="scrollTopBtn" aria-label="بازگشت به بالای صفحه" title="بازگشت به بالا">
         <i class="bi bi-arrow-up"></i>
     </button>
 
@@ -1499,59 +1244,63 @@
             <h3 class="text-lg font-bold text-white mb-2">خروج از حساب</h3>
             <p class="text-gray-400 text-sm mb-6">آیا مطمئن هستید که می‌خواهید خارج شوید؟</p>
             <div class="flex gap-3 justify-center">
-                <button onclick="closeModal('logoutConfirmModal')"
-                    class="logout-btn-cancel px-6 py-2.5 rounded-xl text-gray-300 font-semibold text-sm">انصراف</button>
-                <a href="/auth/logout"
-                    class="logout-btn-danger px-6 py-2.5 rounded-xl text-white font-semibold text-sm">خروج</a>
+                <button onclick="closeModal('logoutConfirmModal')" class="logout-btn-cancel px-6 py-2.5 rounded-xl text-gray-300 font-semibold text-sm">انصراف</button>
+                <a href="/auth/logout" class="logout-btn-danger px-6 py-2.5 rounded-xl text-white font-semibold text-sm">خروج</a>
             </div>
         </div>
     </div>
 
-    <div class="modal-overlay" id="aboutModal">
+    <!-- About Modal -->
+    <div class="modal-overlay official-modal" id="aboutModal">
         <div class="modal-dialog">
-            <div class="modal-icon about"><i class="bi bi-info-circle"></i></div>
-            <h3 class="modal-title">درباره فاکتوریتو</h3>
-            <p class="modal-subtitle">ابزار حرفه‌ای ساخت فاکتور</p>
-            <div class="modal-body">
-                <p>فاکتوریتو یک ابزار حرفه‌ای و ساده برای ساخت فاکتورهای زیبا و استاندارد است. با فاکتوریتو می‌توانید در
-                    کمترین زمان ممکن فاکتورهای حرفه‌ای با شماره خودکار، تخفیف‌های هوشمند و طراحی زیبا ایجاد کنید و آن‌ها
-                    را به اشتراک بگذارید.
+            <div class="om-head">
+                <div class="om-icon"><i class="bi bi-info-circle"></i></div>
+                <div class="om-title">درباره فاکتوریتو</div>
+                <div class="om-sub">سامانه حرفه‌ای صدور فاکتور</div>
+            </div>
+            <div class="om-body">
+                <p class="om-text">
+                    فاکتوریتو یک پلتفرم تخصصی برای ساخت، مدیریت و اشتراک‌گذاری فاکتورهای حرفه‌ای است که با هدف <strong>ساده‌سازی فرآیند صدور فاکتور</strong> برای باشگاه‌ها و کسب‌وکارهای کوچک و متوسط طراحی شده است.
+                </p>
+                <p class="om-text" style="margin-top:14px;">
+                    این پلتفرم به شما امکان می‌دهد در کمتر از یک دقیقه فاکتورهای استاندارد و زیبا بسازید، با لینک اختصاصی به اشتراک بگذارید و با کیفیت بالا دانلود کنید.
                 </p>
             </div>
-            <button onclick="closeModal('aboutModal')" class="modal-close-btn">بستن</button>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="contactModal">
-        <div class="modal-dialog">
-            <div class="modal-icon contact"><i class="bi bi-github"></i></div>
-            <h3 class="modal-title">تماس با ما</h3>
-            <p class="modal-subtitle">ما را در گیت‌هاب دنبال کنید</p>
-            <a href="https://github.com/aydope/faktorito" target="_blank" rel="noopener noreferrer" class="github-btn">
-                <i class="bi bi-github"></i>
-                <span>github.com/aydope/faktorito</span>
-                <i class="bi bi-box-arrow-up-right external-icon"></i>
-            </a>
-            <button onclick="closeModal('contactModal')" class="modal-close-btn" style="margin-top: 12px;">بستن</button>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="privacyModal">
-        <div class="modal-dialog">
-            <div class="modal-icon privacy"><i class="bi bi-shield-check"></i></div>
-            <h3 class="modal-title">حریم خصوصی</h3>
-            <p class="modal-subtitle">اطلاعات شما در امان است</p>
-            <div class="modal-body">
-                <ul class="privacy-list">
-                    <li><i class="bi bi-check-circle-fill"></i> <span>اطلاعات شما رمزنگاری می‌شود</span></li>
-                    <li><i class="bi bi-check-circle-fill"></i> <span>هیچگاه اطلاعات شما به شخص ثالث فروخته
-                            نمی‌شود</span></li>
-                    <li><i class="bi bi-check-circle-fill"></i> <span>امکان حذف کامل اطلاعات در هر زمان</span></li>
-                    <li><i class="bi bi-check-circle-fill"></i> <span>اطلاعات شما فقط برای پردازش فاکتورها استفاده
-                            می‌شود</span></li>
-                </ul>
+            <div class="om-foot">
+                <button onclick="closeModal('aboutModal')" class="om-btn-ghost">بستن</button>
             </div>
-            <button onclick="closeModal('privacyModal')" class="modal-close-btn">بستن</button>
+        </div>
+    </div>
+
+    <!-- Contact Modal -->
+    <div class="modal-overlay official-modal" id="contactModal">
+        <div class="modal-dialog">
+            <div class="om-head">
+                <div class="om-icon"><i class="bi bi-chat-dots"></i></div>
+                <div class="om-title">تماس با ما</div>
+                <div class="om-sub">از طریق کانال‌های زیر در ارتباط باشید</div>
+            </div>
+            <div class="om-body">
+                <a href="https://github.com/aydope/faktorito" target="_blank" rel="noopener noreferrer" class="om-contact-card">
+                    <span class="cc-icon"><i class="bi bi-github"></i></span>
+                    <span class="cc-text">
+                        <div class="cc-label">مخزن رسمی پروژه</div>
+                        <div class="cc-value">github.com/aydope/faktorito</div>
+                    </span>
+                    <i class="bi bi-box-arrow-up-right" style="color:#6b7280;font-size:12px;"></i>
+                </a>
+                <a href="https://t.me/faktorito" target="_blank" rel="noopener noreferrer" class="om-contact-card">
+                    <span class="cc-icon"><i class="bi bi-telegram"></i></span>
+                    <span class="cc-text">
+                        <div class="cc-label">کانال تلگرام</div>
+                        <div class="cc-value">t.me/faktorito</div>
+                    </span>
+                    <i class="bi bi-box-arrow-up-right" style="color:#6b7280;font-size:12px;"></i>
+                </a>
+            </div>
+            <div class="om-foot">
+                <button onclick="closeModal('contactModal')" class="om-btn-ghost">بستن</button>
+            </div>
         </div>
     </div>
 
@@ -1561,6 +1310,7 @@
             const menu = document.getElementById('dropdownMenu');
             const caret = document.getElementById('dropdownCaret');
             menu.classList.toggle('active');
+
             if (caret) {
                 const icon = caret.querySelector('i');
                 if (icon) {
@@ -1572,6 +1322,7 @@
         function closeDropdown() {
             const menu = document.getElementById('dropdownMenu');
             const caret = document.getElementById('dropdownCaret');
+
             if (menu) {
                 menu.classList.remove('active');
                 if (caret) {
@@ -1637,11 +1388,13 @@
                 const progress = Math.min(elapsed / duration, 1);
                 const eased = 1 - Math.pow(1 - progress, 3);
                 const current = Math.floor(eased * target);
-                el.textContent = current + suffix;
+
+                el.textContent = current.toLocaleString('en-US') + suffix;
+
                 if (progress < 1) {
                     requestAnimationFrame(updateCounter);
                 } else {
-                    el.textContent = target + suffix;
+                    el.textContent = target.toLocaleString('en-US') + suffix;
                 }
             }
             requestAnimationFrame(updateCounter);
@@ -1671,6 +1424,22 @@
             });
         });
     </script>
-</body>
 
+    <script>
+        (function () {
+            var sheet = document.querySelector('.fx-sheet');
+            var chips = document.querySelectorAll('.fx-theme-chip');
+
+            chips.forEach(function (c) {
+                c.addEventListener('click', function () {
+                    if (!sheet) return;
+                    sheet.setAttribute('data-fx-theme', c.dataset.theme);
+                    chips.forEach(function (x) {
+                        x.classList.toggle('is-on', x === c);
+                    });
+                });
+            });
+        })();
+    </script>
+</body>
 </html>

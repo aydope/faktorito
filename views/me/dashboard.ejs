@@ -1,0 +1,304 @@
+<%- include('../partials/head') %>
+
+<body class="antialiased bg-[#050508] grid-bg">
+<%- include('../partials/shell') %>
+
+<%
+    const STATE = {
+        none: ['بدون اشتراک', 'state-none'],
+        active: ['فعال', 'state-active'],
+        expiring: ['رو به پایان', 'state-expiring'],
+        expired: ['منقضی', 'state-expired'],
+        frozen: ['منجمد', 'state-frozen'],
+        inactive: ['غیرفعال', 'state-inactive'],
+    };
+
+    const fmtNum = (n) => Number(n || 0).toLocaleString('fa-IR-u-nu-latn');
+
+    const fmtDate = (d) => d
+        ? new Date(d).toLocaleDateString('fa-IR-u-nu-latn', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+        })
+        : '-';
+
+    const hoursLeft = (d) =>
+        Math.max(1, Math.ceil((new Date(d).getTime() - Date.now()) / 3600000));
+
+    const m = membership;
+
+    let progress = null;
+    if (m && m.membershipStartsAt && m.membershipExpiresAt) {
+        const s = new Date(m.membershipStartsAt).getTime();
+        const e = new Date(m.membershipExpiresAt).getTime();
+        progress = Math.min(
+            100,
+            Math.max(0, Math.round(((Date.now() - s) / Math.max(1, e - s)) * 100))
+        );
+    }
+%>
+
+<main class="max-w-4xl mx-auto px-4 pt-28 pb-16 relative z-10">
+<div data-live="me" data-live-id="me-main">
+
+<% if (!m) { %>
+
+    <div class="card rounded-3xl p-8 md:p-10 text-center mb-6">
+        <div class="w-16 h-16 mx-auto mb-5 rounded-2xl bg-accent-700/15 flex items-center justify-center">
+            <i class="bi bi-house-heart text-accent-400 text-3xl"></i>
+        </div>
+
+        <h1 class="text-xl md:text-2xl font-black text-white mb-2">
+            هنوز عضو هیچ باشگاهی نیستید
+        </h1>
+
+        <p class="text-sm text-gray-400 leading-7 max-w-xl mx-auto">
+            وقتی یک باشگاه شما را با ایمیل <b class="text-white"><%= user.email %></b>
+            به‌عنوان عضو ثبت کند، همین‌جا نمایش داده می‌شود: اشتراک، فاکتورها و اعلان‌های آن باشگاه.
+        </p>
+    </div>
+
+    <div class="card rounded-2xl p-6 flex flex-col md:flex-row md:items-center gap-4">
+        <div class="flex-1">
+            <h2 class="text-base font-bold text-white mb-1">
+                <i class="bi bi-building text-accent-400"></i> باشگاه دارید؟
+            </h2>
+            <p class="text-xs text-gray-400 leading-6">
+                با همین حساب باشگاه خود را بسازید و مدیریت اعضا و فاکتورها را شروع کنید.
+            </p>
+        </div>
+
+        <div class="flex gap-2">
+            <a href="/gym/create"
+               class="btn-primary inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-white font-semibold text-sm no-underline">
+                <i class="bi bi-heart-pulse"></i> ساخت باشگاه
+            </a>
+        </div>
+    </div>
+
+<% } else { %>
+
+    <!-- membership card -->
+    <div class="card rounded-3xl p-6 md:p-8 mb-6">
+        <div class="flex flex-col md:flex-row md:items-center gap-5">
+            <div class="avatar w-16 h-16 text-2xl shrink-0">
+                <%= (m.user.clubName || 'ب').charAt(0) %>
+            </div>
+
+            <div class="flex-1 min-w-0">
+                <div class="text-xs text-accent-400 font-bold mb-1">
+                    <i class="bi bi-patch-check-fill"></i> شما عضو این باشگاه هستید
+                </div>
+
+                <div class="flex items-center gap-3 flex-wrap">
+                    <h1 class="text-2xl md:text-3xl font-black text-white"><%= m.user.clubName %></h1>
+                    <span class="state-badge <%= STATE[m.state][1] %>"><%= STATE[m.state][0] %></span>
+                </div>
+
+                <div class="text-sm text-gray-500 flex items-center gap-4 flex-wrap mt-2">
+                    <span dir="ltr"><i class="bi bi-hash"></i><%= m.code %></span>
+                    <% if (m.user.clubPhone) { %>
+                        <span dir="ltr"><i class="bi bi-telephone"></i> <%= m.user.clubPhone %></span>
+                    <% } %>
+                    <% if (m.user.clubAddress) { %>
+                        <span><i class="bi bi-geo-alt"></i> <%= m.user.clubAddress %></span>
+                    <% } %>
+                </div>
+            </div>
+
+            <button type="button"
+                    onclick="openModal('leaveModal')"
+                    class="shrink-0 px-4 py-2.5 rounded-xl text-red-300 font-semibold text-sm bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 transition">
+                <i class="bi bi-box-arrow-left"></i> خروج از باشگاه
+            </button>
+        </div>
+
+        <div class="mt-6 pt-6 border-t border-white/5">
+            <% if (m.membershipExpiresAt) { %>
+                <div class="flex items-center justify-between text-xs text-gray-400 mb-2 flex-wrap gap-2">
+                    <span>
+                        <% if (m.lastPlanName) { %>
+                            پلن: <b class="text-white"><%= m.lastPlanName %></b>،
+                        <% } %>
+                        تا <b class="text-white"><%= fmtDate(m.membershipExpiresAt) %></b>
+                    </span>
+                    <span class="<%= m.daysLeft >= 0 ? 'text-emerald-400' : 'text-red-400' %> font-bold">
+                        <% if (m.daysLeft >= 0) { %>
+                            <%= fmtNum(m.daysLeft) %> روز مانده
+                        <% } else { %>
+                            <%= fmtNum(Math.abs(m.daysLeft)) %> روز از انقضا گذشته
+                        <% } %>
+                    </span>
+                </div>
+
+                <div class="h-2 rounded-full bg-white/5 overflow-hidden">
+                    <div class="h-full rounded-full <%= m.state === 'expired' ? 'bg-red-500' : (m.state === 'expiring' ? 'bg-amber-400' : 'bg-emerald-500') %>"
+                         style="width: <%= progress === null ? 0 : progress %>%"></div>
+                </div>
+            <% } else { %>
+                <p class="text-sm text-gray-500">
+                    هنوز اشتراکی برای شما ثبت نشده است. بعد از پرداخت فاکتور، تاریخ پایان اینجا نمایش داده می‌شود.
+                </p>
+            <% } %>
+        </div>
+    </div>
+
+    <!-- announcements (active for 24h by default) -->
+    <div id="announceBox" class="mb-6 <%= announcements.length ? '' : 'hidden' %>">
+        <h2 class="text-base font-bold text-white mb-3">
+            <i class="bi bi-megaphone text-accent-400"></i> اعلان‌های باشگاه
+        </h2>
+
+        <div id="announceList" class="space-y-3">
+            <% announcements.forEach(function (a) { %>
+            <div class="card rounded-2xl p-5 border-r-4" style="border-right-color:#8b5cf6">
+                <div class="flex items-start justify-between gap-3">
+                    <h3 class="text-sm font-black text-white"><%= a.title %></h3>
+                    <span class="text-[11px] text-gray-500 whitespace-nowrap">
+                        <i class="bi bi-hourglass-split"></i> <%= fmtNum(hoursLeft(a.expiresAt)) %> ساعت دیگر
+                    </span>
+                </div>
+
+                <p class="text-sm text-gray-300 leading-7 mt-2 whitespace-pre-line"><%= a.body %></p>
+            </div>
+            <% }); %>
+        </div>
+    </div>
+
+    <!-- stats -->
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
+        <div class="stat-mini rounded-2xl p-4">
+            <div class="text-xs text-gray-500 mb-1">مجموع پرداختی</div>
+            <div class="text-lg font-black text-white">
+                <%= fmtNum(m.totalPaid) %> <span class="text-xs font-normal text-gray-500">تومان</span>
+            </div>
+        </div>
+
+        <div class="stat-mini rounded-2xl p-4">
+            <div class="text-xs text-gray-500 mb-1">فاکتورها</div>
+            <div class="text-lg font-black text-white"><%= fmtNum(invoices.length) %></div>
+        </div>
+
+        <div class="stat-mini rounded-2xl p-4 col-span-2 md:col-span-1">
+            <div class="text-xs text-gray-500 mb-1">پرداخت‌نشده</div>
+            <div class="text-lg font-black <%= unpaidTotal > 0 ? 'text-amber-400' : 'text-white' %>">
+                <%= fmtNum(unpaidTotal) %> <span class="text-xs font-normal text-gray-500">تومان</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- invoices -->
+    <div class="card rounded-2xl overflow-hidden">
+        <div class="px-6 py-4 border-b border-white/5">
+            <h2 class="text-base font-bold text-white">
+                <i class="bi bi-receipt text-accent-400"></i> فاکتورهای من
+            </h2>
+        </div>
+
+        <% if (invoices.length === 0) { %>
+            <div class="p-10 text-center text-gray-500 text-sm">
+                هنوز فاکتوری برای شما صادر نشده است
+            </div>
+        <% } else { %>
+        <div class="divide-y divide-white/5">
+            <% invoices.forEach(function (inv) { %>
+            <a href="/i/<%= inv.publicId || inv._id %>"
+               class="flex items-center gap-4 px-6 py-4 hover:bg-white/[0.02] transition no-underline">
+                <span class="state-badge <%= inv.isPaid ? 'state-active' : 'state-expiring' %>">
+                    <%= inv.isPaid ? 'پرداخت شده' : 'در انتظار پرداخت' %>
+                </span>
+
+                <div class="flex-1 min-w-0">
+                    <div class="text-sm font-bold text-white" dir="ltr" style="text-align:right">
+                        <%= inv.invoiceNumber %>
+                    </div>
+                    <div class="text-xs text-gray-500">
+                        <%= inv.plan && inv.plan.name %>، <%= inv.invoiceDate %>
+                        <% if (inv.autoIssued) { %>، <i class="bi bi-arrow-repeat"></i> خودکار<% } %>
+                    </div>
+                </div>
+
+                <div class="text-sm font-black text-white">
+                    <%= fmtNum(inv.totalAmount) %> <span class="text-xs font-normal text-gray-500">تومان</span>
+                </div>
+            </a>
+            <% }); %>
+        </div>
+        <% } %>
+    </div>
+
+<% } %>
+</div>
+</main>
+
+<% if (m) { %>
+<div class="modal-overlay" id="leaveModal">
+    <div class="modal-dialog text-center">
+        <div class="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5">
+            <i class="bi bi-box-arrow-left text-red-400 text-3xl"></i>
+        </div>
+
+        <h3 class="text-xl font-extrabold text-white mb-2">
+            خروج از «<%= m.user.clubName %>»
+        </h3>
+
+        <p class="text-gray-400 text-sm mb-8 leading-7">
+            بعد از خروج، اشتراک و فاکتورها از پنل شما پنهان می‌شود و باشگاه‌های دیگر می‌توانند شما را عضو کنند.
+        </p>
+
+        <div class="flex gap-3 justify-center">
+            <button onclick="closeModal('leaveModal')"
+                    class="px-6 py-2.5 rounded-xl text-gray-300 font-semibold text-sm bg-white/5 border border-white/10 hover:bg-white/10 transition">
+                انصراف
+            </button>
+            <button id="leaveBtn"
+                    class="px-6 py-2.5 rounded-xl text-white font-semibold text-sm bg-red-600 hover:bg-red-500 transition">
+                خروج از باشگاه
+            </button>
+        </div>
+    </div>
+</div>
+<% } %>
+
+<%- include('../partials/modals-common') %>
+
+<script>
+<%- include('../partials/scripts-common') %>
+
+    const leaveBtn = document.getElementById('leaveBtn');
+
+    if (leaveBtn) {
+        leaveBtn.addEventListener('click', async () => {
+            leaveBtn.disabled = true;
+
+            try {
+                const res = await fetch('/me/leave', {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json',
+                    },
+                });
+
+                const r = await res.json();
+
+                if (r.success) {
+                    toast(r.message, 'success');
+                    setTimeout(() => {
+                        location.href = r.redirect || '/me';
+                    }, 700);
+                } else {
+                    toast(r.message || 'خطا', 'error');
+                    leaveBtn.disabled = false;
+                }
+            } catch (e) {
+                toast('خطا در ارتباط با سرور', 'error');
+                leaveBtn.disabled = false;
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

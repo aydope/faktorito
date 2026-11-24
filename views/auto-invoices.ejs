@@ -1,0 +1,175 @@
+<%- include('partials/head') %>
+<body class="antialiased bg-[#050508] grid-bg">
+<%- include('partials/shell') %>
+
+<%
+    const fa = (n) => Number(n).toLocaleString('fa-IR-u-nu-latn');
+    const day = (d) => new Date(d).toLocaleDateString('fa-IR-u-nu-latn', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+%>
+
+<main class="max-w-5xl mx-auto px-4 pt-28 pb-16 relative z-10">
+    <div class="mb-6">
+        <h1 class="text-3xl md:text-4xl font-black text-white tracking-tight mb-1">صدور خودکار فاکتور</h1>
+        <p class="text-gray-500 text-sm">برای هر عضو مشخص می‌کنید که هر ماه یا هر چند ماه یک‌بار، فاکتور با پلن انتخابی صادر شود. هر وقت خواستید تغییر یا حذفش کنید.</p>
+    </div>
+
+    <% if (rules.length === 0) { %>
+        <div class="card rounded-2xl p-10 text-center">
+            <i class="bi bi-arrow-repeat text-4xl text-accent-400"></i>
+            <p class="text-gray-400 text-sm mt-3 mb-5">هنوز برای هیچ عضوی صدور خودکار تنظیم نشده است</p>
+            <a href="/members" class="btn-primary inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-white font-semibold text-sm no-underline">
+                <i class="bi bi-people"></i> رفتن به اعضا
+            </a>
+        </div>
+    <% } else { %>
+    <div class="space-y-3">
+        <% rules.forEach(function (r) { %>
+        <div class="card rounded-2xl p-5">
+            <div class="flex flex-col md:flex-row md:items-center gap-4">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 flex-wrap mb-1">
+                        <a href="/members/<%= r.member._id %>" class="font-bold text-white no-underline"><%= r.member.name %></a>
+                        <span class="state-badge <%= r.active ? 'state-active' : 'state-inactive' %>"><%= r.active ? 'فعال' : 'متوقف' %></span>
+                    </div>
+                    <div class="text-xs text-gray-500 flex flex-wrap gap-x-4 gap-y-1">
+                        <span><i class="bi bi-collection"></i> <%= r.plan ? r.plan.name : '-' %> (هر <%= r.interval %>)</span>
+                        <span><i class="bi bi-calendar-event"></i> صدور بعدی: <%= day(r.nextIssueAt) %></span>
+                        <span><i class="bi bi-receipt"></i> <%= fa(r.issuedCount) %> فاکتور صادر شده<% if (r.skippedCount) { %>، <%= fa(r.skippedCount) %> دوره رد شده<% } %></span>
+                    </div>
+                    <% if (r.lastError) { %>
+                    <div class="text-xs text-amber-400 mt-2"><i class="bi bi-exclamation-triangle"></i> <%= r.lastError %></div>
+                    <% } %>
+                </div>
+                <div class="flex items-center gap-1.5 shrink-0">
+                    <% if (r.active) { %>
+                    <button type="button" class="action-btn" title="صدور همین حالا" data-run="<%= r._id %>"><i class="bi bi-lightning-charge"></i></button>
+                    <% } %>
+                    <button type="button" class="action-btn" title="<%= r.active ? 'توقف' : 'ادامه' %>" data-toggle="<%= r._id %>" data-active="<%= r.active ? '1' : '0' %>"><i class="bi <%= r.active ? 'bi-pause-circle' : 'bi-play-circle' %>"></i></button>
+                    <a href="/members/<%= r.member._id %>" class="action-btn" title="تغییر"><i class="bi bi-pencil"></i></a>
+                    <button type="button" class="action-btn delete" title="حذف" data-del="<%= r._id %>"><i class="bi bi-trash"></i></button>
+                </div>
+            </div>
+        </div>
+        <% }); %>
+    </div>
+    <% } %>
+</main>
+
+<!-- Run Now Modal -->
+<div class="modal-overlay" id="runModal">
+    <div class="modal-dialog text-center">
+        <div class="w-16 h-16 bg-emerald-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5">
+            <i class="bi bi-lightning-charge text-emerald-400 text-3xl"></i>
+        </div>
+        <h3 class="text-xl font-extrabold text-white mb-2">صدور فاکتور همین حالا</h3>
+        <p class="text-gray-400 text-sm mb-8">فاکتور این دوره همین حالا صادر شود؟</p>
+        <div class="flex gap-3 justify-center">
+            <button onclick="closeModal('runModal')" class="px-6 py-2.5 rounded-xl text-gray-300 font-semibold text-sm bg-white/5 border border-white/10 hover:bg-white/10 transition">انصراف</button>
+            <button id="runConfirm" class="px-6 py-2.5 rounded-xl text-white font-semibold text-sm bg-emerald-600 hover:bg-emerald-500 transition shadow-lg shadow-emerald-900/30">صدور</button>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal-overlay" id="autoDeleteModal">
+    <div class="modal-dialog text-center">
+        <div class="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5">
+            <i class="bi bi-trash text-red-400 text-3xl"></i>
+        </div>
+        <h3 class="text-xl font-extrabold text-white mb-2">حذف صدور خودکار</h3>
+        <p class="text-gray-400 text-sm mb-8">این صدور خودکار حذف شود؟ فاکتورهای قبلی تغییر نمی‌کنند.</p>
+        <div class="flex gap-3 justify-center">
+            <button onclick="closeModal('autoDeleteModal')" class="px-6 py-2.5 rounded-xl text-gray-300 font-semibold text-sm bg-white/5 border border-white/10 hover:bg-white/10 transition">انصراف</button>
+            <button id="autoDeleteConfirm" class="px-6 py-2.5 rounded-xl text-white font-semibold text-sm bg-red-600 hover:bg-red-500 transition shadow-lg shadow-red-900/30">حذف</button>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/modals-common') %>
+
+<script>
+<%- include('partials/scripts-common') %>
+
+    const H = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest'
+    };
+
+    const call = async (url, method, body) => {
+        try {
+            const res = await fetch(url, {
+                method,
+                headers: H,
+                body: body ? JSON.stringify(body) : undefined
+            });
+            const r = await res.json();
+
+            toast(
+                r.message || (r.success ? 'انجام شد' : 'خطا'),
+                r.success ? 'success' : 'error'
+            );
+
+            if (r.success) setTimeout(() => location.reload(), 600);
+        } catch (e) {
+            toast('خطا در ارتباط با سرور', 'error');
+        }
+    };
+
+    // Run now via modal
+    let runId = null;
+
+    document.querySelectorAll('[data-run]').forEach((b) => b.addEventListener('click', () => {
+        runId = b.dataset.run;
+        openModal('runModal');
+    }));
+
+    document.getElementById('runConfirm').addEventListener('click', async function () {
+        if (!runId) return;
+
+        const btn = this;
+        btn.disabled = true;
+        btn.textContent = '...';
+
+        await call('/auto-invoices/' + runId + '/run', 'POST');
+
+        btn.disabled = false;
+        btn.textContent = 'صدور';
+        closeModal('runModal');
+        runId = null;
+    });
+
+    // Toggle stays direct (no confirm needed)
+    document.querySelectorAll('[data-toggle]').forEach((b) => b.addEventListener('click', () =>
+        call('/auto-invoices/' + b.dataset.toggle, 'PATCH', { active: b.dataset.active !== '1' })
+    ));
+
+    // Delete via modal
+    let autoDeleteId = null;
+
+    document.querySelectorAll('[data-del]').forEach((b) => b.addEventListener('click', () => {
+        autoDeleteId = b.dataset.del;
+        openModal('autoDeleteModal');
+    }));
+
+    document.getElementById('autoDeleteConfirm').addEventListener('click', async function () {
+        if (!autoDeleteId) return;
+
+        const btn = this;
+        btn.disabled = true;
+        btn.textContent = '...';
+
+        await call('/auto-invoices/' + autoDeleteId, 'DELETE');
+
+        btn.disabled = false;
+        btn.textContent = 'حذف';
+        closeModal('autoDeleteModal');
+        autoDeleteId = null;
+    });
+</script>
+</body>
+</html>

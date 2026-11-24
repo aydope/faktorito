@@ -1,0 +1,1293 @@
+<%- include('partials/head') %>
+<body class="antialiased bg-[#050508] grid-bg">
+<%- include('partials/shell') %>
+
+<%
+    const STATE = {
+        none: ['بدون اشتراک', 'state-none'],
+        active: ['فعال', 'state-active'],
+        expiring: ['رو به پایان', 'state-expiring'],
+        expired: ['منقضی', 'state-expired'],
+        frozen: ['منجمد', 'state-frozen'],
+        inactive: ['غیرفعال', 'state-inactive']
+    };
+
+    const FILTER_TABS = [
+        ['', 'همه'],
+        ['active', 'فعال'],
+        ['expiring', 'رو به پایان'],
+        ['expired', 'منقضی'],
+        ['frozen', 'منجمد'],
+        ['inactive', 'غیرفعال'],
+        ['deleted', 'سطل بازیافت']
+    ];
+
+    const qs = (extra) => {
+        const p = new URLSearchParams();
+        if (filters.state) p.set('filter', filters.state);
+        if (filters.search) p.set('search', filters.search);
+        Object.entries(extra || {}).forEach(([k, v]) => {
+            if (v === '' || v == null) p.delete(k);
+            else p.set(k, v);
+        });
+        const s = p.toString();
+        return s ? '?' + s : '';
+    };
+%>
+
+<style>
+    .member-row {
+        background: #0c0c14;
+        border: 1px solid rgba(255, 255, 255, 0.03);
+        transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .member-row:hover {
+        border-color: rgba(139, 92, 246, 0.15);
+        background: #10101a;
+        transform: translateY(-1px);
+        box-shadow: 0 10px 26px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    .search-wrapper {
+        position: relative;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .search-wrapper .search-icon {
+        position: absolute;
+        top: 50%;
+        right: 16px;
+        transform: translateY(-50%);
+        color: #4a4a63;
+        font-size: 15px;
+        pointer-events: none;
+        transition: color 0.25s ease;
+    }
+
+    .search-wrapper input:focus ~ .search-icon {
+        color: #a78bfa;
+    }
+
+    .search-wrapper .search-clear {
+        position: absolute;
+        top: 50%;
+        left: 12px;
+        transform: translateY(-50%);
+        width: 24px;
+        height: 24px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.05);
+        color: #6b7280;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 12px;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .search-wrapper.has-value .search-clear {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .search-wrapper .search-clear:hover {
+        background: rgba(239, 68, 68, 0.1);
+        color: #f87171;
+    }
+
+    .search-wrapper .search-spinner {
+        position: absolute;
+        top: 50%;
+        left: 12px;
+        transform: translateY(-50%);
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(139, 92, 246, 0.2);
+        border-top-color: #a78bfa;
+        border-radius: 50%;
+        animation: spin 0.6s linear infinite;
+        display: none;
+    }
+
+    .search-wrapper.is-loading .search-spinner {
+        display: block;
+    }
+
+    .search-wrapper.is-loading .search-clear {
+        display: none;
+    }
+
+    @keyframes spin {
+        to {
+            transform: translateY(-50%) rotate(360deg);
+        }
+    }
+
+    .filter-tabs {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        padding: 4px 2px 8px;
+        -webkit-overflow-scrolling: touch;
+        cursor: grab;
+        user-select: none;
+        position: relative;
+        -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
+        mask-image: linear-gradient(90deg, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
+    }
+
+    .filter-tabs::-webkit-scrollbar {
+        display: none;
+    }
+
+    .filter-tabs.dragging {
+        cursor: grabbing;
+        scroll-behavior: auto;
+    }
+
+    .filter-tabs .filter-chip {
+        flex-shrink: 0;
+        white-space: nowrap;
+        pointer-events: auto;
+    }
+
+    .filter-tabs.dragging .filter-chip {
+        pointer-events: none;
+    }
+
+    .member-top {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .member-avatar-wrap {
+        flex-shrink: 0;
+    }
+
+    .member-avatar-wrap .avatar {
+        width: 52px;
+        height: 52px;
+        font-size: 18px;
+        border-radius: 14px;
+        box-shadow: 0 4px 14px -4px rgba(124, 58, 237, 0.4);
+    }
+
+    .member-info {
+        min-width: 0;
+        flex: 1;
+    }
+
+    .member-name-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 6px;
+    }
+
+    .member-name {
+        font-size: 15px;
+        font-weight: 800;
+        color: #fff;
+        letter-spacing: -0.2px;
+        line-height: 1.3;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        margin: 0;
+    }
+
+    .member-meta {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        font-size: 11.5px;
+        color: #6b7280;
+    }
+
+    .member-meta-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        min-width: 0;
+    }
+
+    .member-meta-item i {
+        font-size: 11px;
+        color: #4a4a63;
+        flex-shrink: 0;
+    }
+
+    .member-meta-item span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .sub-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 3px;
+        padding: 8px 12px;
+        background: rgba(139, 92, 246, 0.04);
+        border: 1px solid rgba(139, 92, 246, 0.12);
+        border-radius: 10px;
+        min-width: 0;
+        line-height: 1.3;
+    }
+
+    .sub-info-date-line {
+        font-size: 12.5px;
+        font-weight: 700;
+        color: #e5e7eb;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .sub-info-date-line i {
+        color: #a78bfa;
+        font-size: 11px;
+        margin-left: 4px;
+        margin-right: 1px;
+    }
+
+    .sub-info-days-line {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 11px;
+        font-weight: 700;
+        margin-top: 2px;
+    }
+
+    .sub-info-days-line i {
+        font-size: 10px;
+    }
+
+    .sub-info-days-line.ok {
+        color: #6ee7b7;
+    }
+
+    .sub-info-days-line.warn {
+        color: #fcd34d;
+    }
+
+    .sub-info-days-line.danger {
+        color: #fca5a5;
+    }
+
+    .sub-info-days-line.frozen {
+        color: #7dd3fc;
+    }
+
+    .sub-info-progress {
+        height: 4px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.06);
+        overflow: hidden;
+        margin-top: 5px;
+    }
+
+    .sub-info-progress-bar {
+        height: 100%;
+        border-radius: 999px;
+        transition: width 0.6s ease;
+    }
+
+    .sub-info-empty {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 11px;
+        color: #6b7280;
+        padding: 4px 0;
+    }
+
+    .sub-info-empty i {
+        color: #4a4a63;
+        font-size: 12px;
+    }
+
+    .member-actions {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-shrink: 0;
+    }
+
+    .member-action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        height: 36px;
+        padding: 0 12px;
+        border-radius: 10px;
+        font-size: 12.5px;
+        font-weight: 700;
+        font-family: 'Sahel', sans-serif !important;
+        cursor: pointer;
+        transition: all 0.22s cubic-bezier(0.23, 1, 0.32, 1);
+        text-decoration: none;
+        white-space: nowrap;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.03);
+        color: #d1d5db;
+        line-height: 1;
+    }
+
+    .member-action-btn i {
+        font-size: 14px;
+        line-height: 1;
+    }
+
+    .member-action-btn:hover {
+        background: rgba(255, 255, 255, 0.07);
+        border-color: rgba(255, 255, 255, 0.15);
+        color: #fff;
+    }
+
+    .member-action-btn.primary {
+        background: rgba(139, 92, 246, 0.12);
+        border-color: rgba(139, 92, 246, 0.28);
+        color: #c4b5fd;
+    }
+
+    .member-action-btn.primary:hover {
+        background: rgba(139, 92, 246, 0.2);
+        border-color: rgba(139, 92, 246, 0.45);
+        color: #fff;
+    }
+
+    .member-action-btn.danger {
+        background: rgba(239, 68, 68, 0.06);
+        border-color: rgba(239, 68, 68, 0.18);
+        color: #fca5a5;
+    }
+
+    .member-action-btn.danger:hover {
+        background: rgba(239, 68, 68, 0.12);
+        border-color: rgba(239, 68, 68, 0.3);
+        color: #fecaca;
+    }
+
+    .member-action-btn.icon-only {
+        width: 36px;
+        padding: 0;
+    }
+
+    @media (max-width: 767px) {
+        .member-row {
+            padding: 12px !important;
+        }
+
+        .member-top {
+            gap: 10px;
+        }
+
+        .member-avatar-wrap .avatar {
+            width: 44px;
+            height: 44px;
+            font-size: 15px;
+            border-radius: 11px;
+        }
+
+        .member-name {
+            font-size: 13.5px;
+        }
+
+        .member-meta {
+            font-size: 10.5px;
+            gap: 8px;
+        }
+
+        .member-name-row {
+            margin-bottom: 4px;
+            gap: 6px;
+        }
+
+        .sub-info {
+            width: 100%;
+            margin-top: 10px;
+            padding: 8px 10px;
+            gap: 2px;
+        }
+
+        .sub-info-date-line {
+            font-size: 12px;
+        }
+
+        .sub-info-days-line {
+            font-size: 10.5px;
+            margin-top: 1px;
+        }
+
+        .sub-info-progress {
+            height: 3px;
+            margin-top: 4px;
+        }
+
+        .member-row .member-actions {
+            width: 100%;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+            display: flex;
+            gap: 6px;
+        }
+
+        .member-row .member-action-btn {
+            flex: 1;
+            height: 38px;
+            font-size: 12px;
+            padding: 0 10px;
+        }
+
+        .member-row .member-action-btn.icon-only {
+            flex: 0 0 38px;
+            width: 38px;
+        }
+    }
+
+    @media (max-width: 500px) {
+        .member-row .member-action-btn span {
+            display: none;
+        }
+
+        .member-row .member-action-btn {
+            padding: 0;
+        }
+    }
+
+    .cs-wrap {
+        position: relative;
+        width: 100%;
+    }
+
+    .cs-trigger {
+        width: 100%;
+        padding: 11px 14px;
+        background: #0c0c14;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 12px;
+        color: #fff;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        outline: none;
+        font-family: 'Sahel', sans-serif !important;
+        text-align: right;
+    }
+
+    .cs-trigger:hover {
+        border-color: rgba(139, 92, 246, 0.3);
+    }
+
+    .cs-trigger.open {
+        border-color: rgba(139, 92, 246, 0.5);
+        box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.08);
+    }
+
+    .cs-trigger i {
+        color: #6b7280;
+        font-size: 12px;
+        transition: transform 0.25s ease;
+        flex-shrink: 0;
+    }
+
+    .cs-trigger.open i {
+        transform: rotate(180deg);
+        color: #a78bfa;
+    }
+
+    .cs-trigger .cs-label {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .cs-menu {
+        position: absolute;
+        top: calc(100% + 6px);
+        right: 0;
+        left: 0;
+        background: #14141f;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        padding: 6px;
+        z-index: 50;
+        box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-6px);
+        transition: all 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+        max-height: 260px;
+        overflow-y: auto;
+    }
+
+    .cs-menu.open {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .cs-option {
+        padding: 9px 12px;
+        border-radius: 8px;
+        font-size: 13px;
+        color: #9ca3af;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+    }
+
+    .cs-option:hover {
+        background: rgba(139, 92, 246, 0.08);
+        color: #c4b5fd;
+    }
+
+    .cs-option.selected {
+        background: rgba(139, 92, 246, 0.12);
+        color: #c4b5fd;
+        font-weight: 600;
+    }
+
+    .cs-option.selected::after {
+        content: '\F26E';
+        font-family: 'bootstrap-icons';
+        font-size: 12px;
+        color: #a78bfa;
+        flex-shrink: 0;
+    }
+</style>
+
+<main class="max-w-5xl mx-auto px-4 pt-24 md:pt-28 pb-16 relative z-10">
+
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+        <div>
+            <h1 class="text-3xl md:text-4xl font-black text-white tracking-tight mb-1">اعضا</h1>
+            <p class="text-gray-500 text-sm">اعضای باشگاه یا مشتریان ثابت خود را ثبت کنید و برایشان فاکتور صادر کنید</p>
+        </div>
+        <div class="flex items-center gap-2">
+            <a href="/members/export.csv<%= qs() %>" class="px-4 py-2 rounded-xl text-gray-300 font-semibold text-sm bg-white/5 border border-white/10 hover:bg-white/10 transition no-underline inline-flex items-center gap-2">
+                <i class="bi bi-download"></i>
+                <span class="hidden sm:inline">خروجی CSV</span>
+            </a>
+            <button type="button" data-action="add" class="btn-primary inline-flex items-center gap-2 px-4 py-2 rounded-xl text-white font-semibold text-sm flex-1 sm:flex-initial justify-center">
+                <i class="bi bi-person-plus"></i> عضو جدید
+            </button>
+        </div>
+    </div>
+
+    <div class="filter-tabs mb-4" id="filterTabs">
+        <% FILTER_TABS.forEach(function(t) { %>
+            <a href="/members<%= qs({ filter: t[0], page: '' }) %>" class="filter-chip <%= filters.state === t[0] ? 'active' : '' %>"><%= t[1] %></a>
+        <% }); %>
+    </div>
+
+    <div class="mb-6">
+        <div class="search-wrapper" id="searchWrapper">
+            <input type="search" id="memberSearchInput" value="<%= filters.search %>" maxlength="50"
+                   class="input-field" style="padding-right: 2.75rem; padding-left: 2.75rem;"
+                   placeholder="جستجو بر اساس نام، شماره تلفن یا کد عضویت..."
+                   autocomplete="off" spellcheck="false">
+            <i class="bi bi-search search-icon"></i>
+            <div class="search-spinner"></div>
+            <button type="button" class="search-clear" id="searchClear" title="پاک کردن">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+    </div>
+
+    <div data-live="members dashboard" data-live-id="members-list">
+    <div class="text-xs text-gray-500 mb-3" id="membersCount">
+        <%= pagination.totalCount.toLocaleString('fa-IR-u-nu-latn') %> عضو
+        <% if (totalAll !== pagination.totalCount) { %> (از <%= totalAll.toLocaleString('fa-IR-u-nu-latn') %> عضو)<% } %>
+    </div>
+
+    <div id="membersList">
+    <% if (members.length > 0) { %>
+    <div class="space-y-3">
+        <% members.forEach(function(m) { %>
+        <div class="member-row rounded-2xl p-4 md:p-5">
+            <div class="flex flex-col md:flex-row md:items-center gap-4">
+                <a href="/members/<%= m._id %>" class="member-top no-underline">
+                    <div class="member-avatar-wrap">
+                        <div class="avatar"><%= m.name.charAt(0) %></div>
+                    </div>
+                    <div class="member-info">
+                        <div class="member-name-row">
+                            <h3 class="member-name"><%= m.name %></h3>
+                            <span class="state-badge <%= STATE[m.state][1] %>"><%= STATE[m.state][0] %></span>
+                        </div>
+                        <div class="member-meta">
+                            <span class="member-meta-item" dir="ltr"><i class="bi bi-hash"></i><span><%= m.code %></span></span>
+                            <% if (m.phone) { %>
+                            <span class="member-meta-item" dir="ltr"><i class="bi bi-telephone"></i><span><%= m.phone %></span></span>
+                            <% } %>
+                            <% if (m.email) { %>
+                            <span class="member-meta-item hidden sm:inline-flex" dir="ltr"><i class="bi bi-envelope<%= m.account ? '-check' : '' %>"></i><span><%= m.email %></span></span>
+                            <% } %>
+                        </div>
+                    </div>
+                </a>
+
+                <%
+                   const exp = m.membershipExpiresAt ? new Date(m.membershipExpiresAt) : null;
+                   const startD = m.membershipStartsAt ? new Date(m.membershipStartsAt) : null;
+                   const total = exp && startD ? exp - startD : 0;
+                   const leftPct = exp ? (total > 0 ? Math.max(0, Math.min(100, Math.round((exp - Date.now()) / total * 100))) : (exp > Date.now() ? 100 : 0)) : 0;
+                   const TONE = {
+                       expired:  { color: 'danger', bar: 'bg-red-500',     icon: 'bi-exclamation-circle-fill' },
+                       expiring: { color: 'warn',   bar: 'bg-amber-400',   icon: 'bi-clock-fill' },
+                       frozen:   { color: 'frozen', bar: 'bg-sky-400',     icon: 'bi-snow' },
+                       active:   { color: 'ok',     bar: 'bg-emerald-500', icon: 'bi-check-circle-fill' }
+                   };
+                   const tone = TONE[m.state] || TONE.active;
+                %>
+                <div class="sub-info md:w-52 shrink-0">
+                    <% if (exp) { %>
+                        <div class="sub-info-date-line">
+                            <i class="bi bi-calendar-event"></i>
+                            <%= exp.toLocaleDateString('fa-IR-u-nu-latn', { year: 'numeric', month: 'long', day: 'numeric' }) %>
+                        </div>
+                        <div class="sub-info-days-line <%= tone.color %>">
+                            <i class="bi <%= tone.icon %>"></i>
+                            <% if (m.state === 'frozen') { %>منجمد<% } %>
+                            <% if (m.daysLeft >= 0) { %><%= m.daysLeft.toLocaleString('fa-IR-u-nu-latn') %> روز مانده<% } else { %><%= Math.abs(m.daysLeft).toLocaleString('fa-IR-u-nu-latn') %> روز از انقضا گذشته<% } %>
+                        </div>
+                        <div class="sub-info-progress">
+                            <div class="sub-info-progress-bar <%= tone.bar %>" style="width: <%= leftPct %>%"></div>
+                        </div>
+                    <% } else { %>
+                        <div class="sub-info-empty"><i class="bi bi-dash-circle"></i> اشتراک فعالی ثبت نشده</div>
+                    <% } %>
+                </div>
+
+                <div class="member-actions shrink-0">
+                    <% if (m.deletedAt) { %>
+                    <button type="button" class="member-action-btn" title="بازگردانی" data-action="restore" data-id="<%= m._id %>" data-name="<%= m.name %>">
+                        <i class="bi bi-arrow-counterclockwise"></i>
+                        <span>بازگردانی</span>
+                    </button>
+                    <% } else { %>
+                    <a href="/members/<%= m._id %>" class="member-action-btn" title="مشاهده">
+                        <i class="bi bi-eye"></i>
+                        <span>مشاهده</span>
+                    </a>
+                    <a href="/invoices/new?member=<%= m._id %>" class="member-action-btn primary" title="صدور فاکتور">
+                        <i class="bi bi-receipt"></i>
+                        <span>صدور فاکتور</span>
+                    </a>
+                    <button type="button" class="member-action-btn icon-only" title="ویرایش" data-action="edit"
+                        data-id="<%= m._id %>" data-name="<%= m.name %>" data-phone="<%= m.phone %>" data-email="<%= m.email || '' %>"
+                        data-notes="<%= m.notes %>" data-status="<%= m.status %>"><i class="bi bi-pencil"></i></button>
+                    <button type="button" class="member-action-btn danger icon-only" title="حذف" data-action="delete"
+                        data-id="<%= m._id %>" data-name="<%= m.name %>"><i class="bi bi-trash"></i></button>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+        <% }); %>
+    </div>
+
+    <% if (pagination.totalPages > 1) { %>
+    <div class="flex items-center justify-center gap-3 mt-8">
+        <% if (pagination.hasPrev) { %><a class="filter-chip" href="/members<%= qs({ page: pagination.currentPage - 1 }) %>">قبلی</a><% } %>
+        <span class="text-xs text-gray-500">صفحه <%= pagination.currentPage %> از <%= pagination.totalPages %></span>
+        <% if (pagination.hasNext) { %><a class="filter-chip" href="/members<%= qs({ page: pagination.currentPage + 1 }) %>">بعدی</a><% } %>
+    </div>
+    <% } %>
+
+    <% } else { %>
+    <div class="card rounded-3xl py-20 text-center">
+        <div class="w-16 h-16 bg-accent-700/10 rounded-2xl flex items-center justify-center mx-auto mb-5 border border-accent-700/20">
+            <i class="bi bi-people text-3xl text-accent-400"></i>
+        </div>
+        <h3 class="text-lg font-bold text-white mb-2"><%= (filters.search || filters.state) ? 'عضوی با این مشخصات پیدا نشد' : 'هنوز عضوی ثبت نکرده‌اید' %></h3>
+        <p class="text-gray-500 text-sm mb-6">با ثبت عضو، می‌توانید فاکتور را مستقیم به نام او صادر کنید و تاریخ پایان اشتراکش را ببینید</p>
+        <button type="button" data-action="add" class="btn-primary inline-flex items-center gap-2 px-6 py-3 rounded-2xl text-white font-bold text-sm">
+            <i class="bi bi-person-plus"></i> ثبت اولین عضو
+        </button>
+    </div>
+    <% } %>
+    </div>
+    </div>
+</main>
+
+<!-- ========== ADD / EDIT MODAL ========== -->
+<div class="modal-overlay" id="memberModal">
+    <div class="modal-dialog">
+        <h3 class="text-lg font-bold text-white mb-5" id="memberModalTitle">عضو جدید</h3>
+        <form id="memberForm" class="space-y-4" novalidate>
+            <div>
+                <label class="text-xs font-semibold text-gray-400 mb-1.5 block">نام و نام خانوادگی</label>
+                <input type="text" id="memberName" class="input-field" placeholder="علی محمدی" maxlength="32" required>
+                <p class="error-text" id="memberNameError"></p>
+            </div>
+            <div>
+                <label class="text-xs font-semibold text-gray-400 mb-1.5 block">شماره تماس (اختیاری)</label>
+                <input type="text" id="memberPhone" class="input-field text-left" style="direction:ltr;" placeholder="09123456789" maxlength="11" inputmode="numeric">
+                <p class="error-text" id="memberPhoneError"></p>
+            </div>
+            <div>
+                <label class="text-xs font-semibold text-gray-400 mb-1.5 block">ایمیل (اختیاری)</label>
+                <input type="email" id="memberEmail" class="input-field text-left" style="direction:ltr;" placeholder="member@example.com" maxlength="254">
+                <p class="text-[11px] text-gray-500 mt-1">اگر عضو با همین ایمیل در سایت ثبت‌نام کند، پنل شخصی خودش را می‌بیند و فاکتورها را لحظه‌ای دریافت می‌کند.</p>
+                <p class="error-text" id="memberEmailError"></p>
+            </div>
+            <div id="statusWrap" style="display:none;">
+                <label class="text-xs font-semibold text-gray-400 mb-1.5 block">وضعیت</label>
+                <div class="cs-wrap" id="statusSelectWrap">
+                    <button type="button" class="cs-trigger" id="statusTrigger" aria-haspopup="listbox" aria-expanded="false">
+                        <span class="cs-label" id="statusLabel">فعال</span>
+                        <i class="bi bi-chevron-down"></i>
+                    </button>
+                    <div class="cs-menu" id="statusMenu" role="listbox">
+                        <div class="cs-option selected" role="option" data-value="active">فعال</div>
+                        <div class="cs-option" role="option" data-value="frozen">منجمد (توقف موقت)</div>
+                        <div class="cs-option" role="option" data-value="inactive">غیرفعال (ترک باشگاه)</div>
+                    </div>
+                    <input type="hidden" id="memberStatus" value="active">
+                </div>
+            </div>
+            <div>
+                <label class="text-xs font-semibold text-gray-400 mb-1.5 block">یادداشت (اختیاری)</label>
+                <textarea id="memberNotes" rows="2" class="input-field resize-none" maxlength="200" placeholder="مثلاً: ساعت تمرین صبح"></textarea>
+                <p class="error-text" id="memberNotesError"></p>
+            </div>
+            <div class="flex gap-3 justify-end pt-2">
+                <button type="button" onclick="closeModal('memberModal')" class="px-5 py-2.5 rounded-xl text-gray-300 font-semibold text-sm bg-white/5 border border-white/10 hover:bg-white/10 transition">انصراف</button>
+                <button type="submit" class="btn-primary px-5 py-2.5 rounded-xl text-white font-semibold text-sm" id="memberSubmitBtn">ذخیره</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ========== DELETE MODAL ========== -->
+<div class="modal-overlay" id="deleteModal">
+    <div class="modal-dialog text-center">
+        <div class="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5">
+            <i class="bi bi-trash text-red-400 text-3xl"></i>
+        </div>
+        <h3 class="text-xl font-extrabold text-white mb-2">حذف عضو</h3>
+        <p class="text-[11px] text-gray-500 -mt-1 mb-3">عضو از لیست پنهان می‌شود ولی از پایگاه داده پاک نمی‌شود؛ از «سطل بازیافت» قابل بازگردانی است.</p>
+        <p class="text-gray-400 text-sm mb-8" id="deleteMsg"></p>
+        <div class="flex gap-3 justify-center">
+            <button onclick="closeModal('deleteModal')" class="px-6 py-2.5 rounded-xl text-gray-300 font-semibold text-sm bg-white/5 border border-white/10 hover:bg-white/10 transition">انصراف</button>
+            <button id="deleteConfirmBtn" class="px-6 py-2.5 rounded-xl text-white font-semibold text-sm bg-red-600 hover:bg-red-500 transition">حذف</button>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/modals-common') %>
+
+<script>
+<%- include('partials/scripts-common') %>
+
+    (function () {
+        const tabs = document.getElementById('filterTabs');
+        if (!tabs) return;
+
+        let isDown = false, startX = 0, scrollLeft = 0, moved = false;
+
+        tabs.addEventListener('mousedown', (e) => {
+            isDown = true;
+            moved = false;
+            startX = e.pageX - tabs.offsetLeft;
+            scrollLeft = tabs.scrollLeft;
+        });
+
+        tabs.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - tabs.offsetLeft;
+            const walk = (x - startX) * 1.5;
+            if (Math.abs(walk) > 4) {
+                moved = true;
+                tabs.classList.add('dragging');
+            }
+            tabs.scrollLeft = scrollLeft - walk;
+        });
+
+        const stopDrag = () => {
+            isDown = false;
+            tabs.classList.remove('dragging');
+        };
+
+        tabs.addEventListener('mouseup', stopDrag);
+        tabs.addEventListener('mouseleave', stopDrag);
+        tabs.addEventListener('click', (e) => {
+            if (moved) {
+                e.preventDefault();
+                e.stopPropagation();
+                moved = false;
+            }
+        }, true);
+        tabs.addEventListener('touchstart', () => {
+            tabs.classList.add('dragging');
+        }, { passive: true });
+        tabs.addEventListener('touchend', () => {
+            setTimeout(() => tabs.classList.remove('dragging'), 100);
+        }, { passive: true });
+    })();
+
+    const JSON_HEADERS = {
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+        'Accept': 'application/json'
+    };
+
+    let editingId = null;
+    let deleteId = null;
+
+    const STATE = {
+        none: ['بدون اشتراک', 'state-none'],
+        active: ['فعال', 'state-active'],
+        expiring: ['رو به پایان', 'state-expiring'],
+        expired: ['منقضی', 'state-expired'],
+        frozen: ['منجمد', 'state-frozen'],
+        inactive: ['غیرفعال', 'state-inactive']
+    };
+
+    const TONE = {
+        expired:  { color: 'danger', bar: 'bg-red-500',     icon: 'bi-exclamation-circle-fill' },
+        expiring: { color: 'warn',   bar: 'bg-amber-400',   icon: 'bi-clock-fill' },
+        frozen:   { color: 'frozen', bar: 'bg-sky-400',     icon: 'bi-snow' },
+        active:   { color: 'ok',     bar: 'bg-emerald-500', icon: 'bi-check-circle-fill' }
+    };
+
+    const fmtNum = (n) => Number(n || 0).toLocaleString('fa-IR-u-nu-latn');
+
+    const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+    }[c]));
+
+    const toLatinDigits = (s) => s
+        .replace(/[۰-۹]/g, d => String(d.charCodeAt(0) - 0x06f0))
+        .replace(/[٠-٩]/g, d => String(d.charCodeAt(0) - 0x0660));
+
+    function renderMemberCard(m) {
+        const exp = m.membershipExpiresAt ? new Date(m.membershipExpiresAt) : null;
+        const startD = m.membershipStartsAt ? new Date(m.membershipStartsAt) : null;
+        const totalMs = exp && startD ? exp - startD : 0;
+
+        const leftPct = exp
+            ? (totalMs > 0
+                ? Math.max(0, Math.min(100, Math.round((exp - Date.now()) / totalMs * 100)))
+                : (exp > Date.now() ? 100 : 0))
+            : 0;
+
+        const tone = TONE[m.state] || TONE.active;
+        const stateInfo = STATE[m.state] || STATE.none;
+        const avatar = (m.name || '?').charAt(0);
+
+        let subInfo;
+        if (exp) {
+            const untilDate = exp.toLocaleDateString('fa-IR-u-nu-latn', { year: 'numeric', month: 'long', day: 'numeric' });
+            const daysLine = (m.state === 'frozen' ? 'منجمد ' : '')
+                + (m.daysLeft >= 0
+                    ? `${fmtNum(m.daysLeft)} روز مانده`
+                    : `${fmtNum(Math.abs(m.daysLeft))} روز از انقضا گذشته`);
+
+            subInfo = `
+                <div class="sub-info-date-line">
+                    <i class="bi bi-calendar-event"></i>
+                    ${untilDate}
+                </div>
+                <div class="sub-info-days-line ${tone.color}">
+                    <i class="bi ${tone.icon}"></i>
+                    ${daysLine}
+                </div>
+                <div class="sub-info-progress">
+                    <div class="sub-info-progress-bar ${tone.bar}" style="width:${leftPct}%"></div>
+                </div>`;
+        } else {
+            subInfo = `<div class="sub-info-empty"><i class="bi bi-dash-circle"></i> اشتراک فعالی ثبت نشده</div>`;
+        }
+
+        const actions = m.deletedAt
+            ? `<button type="button" class="member-action-btn" title="بازگردانی" data-action="restore" data-id="${m._id}" data-name="${esc(m.name)}"><i class="bi bi-arrow-counterclockwise"></i><span>بازگردانی</span></button>`
+            : `
+                <a href="/members/${m._id}" class="member-action-btn" title="مشاهده">
+                    <i class="bi bi-eye"></i><span>مشاهده</span>
+                </a>
+                <a href="/invoices/new?member=${m._id}" class="member-action-btn primary" title="صدور فاکتور">
+                    <i class="bi bi-receipt"></i><span>صدور فاکتور</span>
+                </a>
+                <button type="button" class="member-action-btn icon-only" title="ویرایش" data-action="edit"
+                    data-id="${m._id}" data-name="${esc(m.name)}" data-phone="${esc(m.phone)}" data-email="${esc(m.email || '')}"
+                    data-notes="${esc(m.notes || '')}" data-status="${m.status || 'active'}"><i class="bi bi-pencil"></i></button>
+                <button type="button" class="member-action-btn danger icon-only" title="حذف" data-action="delete"
+                    data-id="${m._id}" data-name="${esc(m.name)}"><i class="bi bi-trash"></i></button>`;
+
+        return `
+        <div class="member-row rounded-2xl p-4 md:p-5">
+            <div class="flex flex-col md:flex-row md:items-center gap-4">
+                <a href="/members/${m._id}" class="member-top no-underline">
+                    <div class="member-avatar-wrap">
+                        <div class="avatar">${esc(avatar)}</div>
+                    </div>
+                    <div class="member-info">
+                        <div class="member-name-row">
+                            <h3 class="member-name">${esc(m.name)}</h3>
+                            <span class="state-badge ${stateInfo[1]}">${stateInfo[0]}</span>
+                        </div>
+                        <div class="member-meta">
+                            <span class="member-meta-item" dir="ltr"><i class="bi bi-hash"></i><span>${esc(m.code)}</span></span>
+                            ${m.phone ? `<span class="member-meta-item" dir="ltr"><i class="bi bi-telephone"></i><span>${esc(m.phone)}</span></span>` : ''}
+                            ${m.email ? `<span class="member-meta-item hidden sm:inline-flex" dir="ltr"><i class="bi bi-envelope${m.account ? '-check' : ''}"></i><span>${esc(m.email)}</span></span>` : ''}
+                        </div>
+                    </div>
+                </a>
+                <div class="sub-info md:w-52 shrink-0">${subInfo}</div>
+                <div class="member-actions shrink-0">${actions}</div>
+            </div>
+        </div>`;
+    }
+
+    function renderMembersList(members, pagination, totalAll, currentFilter) {
+        const list = document.getElementById('membersList');
+        const countEl = document.getElementById('membersCount');
+        if (!list) return;
+
+        if (!members || members.length === 0) {
+            const emptyTitle = (currentFilter && (currentFilter.search || currentFilter.state))
+                ? 'عضوی با این مشخصات پیدا نشد'
+                : 'هنوز عضوی ثبت نکرده‌اید';
+
+            list.innerHTML = `
+                <div class="card rounded-3xl py-20 text-center">
+                    <div class="w-16 h-16 bg-accent-700/10 rounded-2xl flex items-center justify-center mx-auto mb-5 border border-accent-700/20">
+                        <i class="bi bi-people text-3xl text-accent-400"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">${emptyTitle}</h3>
+                    <p class="text-gray-500 text-sm mb-6">با ثبت عضو، می‌توانید فاکتور را مستقیم به نام او صادر کنید</p>
+                    <button type="button" data-action="add" class="btn-primary inline-flex items-center gap-2 px-6 py-3 rounded-2xl text-white font-bold text-sm">
+                        <i class="bi bi-person-plus"></i> ثبت عضو جدید
+                    </button>
+                </div>`;
+        } else {
+            list.innerHTML = `<div class="space-y-3">${members.map(renderMemberCard).join('')}</div>`;
+
+            if (pagination && pagination.totalPages > 1) {
+                const { currentPage, totalPages, hasPrev, hasNext } = pagination;
+
+                list.innerHTML += `
+                    <div class="flex items-center justify-center gap-3 mt-8">
+                        ${hasPrev ? `<a class="filter-chip" href="#" data-page="${currentPage - 1}">قبلی</a>` : ''}
+                        <span class="text-xs text-gray-500">صفحه ${currentPage} از ${totalPages}</span>
+                        ${hasNext ? `<a class="filter-chip" href="#" data-page="${currentPage + 1}">بعدی</a>` : ''}
+                    </div>`;
+            }
+        }
+
+        if (countEl) {
+            const totalStr = Number(pagination ? pagination.totalCount : members.length).toLocaleString('fa-IR-u-nu-latn');
+            const extra = (typeof totalAll === 'number' && totalAll !== (pagination ? pagination.totalCount : members.length))
+                ? ` (از ${Number(totalAll).toLocaleString('fa-IR-u-nu-latn')} عضو)`
+                : '';
+            countEl.textContent = `${totalStr} عضو${extra}`;
+        }
+    }
+
+    (function () {
+        const input = document.getElementById('memberSearchInput');
+        const wrapper = document.getElementById('searchWrapper');
+        const clearBtn = document.getElementById('searchClear');
+        if (!input) return;
+
+        let debounceTimer = null;
+        let lastQuery = input.value || '';
+        let abortController = null;
+        let lastTotalAll = <%= totalAll %>;
+
+        function setHasValue() {
+            wrapper.classList.toggle('has-value', input.value.length > 0);
+        }
+
+        function setLoading(l) {
+            wrapper.classList.toggle('is-loading', l);
+        }
+
+        setHasValue();
+
+        async function doSearch(q) {
+            const url = new URL(window.location.pathname, window.location.origin);
+            const params = new URLSearchParams(window.location.search);
+
+            if (q) params.set('search', q);
+            else params.delete('search');
+
+            params.delete('page');
+            url.search = params.toString();
+
+            if (abortController) abortController.abort();
+            abortController = new AbortController();
+            setLoading(true);
+
+            try {
+                const res = await fetch(url.toString(), {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
+                    signal: abortController.signal
+                });
+
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+
+                const data = await res.json();
+
+                if (data.success) {
+                    renderMembersList(
+                        data.members || [],
+                        data.pagination,
+                        lastTotalAll,
+                        { search: q, state: params.get('filter') || '' }
+                    );
+
+                    if (data.pagination) lastTotalAll = data.pagination.totalCount;
+
+                    const newUrl = window.location.pathname + (q ? '?search=' + encodeURIComponent(q) : '');
+                    window.history.replaceState({}, '', newUrl);
+                }
+            } catch (err) {
+                if (err.name !== 'AbortError') console.error(err);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        function scheduleSearch() {
+            const q = input.value.trim();
+            clearTimeout(debounceTimer);
+            if (q === lastQuery) return;
+            debounceTimer = setTimeout(() => {
+                lastQuery = q;
+                doSearch(q);
+            }, 350);
+        }
+
+        input.addEventListener('input', () => {
+            setHasValue();
+            scheduleSearch();
+        });
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                clearTimeout(debounceTimer);
+                lastQuery = input.value.trim();
+                doSearch(lastQuery);
+            }
+            if (e.key === 'Escape') {
+                input.value = '';
+                setHasValue();
+                lastQuery = '';
+                doSearch('');
+            }
+        });
+
+        clearBtn.addEventListener('click', () => {
+            input.value = '';
+            setHasValue();
+            lastQuery = '';
+            clearTimeout(debounceTimer);
+            doSearch('');
+            input.focus();
+        });
+
+        document.addEventListener('click', (e) => {
+            const pageLink = e.target.closest('[data-page]');
+            if (!pageLink) return;
+            e.preventDefault();
+
+            const page = pageLink.dataset.page;
+            const url = new URL(window.location.href);
+            url.searchParams.set('page', page);
+            window.location.href = url.toString();
+        });
+    })();
+
+    function openMemberModal(data) {
+        clearErrors();
+
+        editingId = data ? data.id : null;
+        document.getElementById('memberModalTitle').textContent = data ? 'ویرایش عضو' : 'عضو جدید';
+        document.getElementById('memberName').value = data ? data.name : '';
+        document.getElementById('memberPhone').value = data ? data.phone : '';
+        document.getElementById('memberEmail').value = data ? (data.email || '') : '';
+        document.getElementById('memberNotes').value = data ? data.notes : '';
+        document.getElementById('memberStatus').value = data ? data.status : 'active';
+
+        const label = document.getElementById('statusLabel');
+        const options = document.querySelectorAll('#statusMenu .cs-option');
+        const currentStatus = data ? data.status : 'active';
+
+        options.forEach(opt => {
+            opt.classList.toggle('selected', opt.dataset.value === currentStatus);
+            if (opt.dataset.value === currentStatus) label.textContent = opt.textContent.trim();
+        });
+
+        document.getElementById('statusWrap').style.display = data ? 'block' : 'none';
+
+        openModal('memberModal');
+        setTimeout(() => document.getElementById('memberName').focus(), 50);
+    }
+
+    (function () {
+        const wrap = document.getElementById('statusSelectWrap');
+        if (!wrap) return;
+
+        const trigger = document.getElementById('statusTrigger');
+        const menu = document.getElementById('statusMenu');
+        const label = document.getElementById('statusLabel');
+        const hidden = document.getElementById('memberStatus');
+
+        function toggle(open) {
+            menu.classList.toggle('open', open);
+            trigger.classList.toggle('open', open);
+            trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+        }
+
+        trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggle(!menu.classList.contains('open'));
+        });
+
+        menu.querySelectorAll('.cs-option').forEach(opt => {
+            opt.addEventListener('click', () => {
+                menu.querySelectorAll('.cs-option').forEach(o => o.classList.remove('selected'));
+                opt.classList.add('selected');
+                label.textContent = opt.textContent.trim();
+                hidden.value = opt.dataset.value;
+                toggle(false);
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!wrap.contains(e.target)) toggle(false);
+        });
+    })();
+
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-action]');
+        if (!btn) return;
+
+        const { action, id, name, phone, email, notes, status } = btn.dataset;
+
+        if (action === 'add') openMemberModal(null);
+
+        if (action === 'edit') openMemberModal({ id, name, phone, email, notes, status });
+
+        if (action === 'restore') {
+            fetch(`/members/${id}/restore`, { method: 'POST', headers: JSON_HEADERS })
+                .then(r => r.json())
+                .then(r => {
+                    toast(r.message || 'انجام شد', r.success ? 'success' : 'error');
+                    if (r.success) setTimeout(() => location.reload(), 600);
+                })
+                .catch(() => toast('خطا در ارتباط با سرور', 'error'));
+        }
+
+        if (action === 'delete') {
+            deleteId = id;
+            document.getElementById('deleteMsg').textContent = `آیا از حذف «${name}» اطمینان دارید؟`;
+            openModal('deleteModal');
+        }
+    });
+
+    document.getElementById('memberForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        clearErrors();
+
+        const name = document.getElementById('memberName').value.trim();
+        const phone = toLatinDigits(document.getElementById('memberPhone').value.trim());
+        const notes = document.getElementById('memberNotes').value.trim();
+        const email = document.getElementById('memberEmail').value.trim().toLowerCase();
+
+        if (name.length < 3) return showError('memberName', 'نام باید حداقل 3 کاراکتر باشد');
+        if (phone && !/^09\d{9}$/.test(phone)) return showError('memberPhone', 'شماره تلفن باید با 09 شروع شده و 11 رقم باشد');
+        if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return showError('memberEmail', 'ایمیل نامعتبر است');
+
+        const body = { name, phone, email, notes };
+        if (editingId) body.status = document.getElementById('memberStatus').value;
+
+        const btn = document.getElementById('memberSubmitBtn');
+        btn.disabled = true;
+
+        try {
+            const res = await fetch(editingId ? `/members/${editingId}` : '/members', {
+                method: editingId ? 'PUT' : 'POST',
+                headers: JSON_HEADERS,
+                body: JSON.stringify(body)
+            });
+
+            const result = await res.json();
+
+            if (result.success) {
+                toast(result.message, 'success');
+                setTimeout(() => location.reload(), 600);
+                return;
+            }
+
+            const errs = result.validationErrors || result.errors || {};
+
+            if (errs && !Array.isArray(errs)) {
+                const map = { name: 'memberName', phone: 'memberPhone', email: 'memberEmail', notes: 'memberNotes' };
+                Object.entries(errs).forEach(([k, v]) => map[k] && showError(map[k], v));
+            }
+
+            toast(result.message || 'خطا در ذخیره اطلاعات', 'error');
+        } catch (err) {
+            toast('خطا در ارتباط با سرور', 'error');
+        } finally {
+            btn.disabled = false;
+        }
+    });
+
+    document.getElementById('deleteConfirmBtn').addEventListener('click', async () => {
+        if (!deleteId) return;
+
+        try {
+            const res = await fetch(`/members/${deleteId}`, { method: 'DELETE', headers: JSON_HEADERS });
+            const result = await res.json();
+
+            closeModal('deleteModal');
+
+            if (result.success) {
+                toast(result.message, 'success');
+                setTimeout(() => location.reload(), 600);
+            } else {
+                toast(result.message || 'حذف نشد', 'error');
+            }
+        } catch (err) {
+            toast('خطا در ارتباط با سرور', 'error');
+        }
+    });
+</script>
+</body>
+</html>

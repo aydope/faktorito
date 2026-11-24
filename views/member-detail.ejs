@@ -1,0 +1,1256 @@
+<%- include('partials/head') %>
+<body class="antialiased bg-[#050508] grid-bg">
+<%- include('partials/shell') %>
+
+<%
+    const STATE = {
+        none: ['بدون اشتراک', 'state-none'],
+        active: ['فعال', 'state-active'],
+        expiring: ['رو به پایان', 'state-expiring'],
+        expired: ['منقضی', 'state-expired'],
+        frozen: ['منجمد', 'state-frozen'],
+        inactive: ['غیرفعال', 'state-inactive']
+    };
+
+    const fmtNum = (n) => Number(n || 0).toLocaleString('fa-IR-u-nu-latn');
+
+    const fmtDate = (d) => d
+        ? new Date(d).toLocaleDateString('fa-IR-u-nu-latn', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        })
+        : '-';
+
+    let progress = null;
+
+    if (member.membershipStartsAt && member.membershipExpiresAt) {
+        const start = new Date(member.membershipStartsAt).getTime();
+        const end = new Date(member.membershipExpiresAt).getTime();
+        const pct = ((Date.now() - start) / Math.max(1, end - start)) * 100;
+        progress = Math.min(100, Math.max(0, Math.round(pct)));
+    }
+
+    const paidCount = invoices.filter(i => i.isPaid).length;
+
+    const stateIcon = {
+        active: 'bi-check-circle-fill',
+        expiring: 'bi-clock-fill',
+        expired: 'bi-x-circle-fill',
+        frozen: 'bi-snow',
+        inactive: 'bi-dash-circle',
+        none: 'bi-circle'
+    };
+%>
+
+<style>
+    .profile-card {
+        background: linear-gradient(180deg, #0f0f1a 0%, #0c0c14 100%);
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        border-radius: 24px;
+        overflow: hidden;
+        margin-bottom: 24px;
+        position: relative;
+    }
+
+    .profile-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.4), transparent);
+    }
+
+    .profile-hero {
+        padding: 24px 24px 20px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .profile-avatar-xl {
+        width: 64px;
+        height: 64px;
+        flex-shrink: 0;
+        border-radius: 18px;
+        background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+        font-size: 24px;
+        color: #fff;
+        box-shadow:
+            0 8px 24px -6px rgba(124, 58, 237, 0.5),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        letter-spacing: -0.5px;
+    }
+
+    .profile-hero-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .profile-hero-name {
+        font-size: 20px;
+        font-weight: 900;
+        color: #fff;
+        letter-spacing: -0.4px;
+        line-height: 1.3;
+        margin: 0 0 6px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .profile-hero-badge-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .profile-hero-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-shrink: 0;
+    }
+
+    .profile-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        height: 40px;
+        padding: 0 16px;
+        border-radius: 11px;
+        font-size: 13px;
+        font-weight: 700;
+        font-family: 'Sahel', sans-serif !important;
+        cursor: pointer;
+        transition: all 0.22s cubic-bezier(0.23, 1, 0.32, 1);
+        text-decoration: none;
+        white-space: nowrap;
+        border: 1px solid transparent;
+        line-height: 1;
+    }
+
+    .profile-btn i {
+        font-size: 15px;
+        line-height: 1;
+    }
+
+    .profile-btn-primary {
+        background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+        border-color: rgba(139, 92, 246, 0.4);
+        color: #fff;
+        box-shadow:
+            0 4px 14px -4px rgba(124, 58, 237, 0.55),
+            inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    }
+
+    .profile-btn-primary:hover {
+        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        transform: translateY(-1px);
+        box-shadow:
+            0 8px 20px -6px rgba(124, 58, 237, 0.65),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    .profile-btn-primary:active {
+        transform: translateY(0);
+    }
+
+    .profile-btn-secondary {
+        background: rgba(255, 255, 255, 0.03);
+        border-color: rgba(255, 255, 255, 0.08);
+        color: #d1d5db;
+    }
+
+    .profile-btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.07);
+        border-color: rgba(255, 255, 255, 0.15);
+        color: #fff;
+    }
+
+    .profile-btn-success {
+        background: rgba(16, 185, 129, 0.08);
+        border-color: rgba(16, 185, 129, 0.22);
+        color: #6ee7b7;
+    }
+
+    .profile-btn-success:hover {
+        background: rgba(16, 185, 129, 0.15);
+        border-color: rgba(16, 185, 129, 0.35);
+        color: #a7f3d0;
+    }
+
+    .profile-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none !important;
+    }
+
+    .profile-info-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    @media (min-width: 768px) {
+        .profile-info-grid {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+    }
+
+    .profile-info-block {
+        padding: 18px 24px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .profile-info-block:last-child {
+        border-bottom: none;
+    }
+
+    @media (min-width: 768px) {
+        .profile-info-block {
+            border-bottom: none;
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .profile-info-block:first-child {
+            border-left: none;
+        }
+    }
+
+    .info-block-title {
+        font-size: 10.5px;
+        font-weight: 800;
+        color: #6b7280;
+        letter-spacing: 0.5px;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .info-block-title i {
+        color: #a78bfa;
+        font-size: 12px;
+    }
+
+    .info-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 5px 0;
+        font-size: 13px;
+    }
+
+    .info-row-label {
+        color: #6b7280;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .info-row-label i {
+        font-size: 12px;
+        color: #4a4a63;
+        width: 14px;
+        text-align: center;
+    }
+
+    .info-row-value {
+        color: #e5e7eb;
+        font-weight: 600;
+        text-align: left;
+        direction: ltr;
+    }
+
+    .info-row-value.rtl {
+        direction: rtl;
+    }
+
+    .membership-progress-section {
+        padding: 20px 24px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        background: rgba(139, 92, 246, 0.02);
+    }
+
+    .membership-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+    }
+
+    .membership-days-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    .membership-days-badge.ok {
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.25);
+        color: #6ee7b7;
+    }
+
+    .membership-days-badge.expired {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.25);
+        color: #fca5a5;
+    }
+
+    .membership-dates {
+        font-size: 12px;
+        color: #9ca3af;
+        font-weight: 500;
+    }
+
+    .membership-dates b {
+        color: #fff;
+        font-weight: 700;
+    }
+
+    .progress-track {
+        height: 10px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.05);
+        overflow: hidden;
+        position: relative;
+    }
+
+    .progress-fill {
+        height: 100%;
+        border-radius: 999px;
+        transition: width 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .progress-fill::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+        animation: shimmerProgress 2.5s infinite;
+    }
+
+    @keyframes shimmerProgress {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+
+    .progress-labels {
+        display: flex;
+        justify-content: space-between;
+        font-size: 10.5px;
+        color: #4a4a63;
+        margin-top: 6px;
+        font-weight: 600;
+    }
+
+    .freeze-row {
+        padding: 16px 24px;
+        background: rgba(255, 255, 255, 0.01);
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .freeze-row > .freeze-hint {
+        flex: 1;
+        min-width: 200px;
+        font-size: 11.5px;
+        color: #6b7280;
+        line-height: 1.7;
+    }
+
+    .empty-membership {
+        padding: 20px 24px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .empty-membership-inner {
+        display: flex;
+        gap: 12px;
+        padding: 16px;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px dashed rgba(255, 255, 255, 0.08);
+        border-radius: 14px;
+        align-items: flex-start;
+    }
+
+    .empty-membership-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: rgba(139, 92, 246, 0.08);
+        color: #a78bfa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 15px;
+    }
+
+    .empty-membership-text {
+        font-size: 12.5px;
+        color: #9ca3af;
+        line-height: 1.8;
+    }
+
+    @media (max-width: 640px) {
+        .profile-hero {
+            padding: 20px 18px 16px;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .profile-avatar-xl {
+            width: 56px;
+            height: 56px;
+            font-size: 20px;
+            border-radius: 15px;
+        }
+
+        .profile-hero-name {
+            font-size: 17px;
+        }
+
+        .profile-hero-actions {
+            width: 100%;
+            margin-top: 4px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            gap: 10px;
+        }
+
+        .profile-btn {
+            flex: 1;
+            height: 44px;
+            padding: 0 12px;
+            font-size: 13px;
+        }
+
+        .profile-btn i {
+            font-size: 16px;
+        }
+
+        .profile-info-block {
+            padding: 16px 18px;
+        }
+
+        .membership-progress-section {
+            padding: 18px;
+        }
+
+        .freeze-row {
+            padding: 14px 18px;
+        }
+
+        .freeze-row > .freeze-hint {
+            text-align: center;
+            order: 2;
+        }
+
+        .freeze-row > button {
+            width: 100%;
+            justify-content: center;
+            order: 1;
+        }
+
+        .empty-membership {
+            padding: 16px 18px;
+        }
+    }
+
+    .cs-wrap {
+        position: relative;
+        width: 100%;
+    }
+
+    .cs-trigger {
+        width: 100%;
+        padding: 11px 14px;
+        background: #0c0c14;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 12px;
+        color: #fff;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        outline: none;
+        font-family: 'Sahel', sans-serif !important;
+        text-align: right;
+    }
+
+    .cs-trigger:hover {
+        border-color: rgba(139, 92, 246, 0.3);
+    }
+
+    .cs-trigger.open {
+        border-color: rgba(139, 92, 246, 0.5);
+        box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.08);
+    }
+
+    .cs-trigger i {
+        color: #6b7280;
+        font-size: 12px;
+        transition: transform 0.25s ease;
+        flex-shrink: 0;
+    }
+
+    .cs-trigger.open i {
+        transform: rotate(180deg);
+        color: #a78bfa;
+    }
+
+    .cs-trigger .cs-label {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .cs-menu {
+        position: absolute;
+        top: calc(100% + 6px);
+        right: 0;
+        left: 0;
+        background: #14141f;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        padding: 6px;
+        z-index: 50;
+        box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-6px);
+        transition: all 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+        max-height: 260px;
+        overflow-y: auto;
+    }
+
+    .cs-menu.open {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .cs-option {
+        padding: 9px 12px;
+        border-radius: 8px;
+        font-size: 13px;
+        color: #9ca3af;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+    }
+
+    .cs-option:hover {
+        background: rgba(139, 92, 246, 0.08);
+        color: #c4b5fd;
+    }
+
+    .cs-option.selected {
+        background: rgba(139, 92, 246, 0.12);
+        color: #c4b5fd;
+        font-weight: 600;
+    }
+
+    .cs-option.selected::after {
+        content: '\F26E';
+        font-family: 'bootstrap-icons';
+        font-size: 12px;
+        color: #a78bfa;
+        flex-shrink: 0;
+    }
+
+    .cs-menu::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .cs-menu::-webkit-scrollbar-thumb {
+        background: #28283a;
+        border-radius: 2px;
+    }
+
+    .confirm-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(5, 5, 8, 0.85);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 600;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        padding: 20px;
+    }
+
+    .confirm-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .confirm-dialog {
+        background: #14141f;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 20px;
+        padding: 32px;
+        max-width: 400px;
+        width: 100%;
+        box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
+        transform: scale(0.92) translateY(16px);
+        transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        text-align: center;
+    }
+
+    .confirm-overlay.active .confirm-dialog {
+        transform: scale(1) translateY(0);
+    }
+
+    .confirm-icon {
+        width: 64px;
+        height: 64px;
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 28px;
+    }
+
+    .confirm-icon.danger {
+        background: rgba(220, 38, 38, 0.1);
+        color: #f87171;
+    }
+
+    .confirm-icon.warning {
+        background: rgba(245, 158, 11, 0.1);
+        color: #fcd34d;
+    }
+
+    .confirm-icon.info {
+        background: rgba(139, 92, 246, 0.1);
+        color: #a78bfa;
+    }
+
+    .confirm-icon.success {
+        background: rgba(16, 185, 129, 0.1);
+        color: #6ee7b7;
+    }
+
+    .confirm-title {
+        font-size: 18px;
+        font-weight: 800;
+        color: #fff;
+        margin-bottom: 6px;
+    }
+
+    .confirm-message {
+        font-size: 13px;
+        color: #9ca3af;
+        margin-bottom: 24px;
+        line-height: 1.8;
+    }
+
+    .confirm-buttons {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    .confirm-btn {
+        padding: 10px 22px;
+        border-radius: 12px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: 1px solid transparent;
+        font-family: 'Sahel', sans-serif !important;
+        min-width: 100px;
+    }
+
+    .confirm-btn.cancel {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.1);
+        color: #d1d5db;
+    }
+
+    .confirm-btn.cancel:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+    }
+
+    .confirm-btn.confirm-danger {
+        background: #dc2626;
+        color: #fff;
+    }
+
+    .confirm-btn.confirm-danger:hover {
+        background: #ef4444;
+    }
+
+    .confirm-btn.confirm-warning {
+        background: #d97706;
+        color: #fff;
+    }
+
+    .confirm-btn.confirm-warning:hover {
+        background: #f59e0b;
+    }
+
+    .confirm-btn.confirm-primary {
+        background: #7c3aed;
+        color: #fff;
+    }
+
+    .confirm-btn.confirm-primary:hover {
+        background: #8b5cf6;
+    }
+
+    .confirm-btn.confirm-success {
+        background: #059669;
+        color: #fff;
+    }
+
+    .confirm-btn.confirm-success:hover {
+        background: #10b981;
+    }
+</style>
+
+<main class="max-w-5xl mx-auto px-4 pt-24 md:pt-28 pb-16 relative z-10">
+
+    <a href="/members" class="text-xs text-gray-500 hover:text-accent-400 no-underline inline-flex items-center gap-1 mb-4">
+        <i class="bi bi-arrow-right"></i> بازگشت به اعضا
+    </a>
+
+    <div class="profile-card">
+
+        <div class="profile-hero">
+            <div class="profile-avatar-xl"><%= member.name.charAt(0) %></div>
+            <div class="profile-hero-info">
+                <h1 class="profile-hero-name"><%= member.name %></h1>
+                <div class="profile-hero-badge-row">
+                    <span class="state-badge <%= STATE[member.state][1] %>">
+                        <i class="bi <%= stateIcon[member.state] || 'bi-circle' %> text-[10px]"></i>
+                        <%= STATE[member.state][0] %>
+                    </span>
+                    <span class="text-xs text-gray-500" dir="ltr"><i class="bi bi-hash"></i><%= member.code %></span>
+                </div>
+            </div>
+            <div class="profile-hero-actions">
+                <a href="/invoices/new?member=<%= member._id %>" class="profile-btn profile-btn-primary">
+                    <i class="bi bi-receipt"></i>
+                    <span class="hidden sm:inline">صدور فاکتور</span>
+                </a>
+                <% if (member.status === 'active') { %>
+                <button type="button" data-status="frozen" class="status-btn profile-btn profile-btn-secondary">
+                    <i class="bi bi-pause-circle"></i>
+                    <span class="hidden sm:inline">انجماد</span>
+                </button>
+                <% } else { %>
+                <button type="button" data-status="active" class="status-btn profile-btn profile-btn-secondary">
+                    <i class="bi bi-play-circle"></i>
+                    <span class="hidden sm:inline">فعال‌سازی</span>
+                </button>
+                <% } %>
+            </div>
+        </div>
+
+        <div class="profile-info-grid">
+            <div class="profile-info-block">
+                <div class="info-block-title"><i class="bi bi-person-vcard"></i> اطلاعات تماس</div>
+                <% if (member.phone) { %>
+                <div class="info-row">
+                    <span class="info-row-label"><i class="bi bi-telephone"></i> تلفن</span>
+                    <span class="info-row-value" dir="ltr"><%= member.phone %></span>
+                </div>
+                <% } %>
+                <div class="info-row">
+                    <span class="info-row-label"><i class="bi bi-calendar-plus"></i> عضویت از</span>
+                    <span class="info-row-value rtl"><%= fmtDate(member.createdAt) %></span>
+                </div>
+                <% if (member.notes) { %>
+                <div class="info-row" style="padding-top:8px;">
+                    <span class="info-row-label" style="align-self:flex-start;"><i class="bi bi-chat-left-text"></i></span>
+                    <span class="info-row-value rtl" style="font-weight:500; color:#9ca3af; font-size:12px; line-height:1.8; text-align:right;"><%= member.notes %></span>
+                </div>
+                <% } %>
+            </div>
+
+            <div class="profile-info-block">
+                <div class="info-block-title"><i class="bi bi-card-checklist"></i> وضعیت اشتراک</div>
+                <% if (member.membershipExpiresAt) { %>
+                <div class="info-row">
+                    <span class="info-row-label"><i class="bi bi-tag"></i> پلن</span>
+                    <span class="info-row-value rtl"><%= member.lastPlanName || '-' %></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-row-label"><i class="bi bi-calendar-event"></i> انقضا</span>
+                    <span class="info-row-value rtl"><%= fmtDate(member.membershipExpiresAt) %></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-row-label"><i class="bi bi-hourglass-split"></i> زمان</span>
+                    <span class="membership-days-badge <%= member.daysLeft >= 0 ? 'ok' : 'expired' %>" style="padding:3px 10px;font-size:11px;">
+                        <% if (member.daysLeft >= 0) { %><%= fmtNum(member.daysLeft) %> روز مانده<% } else { %><%= fmtNum(Math.abs(member.daysLeft)) %> روز گذشته<% } %>
+                    </span>
+                </div>
+                <% } else { %>
+                <p class="text-xs text-gray-500 leading-relaxed" style="margin-top:4px;">اشتراکی ثبت نشده است.</p>
+                <% } %>
+            </div>
+
+            <div class="profile-info-block">
+                <div class="info-block-title"><i class="bi bi-bar-chart"></i> خلاصه مالی</div>
+                <div class="info-row">
+                    <span class="info-row-label"><i class="bi bi-wallet2"></i> مجموع پرداختی</span>
+                    <span class="info-row-value" style="color:#6ee7b7;"><%= fmtNum(member.totalPaid) %> <span style="font-size:10px;color:#6b7280;font-weight:500;">تومان</span></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-row-label"><i class="bi bi-receipt-cutoff"></i> فاکتورها</span>
+                    <span class="info-row-value"><%= fmtNum(invoices.length) %></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-row-label"><i class="bi bi-exclamation-circle"></i> پرداخت‌نشده</span>
+                    <span class="info-row-value" style="color:<%= unpaidTotal > 0 ? '#fcd34d' : '#6b7280' %>;"><%= fmtNum(unpaidTotal) %> <span style="font-size:10px;color:#6b7280;font-weight:500;">تومان</span></span>
+                </div>
+            </div>
+        </div>
+
+        <% if (member.membershipExpiresAt) { %>
+        <div class="membership-progress-section">
+            <div class="membership-header">
+                <div class="membership-dates">
+                    از <b><%= fmtDate(member.membershipStartsAt) %></b> تا <b><%= fmtDate(member.membershipExpiresAt) %></b>
+                </div>
+                <span class="membership-days-badge <%= member.daysLeft >= 0 ? 'ok' : 'expired' %>">
+                    <i class="bi bi-<%= member.daysLeft >= 0 ? 'hourglass-half' : 'exclamation-circle-fill' %>"></i>
+                    <% if (member.daysLeft >= 0) { %><%= fmtNum(member.daysLeft) %> روز مانده<% } else { %><%= fmtNum(Math.abs(member.daysLeft)) %> روز از انقضا<% } %>
+                </span>
+            </div>
+            <div class="progress-track">
+                <div class="progress-fill <%= member.state === 'expired' ? 'bg-red-500' : (member.state === 'expiring' ? 'bg-amber-400' : 'bg-emerald-500') %>" style="width: <%= progress === null ? 0 : progress %>%;"></div>
+            </div>
+            <div class="progress-labels">
+                <span>شروع</span>
+                <span><%= progress === null ? 0 : progress %>% سپری شده</span>
+                <span>پایان</span>
+            </div>
+        </div>
+        <% } else { %>
+        <div class="empty-membership">
+            <div class="empty-membership-inner">
+                <div class="empty-membership-icon"><i class="bi bi-info-circle"></i></div>
+                <div class="empty-membership-text">
+                    هنوز اشتراکی برای این عضو ثبت نشده است. با پرداخت اولین فاکتور دارای «دوره اشتراک» (مثلاً ماهانه)، تاریخ پایان به‌صورت خودکار محاسبه می‌شود.
+                </div>
+            </div>
+        </div>
+        <% } %>
+
+        <% if (member.status !== 'inactive') { %>
+        <div class="freeze-row">
+            <% if (member.status === 'frozen') { %>
+                <span class="state-badge state-inactive" style="padding:6px 12px;">
+                    <i class="bi bi-snow text-[10px]"></i> منجمد<% if (member.frozenAt) { %> از <%= fmtDate(member.frozenAt) %><% } %>
+                </span>
+                <button type="button" id="unfreezeBtn" class="profile-btn profile-btn-success">
+                    <i class="bi bi-play-circle"></i> رفع انجماد
+                </button>
+                <span class="freeze-hint">روزهای انجماد به تاریخ پایان اشتراک اضافه می‌شود</span>
+            <% } else { %>
+                <button type="button" id="freezeBtn" class="profile-btn profile-btn-secondary">
+                    <i class="bi bi-snow"></i> انجماد اشتراک
+                </button>
+                <span class="freeze-hint">برای سفر یا مصدومیت؛ روزهای انجماد بعداً جبران می‌شود</span>
+            <% } %>
+        </div>
+        <% } %>
+    </div>
+
+    <%
+        var rule = (typeof autoRule !== 'undefined' && autoRule) || null;
+        const ruleDate = rule ? new Date(rule.nextIssueAt) : new Date();
+        const ymd = (d) => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+        const INTERVALS = [
+            [1, 'هر ماه'],
+            [2, 'هر 2 ماه'],
+            [3, 'هر 3 ماه'],
+            [4, 'هر 4 ماه'],
+            [6, 'هر 6 ماه'],
+            [12, 'هر سال']
+        ];
+    %>
+    <div class="card rounded-2xl p-6 mb-6" id="autoCard">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-base font-bold text-white"><i class="bi bi-arrow-repeat text-accent-400"></i> صدور خودکار فاکتور</h2>
+            <% if (rule) { %><span class="state-badge <%= rule.active ? 'state-active' : 'state-inactive' %>"><%= rule.active ? 'فعال' : 'متوقف' %></span><% } %>
+        </div>
+        <% if (plans.length === 0) { %>
+            <p class="text-sm text-gray-500">برای تنظیم صدور خودکار ابتدا یک <a href="/plans" class="text-accent-400 no-underline">پلن</a> بسازید.</p>
+        <% } else { %>
+        <p class="text-xs text-gray-500 mb-4 leading-7">مشخص کنید برای این عضو هر چند ماه یک‌بار فاکتور بر اساس کدام پلن صادر شود. فاکتور پرداخت‌نشده صادر می‌شود و با ثبت پرداخت، اشتراک به همان اندازه تمدید می‌شود.</p>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+            <div>
+                <label class="block text-xs font-semibold text-gray-400 mb-1.5">پلن</label>
+                <div class="cs-wrap" id="arPlanWrap">
+                    <button type="button" class="cs-trigger" id="arPlanTrigger" aria-haspopup="listbox" aria-expanded="false">
+                        <span class="cs-label" id="arPlanLabel">
+                            <% var selPlan = null; plans.forEach(function(p){ if (rule && String(rule.plan && rule.plan._id) === String(p._id)) selPlan = p; }); %>
+                            <% if (selPlan) { %><%= selPlan.name %>: <%= Number(selPlan.price).toLocaleString('fa-IR-u-nu-latn') %><% } else { %><%= plans[0].name %>: <%= Number(plans[0].price).toLocaleString('fa-IR-u-nu-latn') %><% } %>
+                        </span>
+                        <i class="bi bi-chevron-down"></i>
+                    </button>
+                    <div class="cs-menu" id="arPlanMenu" role="listbox">
+                        <% plans.forEach(function (p) { %>
+                        <div class="cs-option <%= rule && String(rule.plan && rule.plan._id) === String(p._id) ? 'selected' : '' %>" role="option" data-value="<%= p._id %>"><%= p.name %>: <%= Number(p.price).toLocaleString('fa-IR-u-nu-latn') %></div>
+                        <% }); %>
+                    </div>
+                    <input type="hidden" id="arPlan" value="<%= rule && rule.plan ? rule.plan._id : plans[0]._id %>">
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-gray-400 mb-1.5">بازه‌ی صدور</label>
+                <div class="cs-wrap" id="arIntervalWrap">
+                    <button type="button" class="cs-trigger" id="arIntervalTrigger" aria-haspopup="listbox" aria-expanded="false">
+                        <span class="cs-label" id="arIntervalLabel">
+                            <% var selInt = rule ? (rule.intervalMonths || 1) : 1; var selIntLabel = 'هر ماه'; INTERVALS.forEach(function(o){ if (o[0] === selInt) selIntLabel = o[1]; }); %><%= selIntLabel %>
+                        </span>
+                        <i class="bi bi-chevron-down"></i>
+                    </button>
+                    <div class="cs-menu" id="arIntervalMenu" role="listbox">
+                        <% INTERVALS.forEach(function (o) { %>
+                        <div class="cs-option <%= (rule ? (rule.intervalMonths || 1) : 1) === o[0] ? 'selected' : '' %>" role="option" data-value="<%= o[0] %>"><%= o[1] %></div>
+                        <% }); %>
+                    </div>
+                    <input type="hidden" id="arInterval" value="<%= rule ? (rule.intervalMonths || 1) : 1 %>">
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-gray-400 mb-1.5" for="arDate"><%= rule ? 'صدور بعدی' : 'اولین صدور' %></label>
+                <input type="date" id="arDate" class="input-field" style="direction:ltr" value="<%= ymd(ruleDate) %>" />
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-gray-400 mb-1.5" for="arNote">یادداشت روی فاکتور</label>
+                <input type="text" id="arNote" maxlength="64" class="input-field" value="<%= rule ? rule.note : '' %>" placeholder="اختیاری" />
+            </div>
+        </div>
+        <div class="flex flex-wrap gap-2 mt-4">
+            <button type="button" id="arSave" class="btn-primary px-6 py-2.5 rounded-xl text-white font-bold text-sm"><i class="bi bi-check2-circle"></i> <%= rule ? 'ذخیره تغییرات' : 'فعال‌سازی صدور خودکار' %></button>
+            <% if (rule) { %>
+            <button type="button" id="arToggle" class="px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm font-bold text-gray-200"><%= rule.active ? 'توقف' : 'ادامه' %></button>
+            <button type="button" id="arDelete" class="px-5 py-2.5 rounded-xl text-sm font-bold text-red-300 bg-red-500/10 border border-red-500/20">حذف</button>
+            <% } %>
+        </div>
+        <% } %>
+    </div>
+
+    <div class="card rounded-2xl overflow-hidden">
+        <div class="px-6 py-4 border-b border-white/5 flex items-center justify-between">
+            <h2 class="text-base font-bold text-white"><i class="bi bi-clock-history text-accent-400"></i> سابقه فاکتورها</h2>
+            <a href="/invoices?member=<%= member._id %>" class="text-xs text-accent-400 no-underline">مشاهده همه</a>
+        </div>
+        <% if (invoices.length === 0) { %>
+            <div class="p-10 text-center text-gray-500 text-sm">هنوز فاکتوری برای این عضو صادر نشده است</div>
+        <% } else { %>
+        <div class="divide-y divide-white/5">
+            <% invoices.forEach(function(inv) { %>
+            <a href="/i/<%= inv._id %>" class="flex items-center gap-3 px-5 md:px-6 py-4 hover:bg-white/[0.02] transition no-underline">
+                <span class="state-badge <%= inv.isPaid ? 'state-active' : 'state-expiring' %> flex-shrink-0"><%= inv.isPaid ? 'پرداخت' : 'در انتظار' %></span>
+                <div class="flex-1 min-w-0">
+                    <div class="text-sm font-bold text-white" dir="ltr" style="text-align:right"><%= inv.invoiceNumber %></div>
+                    <div class="text-xs text-gray-500 truncate"><%= inv.plan && inv.plan.name %> · <%= inv.invoiceDate %></div>
+                </div>
+                <div class="text-sm font-black text-white whitespace-nowrap"><%= fmtNum(inv.totalAmount) %> <span class="text-xs font-normal text-gray-500">تومان</span></div>
+            </a>
+            <% }); %>
+        </div>
+        <% } %>
+    </div>
+</main>
+
+<div class="confirm-overlay" id="confirmModal">
+    <div class="confirm-dialog">
+        <div class="confirm-icon" id="confirmIcon"><i class="bi bi-question-circle"></i></div>
+        <h3 class="confirm-title" id="confirmTitle">تأیید</h3>
+        <p class="confirm-message" id="confirmMessage">آیا مطمئن هستید؟</p>
+        <div class="confirm-buttons">
+            <button type="button" class="confirm-btn cancel" id="confirmCancel">انصراف</button>
+            <button type="button" class="confirm-btn confirm-primary" id="confirmOk">تأیید</button>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/modals-common') %>
+
+<script>
+    window.fxLiveHandlers = {
+        members: () => location.reload(),
+        invoices: () => location.reload()
+    };
+
+<%- include('partials/scripts-common') %>
+
+    let confirmResolve = null;
+
+    function showConfirm(opts) {
+        return new Promise((resolve) => {
+            confirmResolve = resolve;
+
+            const overlay = document.getElementById('confirmModal');
+            const icon = document.getElementById('confirmIcon');
+            const title = document.getElementById('confirmTitle');
+            const msg = document.getElementById('confirmMessage');
+            const ok = document.getElementById('confirmOk');
+            const cancel = document.getElementById('confirmCancel');
+
+            icon.className = 'confirm-icon ' + (opts.type || 'info');
+            icon.innerHTML = '<i class="bi ' + (opts.icon || 'bi-question-circle') + '"></i>';
+            title.textContent = opts.title || 'تأیید';
+            msg.textContent = opts.message || '';
+            ok.textContent = opts.okText || 'تأیید';
+
+            ok.className = 'confirm-btn confirm-' + (
+                opts.type === 'danger' ? 'danger'
+                    : opts.type === 'warning' ? 'warning'
+                        : opts.type === 'success' ? 'success'
+                            : 'primary'
+            );
+
+            cancel.textContent = opts.cancelText || 'انصراف';
+
+            overlay.classList.add('active');
+        });
+    }
+
+    function closeConfirm(result) {
+        document.getElementById('confirmModal').classList.remove('active');
+        if (confirmResolve) {
+            confirmResolve(result);
+            confirmResolve = null;
+        }
+    }
+
+    document.getElementById('confirmOk').addEventListener('click', () => closeConfirm(true));
+    document.getElementById('confirmCancel').addEventListener('click', () => closeConfirm(false));
+
+    document.getElementById('confirmModal').addEventListener('click', function (e) {
+        if (e.target === this) closeConfirm(false);
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && document.getElementById('confirmModal').classList.contains('active')) {
+            closeConfirm(false);
+        }
+    });
+
+    function initCs(wrapId) {
+        const wrap = document.getElementById(wrapId);
+        if (!wrap) return;
+
+        const trigger = wrap.querySelector('.cs-trigger');
+        const menu = wrap.querySelector('.cs-menu');
+        const label = wrap.querySelector('.cs-label');
+        const hidden = wrap.querySelector('input[type="hidden"]');
+
+        function toggle(open) {
+            menu.classList.toggle('open', open);
+            trigger.classList.toggle('open', open);
+            trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+        }
+
+        trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggle(!menu.classList.contains('open'));
+        });
+
+        menu.querySelectorAll('.cs-option').forEach(opt => {
+            opt.addEventListener('click', () => {
+                menu.querySelectorAll('.cs-option').forEach(o => o.classList.remove('selected'));
+                opt.classList.add('selected');
+                label.textContent = opt.textContent.trim();
+                hidden.value = opt.dataset.value;
+                toggle(false);
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!wrap.contains(e.target)) toggle(false);
+        });
+    }
+
+    initCs('arPlanWrap');
+    initCs('arIntervalWrap');
+
+    document.querySelectorAll('.status-btn').forEach((btn) => {
+        btn.addEventListener('click', async () => {
+            const newStatus = btn.dataset.status;
+            const isFreeze = newStatus === 'frozen';
+
+            const ok = await showConfirm({
+                type: isFreeze ? 'warning' : 'success',
+                icon: isFreeze ? 'bi-pause-circle' : 'bi-play-circle',
+                title: isFreeze ? 'انجماد عضو' : 'فعال‌سازی عضو',
+                message: isFreeze
+                    ? 'آیا مطمئن هستید که می‌خواهید این عضو را منجمد کنید؟'
+                    : 'آیا می‌خواهید این عضو را فعال کنید؟',
+                okText: isFreeze ? 'انجماد' : 'فعال‌سازی'
+            });
+
+            if (!ok) return;
+
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/members/<%= member._id %>', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ status: newStatus })
+                });
+
+                const result = await res.json();
+
+                if (result.success) {
+                    toast(result.message, 'success');
+                    setTimeout(() => location.reload(), 500);
+                } else {
+                    toast(result.message || 'خطا', 'error');
+                    btn.disabled = false;
+                }
+            } catch (e) {
+                toast('خطا در ارتباط با سرور', 'error');
+                btn.disabled = false;
+            }
+        });
+    });
+
+    (function () {
+        const H = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        };
+
+        const api = async (url, method, body) => {
+            try {
+                const res = await fetch(url, {
+                    method,
+                    headers: H,
+                    body: body ? JSON.stringify(body) : undefined
+                });
+
+                const r = await res.json();
+                const ok = res.ok && r.success !== false;
+                const msg = (r.validationErrors && Object.values(r.validationErrors)[0]) || r.message;
+
+                toast(msg || (ok ? 'انجام شد' : 'خطا'), ok ? 'success' : 'error');
+
+                if (ok) setTimeout(() => location.reload(), 600);
+            } catch (e) {
+                toast('خطا در ارتباط با سرور', 'error');
+            }
+        };
+
+        const memberId = '<%= member._id %>';
+
+        const fz = document.getElementById('freezeBtn');
+        if (fz) {
+            fz.addEventListener('click', async () => {
+                const ok = await showConfirm({
+                    type: 'warning',
+                    icon: 'bi-snow',
+                    title: 'انجماد اشتراک',
+                    message: 'اشتراک این عضو منجمد شود؟ روزهای انجماد به تاریخ پایان اضافه می‌شود.',
+                    okText: 'انجماد'
+                });
+                if (ok) api('/members/' + memberId + '/freeze', 'POST');
+            });
+        }
+
+        const uf = document.getElementById('unfreezeBtn');
+        if (uf) {
+            uf.addEventListener('click', async () => {
+                const ok = await showConfirm({
+                    type: 'success',
+                    icon: 'bi-play-circle',
+                    title: 'رفع انجماد',
+                    message: 'اشتراک این عضو رفع انجماد شود؟',
+                    okText: 'رفع انجماد'
+                });
+                if (ok) api('/members/' + memberId + '/unfreeze', 'POST');
+            });
+        }
+
+        // ===== Auto-issue save (always sends request) =====
+        const save = document.getElementById('arSave');
+        if (save) {
+            save.addEventListener('click', () => {
+                const d = document.getElementById('arDate').value;
+
+                const body = {
+                    planId: document.getElementById('arPlan').value || '',
+                    intervalMonths: Number(document.getElementById('arInterval').value || 1),
+                    note: (document.getElementById('arNote').value || '').trim()
+                };
+
+                if (d) body.nextIssueAt = new Date(d + 'T09:00:00').toISOString();
+
+                api('/auto-invoices/member/' + memberId, 'PUT', body);
+            });
+        }
+
+        <% if (rule) { %>
+        document.getElementById('arToggle').addEventListener('click', () => {
+            api('/auto-invoices/<%= rule._id %>', 'PATCH', {
+                active: <%= rule.active ? 'false' : 'true' %>
+            });
+        });
+
+        document.getElementById('arDelete').addEventListener('click', async () => {
+            const ok = await showConfirm({
+                type: 'danger',
+                icon: 'bi-trash',
+                title: 'حذف صدور خودکار',
+                message: 'این صدور خودکار حذف شود؟ فاکتورهای قبلی تغییر نمی‌کنند.',
+                okText: 'حذف'
+            });
+
+            if (ok) api('/auto-invoices/<%= rule._id %>', 'DELETE');
+        });
+        <% } %>
+    })();
+</script>
+</body>
+</html>

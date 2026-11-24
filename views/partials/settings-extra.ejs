@@ -1,0 +1,554 @@
+<%
+  const sg = (user && user.signature) || {};
+  const curTheme = (user && user.invoiceTheme) || 'aurora';
+  const themeList = (typeof themes !== 'undefined' && themes) || [];
+%>
+
+<style>
+/* ===== Custom Confirm Modal ===== */
+.confirm-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(5, 5, 8, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 600;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    padding: 20px;
+}
+.confirm-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+.confirm-dialog {
+    background: #14141f;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 20px;
+    padding: 32px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
+    transform: scale(0.92) translateY(16px);
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    text-align: center;
+}
+.confirm-overlay.active .confirm-dialog {
+    transform: scale(1) translateY(0);
+}
+.confirm-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 28px;
+}
+.confirm-icon.danger  { background: rgba(220, 38, 38, 0.1); color: #f87171; }
+.confirm-icon.warning { background: rgba(245, 158, 11, 0.1); color: #fcd34d; }
+.confirm-icon.info    { background: rgba(139, 92, 246, 0.1); color: #a78bfa; }
+.confirm-icon.success { background: rgba(16, 185, 129, 0.1); color: #6ee7b7; }
+.confirm-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 6px;
+}
+.confirm-message {
+    font-size: 13px;
+    color: #9ca3af;
+    margin-bottom: 24px;
+    line-height: 1.8;
+}
+.confirm-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+.confirm-btn {
+    padding: 10px 22px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+    font-family: 'Sahel', sans-serif !important;
+    min-width: 100px;
+}
+.confirm-btn.cancel {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #d1d5db;
+}
+.confirm-btn.cancel:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+.confirm-btn.confirm-danger        { background: #dc2626; color: #fff; }
+.confirm-btn.confirm-danger:hover  { background: #ef4444; }
+.confirm-btn.confirm-warning       { background: #d97706; color: #fff; }
+.confirm-btn.confirm-warning:hover { background: #f59e0b; }
+.confirm-btn.confirm-primary       { background: #7c3aed; color: #fff; }
+.confirm-btn.confirm-primary:hover { background: #8b5cf6; }
+.confirm-btn.confirm-success       { background: #059669; color: #fff; }
+.confirm-btn.confirm-success:hover { background: #10b981; }
+</style>
+
+<!-- ===================== BRANDING ===================== -->
+<section class="card rounded-2xl p-6 md:p-8 mt-5" id="brandingCard">
+    <div class="flex items-center gap-3 mb-6">
+        <div class="section-icon bg-accent-700/10 text-accent-400"><i class="bi bi-palette"></i></div>
+        <div>
+            <h2 class="text-lg font-extrabold text-white">ظاهر فاکتور</h2>
+            <p class="text-xs text-gray-500">تم فاکتور و امضای دیجیتال شما. آواتار برند به‌صورت خودکار ساخته می‌شود و نیازی به آپلود فایل نیست.</p>
+        </div>
+    </div>
+
+    <div class="flex items-center gap-4 rounded-xl border border-white/10 bg-white/[.03] p-4 mb-7">
+        <div style="width:56px;height:56px;border-radius:16px;overflow:hidden;flex:none"><%- typeof avatarHtml !== 'undefined' ? avatarHtml : '' %></div>
+        <div>
+            <div class="text-sm font-bold text-white">آواتار فاکتور شما</div>
+            <p class="text-xs text-gray-500 mt-0.5">برای هر کسب‌وکار به‌صورت خودکار و ثابت ساخته می‌شود؛ نیازی به آپلود یا تنظیم نیست.</p>
+        </div>
+    </div>
+
+    <!-- theme picker -->
+    <label class="block text-xs font-semibold text-gray-400 mb-2">ظاهر فاکتور</label>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4" id="themePicker">
+        <% themeList.forEach(function (t) { %>
+        <button type="button" data-theme="<%= t.key %>" class="theme-opt text-right rounded-xl border p-3 transition <%= curTheme === t.key ? 'border-accent-500 bg-accent-700/10' : 'border-white/10 hover:border-white/25' %>">
+            <span class="block text-sm font-extrabold text-white"><%= t.label %><% if (t.key === 'luxe') { %> <i class="bi bi-stars" style="color:#e8c872"></i><% } %></span>
+            <span class="block text-[11px] text-gray-500 mt-0.5"><%= t.hint %></span>
+        </button>
+        <% }); %>
+    </div>
+
+    <div class="mb-7">
+        <iframe id="invoicePreview" title="پیش‌نمایش فاکتور" src="/settings/branding/preview?theme=<%= curTheme %>" loading="lazy"
+            style="width:100%;height:760px;border:0;border-radius:14px;background:#0b0b14"></iframe>
+        <p class="text-[11px] text-gray-500 mt-2">پیش‌نمایش با نام و امضای شما و مبالغ نمونه. تا «ذخیره» نزنید روی فاکتورها اعمال نمی‌شود.</p>
+    </div>
+
+    <!-- signature section -->
+    <label class="block text-xs font-semibold text-gray-400 mb-2">امضای دیجیتال</label>
+    <div class="rounded-xl border border-white/10 bg-white/[.03] p-4">
+        <div class="flex items-center justify-between gap-4 flex-wrap">
+            <div class="flex items-center gap-3">
+                <div class="w-14 h-14 rounded-xl bg-white flex items-center justify-center overflow-hidden shrink-0" id="sigThumb">
+                    <% if (sg.path) { %>
+                    <svg viewBox="0 0 600 240" width="52" height="52" fill="none" stroke="#111827" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="<%= sg.path %>"/></svg>
+                    <% } else { %>
+                    <i class="bi bi-pen text-gray-400 text-xl"></i>
+                    <% } %>
+                </div>
+                <div>
+                    <div class="text-sm font-bold text-white" id="sigStatusLabel"><%= sg.path ? 'امضا ثبت شده' : 'هنوز امضایی ثبت نشده' %></div>
+                    <p class="text-xs text-gray-500 mt-0.5">با موس، قلم یا انگشت امضا کنید. فایلی آپلود نمی‌شود.</p>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <button type="button" id="openSigModal" class="btn-generate">
+                    <i class="bi bi-pen"></i>
+                    <span><%= sg.path ? 'ویرایش امضا' : 'افزودن امضا' %></span>
+                </button>
+                <% if (sg.path) { %>
+                <button type="button" id="sigRemoveInline" class="px-3 py-2 rounded-xl text-xs font-bold text-red-300 bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 transition" title="حذف امضا">
+                    <i class="bi bi-trash"></i>
+                </button>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <button type="button" id="brandingSave" class="btn-primary mt-6 w-full md:w-auto px-8 py-3 rounded-xl text-white font-bold text-sm inline-flex items-center justify-center gap-2"><i class="bi bi-check2-circle"></i><span>ذخیره تنظیمات فاکتور</span></button>
+</section>
+
+<!-- ===================== SIGNATURE MODAL ===================== -->
+<div class="modal-overlay" id="sigModal">
+    <div class="modal-dialog" style="max-width:560px;padding:24px">
+        <div class="flex items-center justify-between mb-5">
+            <h3 class="text-lg font-extrabold text-white flex items-center gap-2"><i class="bi bi-pen text-accent-400"></i> امضای دیجیتال</h3>
+            <button type="button" onclick="closeModal('sigModal')" class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition" aria-label="بستن"><i class="bi bi-x-lg"></i></button>
+        </div>
+
+        <div class="rounded-xl border border-white/10 bg-white overflow-hidden touch-none" style="touch-action:none">
+            <canvas id="sigCanvas" width="600" height="240" class="w-full block cursor-crosshair" style="aspect-ratio:600/240"></canvas>
+        </div>
+        <div class="flex gap-2 mt-3">
+            <button type="button" id="sigClear" class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-xs font-bold text-gray-200 hover:bg-white/10 transition"><i class="bi bi-trash"></i> پاک کردن همه</button>
+            <div class="flex-1"></div>
+            <button type="button" onclick="closeModal('sigModal')" class="px-5 py-2 rounded-xl text-gray-300 font-semibold text-sm bg-white/5 border border-white/10 hover:bg-white/10 transition">انصراف</button>
+            <button type="button" id="sigApply" class="btn-primary px-5 py-2 rounded-xl text-white font-bold text-sm inline-flex items-center gap-2"><i class="bi bi-check2"></i><span>تایید امضا</span></button>
+        </div>
+        <p class="text-[11px] text-gray-500 mt-2">امضا با رنگ مشکی و ضخامت ثابت ذخیره می‌شود.</p>
+    </div>
+</div>
+
+<!-- ===================== LIMITS ===================== -->
+<% if (typeof usage !== 'undefined' && usage && usage.length) { %>
+<section class="card rounded-2xl p-6 md:p-8 mt-5">
+    <div class="flex items-center gap-3 mb-5">
+        <div class="section-icon bg-accent-700/10 text-accent-400"><i class="bi bi-speedometer2"></i></div>
+        <div>
+            <h2 class="text-lg font-extrabold text-white">سقف‌های حساب</h2>
+            <p class="text-xs text-gray-500">میزان مصرف شما؛ جزئیات در <a href="/terms/business" class="text-accent-400 no-underline">شرایط ویژه‌ی صاحبان کسب‌وکار</a></p>
+        </div>
+    </div>
+    <div class="grid md:grid-cols-2 gap-3">
+        <% usage.forEach(function (u) { const pct = Math.min(100, Math.round(u.used / u.max * 100)); %>
+        <div class="rounded-xl border border-white/10 bg-white/[.03] p-3">
+            <div class="flex justify-between text-xs mb-1.5"><span class="text-gray-300"><%= u.label %></span><span class="text-gray-500"><%= u.used.toLocaleString('fa-IR-u-nu-latn') %> از <%= u.max.toLocaleString('fa-IR-u-nu-latn') %></span></div>
+            <div class="h-1.5 rounded-full bg-white/10 overflow-hidden"><div class="h-full rounded-full <%= pct >= 90 ? 'bg-red-400' : pct >= 70 ? 'bg-amber-400' : 'bg-accent-500' %>" style="width:<%= pct %>%"></div></div>
+        </div>
+        <% }); %>
+    </div>
+</section>
+<% } %>
+
+<!-- ===================== ACCOUNT ===================== -->
+<section class="card rounded-2xl p-6 md:p-8 mt-5" id="accountCard">
+    <div class="flex items-center gap-3 mb-6">
+        <div class="section-icon bg-accent-700/10 text-accent-400"><i class="bi bi-shield-check"></i></div>
+        <h2 class="text-lg font-extrabold text-white">ایمیل و حذف حساب</h2>
+    </div>
+
+    <label class="block text-xs font-semibold text-gray-400 mb-1.5">ایمیل ورود</label>
+    <p class="text-sm text-gray-200 mb-3 dir-ltr text-left"><%= user.email %> <% if (user.emailVerified) { %><span class="text-success-400 text-xs mr-2"><i class="bi bi-patch-check-fill"></i> تأیید شده</span><% } %></p>
+    <div class="flex flex-col md:flex-row gap-2 mb-2">
+        <input type="email" id="newEmail" class="input-field text-left dir-ltr" placeholder="ایمیل جدید" />
+        <button type="button" id="emailSend" class="px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-xs font-bold text-gray-200 hover:bg-white/10 transition whitespace-nowrap">ارسال کد</button>
+    </div>
+    <div id="emailConfirmRow" class="flex flex-col md:flex-row gap-2 mb-1" style="display:none">
+        <input type="text" id="emailCode" inputmode="numeric" maxlength="6" class="input-field text-left dir-ltr" placeholder="کد 6 رقمی" />
+        <button type="button" id="emailConfirm" class="px-5 py-2.5 rounded-xl btn-primary text-white text-xs font-bold whitespace-nowrap">تأیید ایمیل جدید</button>
+    </div>
+
+    <div class="border-t border-white/5 my-7"></div>
+
+    <h3 class="text-sm font-extrabold text-red-300 mb-1"><i class="bi bi-exclamation-triangle"></i> حذف حساب</h3>
+    <p class="text-xs text-gray-500 mb-4 leading-6">با ثبت درخواست، حساب شما بلافاصله غیرفعال می‌شود و پس از بررسی مدیران حذف خواهد شد. تا قبل از بررسی می‌توانید با ورود به حساب، درخواست را لغو کنید. فاکتورها برای سوابق مالی نگهداری می‌شوند.</p>
+    <div class="grid md:grid-cols-2 gap-3">
+        <input type="password" id="delPassword" class="input-field" placeholder="رمز عبور فعلی" autocomplete="current-password" />
+        <input type="text" id="delReason" class="input-field" maxlength="300" placeholder="علت (اختیاری)" />
+    </div>
+    <button type="button" id="delSend" class="mt-3 px-6 py-2.5 rounded-xl text-xs font-bold text-white bg-red-600 hover:bg-red-500 transition"><i class="bi bi-person-x"></i> ثبت درخواست حذف حساب</button>
+</section>
+
+<!-- ===================== CONFIRM MODAL ===================== -->
+<div class="confirm-overlay" id="confirmModal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle" aria-hidden="true">
+    <div class="confirm-dialog">
+        <div class="confirm-icon" id="confirmIcon"><i class="bi bi-question-circle" aria-hidden="true"></i></div>
+        <h3 class="confirm-title" id="confirmTitle">تأیید</h3>
+        <p class="confirm-message" id="confirmMessage">آیا مطمئن هستید؟</p>
+        <div class="confirm-buttons">
+            <button type="button" class="confirm-btn cancel" id="confirmCancel">انصراف</button>
+            <button type="button" class="confirm-btn confirm-primary" id="confirmOk">تأیید</button>
+        </div>
+    </div>
+</div>
+
+<script>
+(function () {
+    var $ = function (id) { return document.getElementById(id); };
+    var say = function (m, t) { if (typeof toast === 'function') toast(m, t); else alert(m); };
+    async function call(url, method, body) {
+        var res = await fetch(url, {
+            method: method,
+            headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+            body: body ? JSON.stringify(body) : undefined
+        });
+        var data = {}; try { data = await res.json(); } catch (e) {}
+        if (!res.ok || data.success === false) {
+            var errs = data.validationErrors ? Object.values(data.validationErrors).join('، ') : (data.message || 'خطا');
+            throw new Error(errs);
+        }
+        return data;
+    }
+
+    // ---------- custom confirm ----------
+    var confirmResolve = null;
+    function showConfirm(opts) {
+        return new Promise(function (resolve) {
+            confirmResolve = resolve;
+
+            var overlay = $('confirmModal');
+            var icon = $('confirmIcon');
+            var title = $('confirmTitle');
+            var msg = $('confirmMessage');
+            var ok = $('confirmOk');
+            var cancel = $('confirmCancel');
+
+            icon.className = 'confirm-icon ' + (opts.type || 'info');
+            icon.innerHTML = '<i class="bi ' + (opts.icon || 'bi-question-circle') + '" aria-hidden="true"></i>';
+            title.textContent = opts.title || 'تأیید';
+            msg.textContent = opts.message || '';
+            ok.textContent = opts.okText || 'تأیید';
+
+            ok.className = 'confirm-btn confirm-' + (
+                opts.type === 'danger' ? 'danger'
+                    : opts.type === 'warning' ? 'warning'
+                        : opts.type === 'success' ? 'success'
+                            : 'primary'
+            );
+
+            cancel.textContent = opts.cancelText || 'انصراف';
+
+            overlay.classList.add('active');
+            overlay.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+
+            requestAnimationFrame(function () { ok.focus(); });
+        });
+    }
+    function closeConfirm(result) {
+        var overlay = $('confirmModal');
+        if (!overlay) return;
+        overlay.classList.remove('active');
+        overlay.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        if (confirmResolve) {
+            confirmResolve(result);
+            confirmResolve = null;
+        }
+    }
+    $('confirmOk')?.addEventListener('click', function () { closeConfirm(true); });
+    $('confirmCancel')?.addEventListener('click', function () { closeConfirm(false); });
+    $('confirmModal')?.addEventListener('click', function (e) {
+        if (e.target === this) closeConfirm(false);
+    });
+    document.addEventListener('keydown', function (e) {
+        var m = $('confirmModal');
+        if (e.key === 'Escape' && m && m.classList.contains('active')) closeConfirm(false);
+    });
+
+    // ---------- theme + preview ----------
+    var theme = '<%= curTheme %>';
+    var frame = $('invoicePreview');
+    function fitFrame() {
+        try {
+            var h = frame.contentDocument.documentElement.scrollHeight;
+            if (h > 300) frame.style.height = (h + 4) + 'px';
+        } catch (e) {}
+    }
+    frame.addEventListener('load', fitFrame);
+    document.querySelectorAll('.theme-opt').forEach(function (b) {
+        b.addEventListener('click', function () {
+            theme = b.dataset.theme;
+            document.querySelectorAll('.theme-opt').forEach(function (x) {
+                var on = x === b;
+                x.classList.toggle('border-accent-500', on);
+                x.classList.toggle('bg-accent-700/10', on);
+                x.classList.toggle('border-white/10', !on);
+            });
+            frame.src = '/settings/branding/preview?theme=' + encodeURIComponent(theme);
+        });
+    });
+
+    // ---------- signature constants (ثابت) ----------
+    var SIG_COLOR = '#111827';  // مشکی
+    var SIG_SIZE = 3.2;          // نیمه‌کلفت
+
+    // ---------- signature state ----------
+    var cv = $('sigCanvas'), ctx = cv ? cv.getContext('2d') : null;
+    var drawing = false, last = null, removeSig = false;
+    var strokes = [], current = null, totalPoints = 0;
+    var MAX_POINTS = 2800, MAX_STROKES = 40;
+
+    // pending state (applied on "تایید امضا")
+    var pendingStrokes = null;
+    var pendingRemove = false;
+
+    function pos(e) {
+        if (!cv) return { x: 0, y: 0 };
+        var r = cv.getBoundingClientRect();
+        var x = (e.clientX - r.left) * cv.width / r.width;
+        var y = (e.clientY - r.top) * cv.height / r.height;
+        return { x: Math.min(cv.width, Math.max(0, x)), y: Math.min(cv.height, Math.max(0, y)) };
+    }
+    function addPoint(p) {
+        if (totalPoints >= MAX_POINTS) return false;
+        current.push([Math.round(p.x * 10) / 10, Math.round(p.y * 10) / 10]);
+        totalPoints++;
+        return true;
+    }
+    function drawStroke(from, to) {
+        if (!ctx) return;
+        ctx.strokeStyle = SIG_COLOR;
+        ctx.lineWidth = SIG_SIZE;
+        ctx.beginPath();
+        ctx.moveTo(from.x, from.y);
+        ctx.lineTo(to.x, to.y);
+        ctx.stroke();
+    }
+    function drawDot(p) {
+        if (!ctx) return;
+        ctx.fillStyle = SIG_COLOR;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, SIG_SIZE / 2, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    if (cv && ctx) {
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+
+        cv.addEventListener('pointerdown', function (e) {
+            if (strokes.length >= MAX_STROKES) return say('امضا خیلی پیچیده شد؛ پاک کنید و دوباره بکشید', 'error');
+            drawing = true;
+            last = pos(e);
+            cv.setPointerCapture(e.pointerId);
+            current = [];
+            strokes.push(current);
+            addPoint(last);
+            removeSig = false;
+            drawDot(last);
+            e.preventDefault();
+        });
+        cv.addEventListener('pointermove', function (e) {
+            if (!drawing) return;
+            var p = pos(e);
+            if (Math.hypot(p.x - last.x, p.y - last.y) < 1.2) return;
+            if (!addPoint(p)) { drawing = false; return say('به حداکثر طول امضا رسیدید', 'error'); }
+            drawStroke(last, p);
+            last = p;
+            e.preventDefault();
+        });
+        ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (ev) {
+            cv.addEventListener(ev, function () { drawing = false; });
+        });
+    }
+
+    $('sigClear')?.addEventListener('click', function () {
+        if (ctx) ctx.clearRect(0, 0, cv.width, cv.height);
+        strokes = []; current = null; totalPoints = 0; removeSig = false;
+    });
+
+    // open modal — reset
+    $('openSigModal')?.addEventListener('click', function () {
+        strokes = []; current = null; totalPoints = 0;
+        if (ctx) ctx.clearRect(0, 0, cv.width, cv.height);
+        removeSig = false;
+        openModal('sigModal');
+    });
+
+    // remove inline
+    $('sigRemoveInline')?.addEventListener('click', function () {
+        pendingRemove = true;
+        pendingStrokes = null;
+        var thumb = $('sigThumb');
+        if (thumb) thumb.innerHTML = '<i class="bi bi-pen text-gray-400 text-xl"></i>';
+        var lbl = $('sigStatusLabel');
+        if (lbl) lbl.textContent = 'آماده حذف پس از ذخیره';
+        say('برای اعمال حذف، «ذخیره تنظیمات فاکتور» را بزنید');
+    });
+
+    // apply signature from modal
+    $('sigApply')?.addEventListener('click', function () {
+        var drawn = strokes.filter(function (s) { return s.length; });
+        if (!drawn.length) return say('ابتدا امضا بکشید', 'error');
+
+        pendingStrokes = drawn;
+        pendingRemove = false;
+
+        try {
+            var path = pointsToPath(drawn);
+            var thumb = $('sigThumb');
+            if (thumb) thumb.innerHTML = '<svg viewBox="0 0 600 240" width="52" height="52" fill="none" stroke="' + SIG_COLOR + '" stroke-width="' + SIG_SIZE + '" stroke-linecap="round" stroke-linejoin="round"><path d="' + path + '"/></svg>';
+            var lbl = $('sigStatusLabel');
+            if (lbl) lbl.textContent = 'امضا آماده ذخیره است';
+        } catch (e) {}
+
+        closeModal('sigModal');
+        say('امضا در حافظه ذخیره شد؛ برای اعمال، «ذخیره تنظیمات فاکتور» را بزنید', 'success');
+    });
+
+    function pointsToPath(strokes) {
+        var d = '';
+        strokes.forEach(function (s) {
+            if (!s.length) return;
+            d += ' M' + s[0][0].toFixed(1) + ' ' + s[0][1].toFixed(1);
+            for (var i = 1; i < s.length; i++) {
+                d += ' L' + s[i][0].toFixed(1) + ' ' + s[i][1].toFixed(1);
+            }
+        });
+        return d.trim();
+    }
+
+    // ---------- save ----------
+    $('brandingSave').addEventListener('click', async function () {
+        var btn = this, html = btn.innerHTML;
+        btn.disabled = true;
+        try {
+            var body = {
+                invoiceTheme: theme,
+                signatureColor: SIG_COLOR,
+                signatureWidth: SIG_SIZE
+            };
+            if (pendingStrokes) body.strokes = pendingStrokes;
+            else if (pendingRemove) body.removeSignature = true;
+
+            var d = await call('/settings/branding', 'PUT', body);
+            say(d.message, 'success');
+            setTimeout(function () { location.reload(); }, 700);
+        } catch (e) {
+            say(e.message, 'error');
+        }
+        btn.disabled = false;
+        btn.innerHTML = html;
+    });
+
+    // ---------- e-mail change ----------
+    var code = $('emailCode');
+    if (code) code.addEventListener('input', function () { code.value = code.value.replace(/\D/g, '').slice(0, 6); });
+
+    $('emailSend')?.addEventListener('click', async function () {
+        var v = $('newEmail').value.trim().toLowerCase();
+        if (!v) return say('ایمیل جدید را وارد کنید', 'error');
+        this.disabled = true;
+        try {
+            var d = await call('/account/email/change', 'POST', { email: v });
+            say(d.message, 'success');
+            $('emailConfirmRow').style.display = 'flex';
+            code.focus();
+        } catch (e) { say(e.message, 'error'); }
+        var b = this;
+        setTimeout(function () { b.disabled = false; }, 4000);
+    });
+
+    $('emailConfirm')?.addEventListener('click', async function () {
+        try {
+            var d = await call('/account/email/confirm', 'POST', { code: code.value });
+            say(d.message, 'success');
+            setTimeout(function () { location.reload(); }, 800);
+        } catch (e) { say(e.message, 'error'); }
+    });
+
+    // ---------- delete request ----------
+    $('delSend')?.addEventListener('click', async function () {
+        var pw = $('delPassword').value;
+        if (!pw) return say('رمز عبور را وارد کنید', 'error');
+
+        var ok = await showConfirm({
+            type: 'danger',
+            icon: 'bi-person-x',
+            title: 'ثبت درخواست حذف حساب',
+            message: 'حساب شما بلافاصله غیرفعال می‌شود. ادامه می‌دهید؟',
+            okText: 'ثبت درخواست'
+        });
+        if (!ok) return;
+
+        try {
+            var d = await call('/account/delete-request', 'POST', { password: pw, reason: $('delReason').value.trim() });
+            say(d.message, 'success');
+            setTimeout(function () { location.href = d.redirect || '/auth/login'; }, 1200);
+        } catch (e) { say(e.message, 'error'); }
+    });
+})();
+</script>
