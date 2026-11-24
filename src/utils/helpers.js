@@ -1,9 +1,21 @@
-const Invoice = require("../models/Invoice");
-const User = require("../models/User");
-const AppError = require("./AppError");
+import mongoose from "mongoose";
+import {
+  asString,
+  asEnum,
+  escapeRegex,
+  parsePagination,
+  buildPagination,
+} from "./query.js";
+import Invoice from "../models/Invoice.js";
+import User from "../models/User.js";
+import AppError from "./AppError.js";
 
-exports.calculateTotals = (planPrice, customOptions = [], discounts = []) => {
-  const cafeTotal = customOptions.reduce(
+export const calculateTotals = (
+  planPrice,
+  customOptions = [],
+  discounts = [],
+) => {
+  const itemsTotal = customOptions.reduce(
     (sum, item) => sum + (Number(item.price) || 0),
     0,
   );
@@ -13,20 +25,24 @@ exports.calculateTotals = (planPrice, customOptions = [], discounts = []) => {
 
   for (const item of customOptions) {
     extraItems.push({
-      type: "cafe",
+      type: "item",
       name: item.name,
       price: Number(item.price) || 0,
     });
   }
 
   for (const discount of discounts) {
-    const discountValue = Number(discount.value) || 0;
+    const rawValue = Number(discount.value) || 0;
+    const discountValue =
+      discount.type === "percent" ? Math.min(rawValue, 100) : rawValue;
     const amount =
       discount.type === "percent"
-        ? Math.floor(((planPrice + cafeTotal) * discountValue) / 100)
+        ? Math.floor(((planPrice + itemsTotal) * discountValue) / 100)
         : discountValue;
 
-    discountTotal += amount;
+    const remaining = Math.max(0, planPrice + itemsTotal - discountTotal);
+    const appliedAmount = Math.min(amount, remaining);
+    discountTotal += appliedAmount;
 
     const label =
       discount.type === "percent"
@@ -36,22 +52,22 @@ exports.calculateTotals = (planPrice, customOptions = [], discounts = []) => {
     extraItems.push({
       type: "discount",
       name: `${discount.description} (${label})`,
-      price: -Math.abs(amount),
+      price: -Math.abs(appliedAmount),
     });
   }
 
-  const totalAmount = Math.max(0, planPrice + cafeTotal - discountTotal);
+  const totalAmount = Math.max(0, planPrice + itemsTotal - discountTotal);
 
   return {
-    cafeTotal,
+    itemsTotal,
     discountTotal,
     extraItems,
     totalAmount,
-    extraTotal: cafeTotal - discountTotal,
+    extraTotal: itemsTotal - discountTotal,
   };
 };
 
-exports.checkDuplicateField = async (field, value, userId) => {
+export const checkDuplicateField = async (field, value, userId) => {
   const query = { [field]: value.toLowerCase() };
   const existingUser = await User.findOne(query).select(field).lean();
 
@@ -64,32 +80,69 @@ exports.checkDuplicateField = async (field, value, userId) => {
   }
 };
 
-exports.setupPagination = async (req, res) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
-  const skip = (page - 1) * limit;
+/**
+ * Paginated invoice list for the logged-in owner.
+ * Supports ?search=, ?status=paid|pending, ?member=<memberId>, ?page, ?limit
+ * (all coerced/escaped: nothing from req.query reaches Mongo unchecked).
+ */
+export const buildInvoiceFilter = (query, userId) => {
+  const filter = { user: userId };
+
+  const status = asEnum(query.status, ["paid", "pending"]);
+  if (status === "paid") filter.isPaid = true;
+  if (status === "pending") filter.isPaid = false;
+
+  const member = asString(query.member, 24);
+  if (member && mongoose.isValidObjectId(member)) filter.memberRef = member;
+
+  const search = asString(query.search, 50);
+  if (search) {
+    const rx = new RegExp(escapeRegex(search), "i");
+    filter.$or = [
+      { invoiceNumber: rx },
+      { "member.name": rx },
+      { "member.phone": rx },
+      { "member.memberId": rx },
+    ];
+  }
+
+  return { filter, search, status, member };
+};
+
+export const setupPagination = async (req, res) => {
+  const { page, limit, skip } = parsePagination(req.query, {
+    defaultLimit: 10,
+    maxLimit: 50,
+  });
 
   const userId = req.session.user.id;
+  const { filter, search, status, member } = buildInvoiceFilter(
+    req.query,
+    userId,
+  );
 
-  const invoices = await Invoice.find({ user: userId })
-    .select("invoiceNumber member totalAmount isPaid invoiceDate plan")
-    .sort({ createdAt: -1 })
-    .skip(skip)
-    .limit(limit)
-    .lean();
+  const [invoices, totalCount] = await Promise.all([
+    Invoice.find(filter)
+      .select(
+        "invoiceNumber member memberRef totalAmount isPaid invoiceDate plan publicId",
+      )
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean(),
+    Invoice.countDocuments(filter),
+  ]);
 
-  const totalCount = await Invoice.countDocuments({ user: userId });
-
-  const totalPages = Math.ceil(totalCount / limit);
-  const currentPage = page;
+  const pagination = buildPagination({ page, limit, totalCount });
 
   return {
     invoices,
-    currentPage,
-    totalPages,
+    currentPage: pagination.currentPage,
+    totalPages: pagination.totalPages,
     totalCount,
     limit,
-    hasNext: currentPage < totalPages,
-    hasPrev: currentPage > 1,
+    hasNext: pagination.hasNext,
+    hasPrev: pagination.hasPrev,
+    filters: { search, status, member },
   };
 };

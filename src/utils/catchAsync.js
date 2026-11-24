@@ -7,7 +7,6 @@ const catchAsync = (fn) => {
           stack: err.stack,
           url: req.originalUrl,
           method: req.method,
-          body: req.body,
           params: req.params,
           query: req.query,
           user: req.session.user?.id || null,
@@ -42,6 +41,5 @@ const catchAsyncWithTimeout = (fn, timeoutMs = 30000) => {
   };
 };
 
-module.exports = catchAsync;
-module.exports.catchAsync = catchAsync;
-module.exports.catchAsyncWithTimeout = catchAsyncWithTimeout;
+export default catchAsync;
+export { catchAsync, catchAsyncWithTimeout };

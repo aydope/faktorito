@@ -1,85 +1,48 @@
-require("dotenv").config();
+import "dotenv/config";
+import http from "node:http";
 
-const express = require("express");
-const path = require("path");
-const methodOverride = require("method-override");
-const cookieParser = require("cookie-parser");
+import { createApp } from "./src/createApp.js";
+import validateEnv from "./src/config/validateEnv.js";
+import * as db from "./src/config/database.js";
+import { runMigrations } from "./src/config/migrations.js";
+import { initSocket, closeSocket } from "./src/realtime/socket.js";
+import { startJobs } from "./src/jobs/index.js";
+import { closeMailer, verifyMailer } from "./src/services/mailer.js";
+import setupGracefulShutdown from "./src/utils/gracefulShutdown.js";
 
-const authRoutes = require("./src/routes/auth");
-const invoiceRoutes = require("./src/routes/invoices");
-const pageRoutes = require("./src/routes/pages");
-const adminRoutes = require("./src/routes/admin");
+validateEnv();
 
-const errorHandler = require("./src/middleware/errorHandler");
-const notFoundHandler = require("./src/middleware/notFound");
-const requestLogger = require("./src/middleware/requestLogger");
-const db = require("./src/config/database");
-const configureSecurity = require("./src/config/security");
-const configureSession = require("./src/config/session");
-const setupGracefulShutdown = require("./src/utils/gracefulShutdown");
-const checkAccountStatus = require("./src/middleware/checkAccountStatus");
-
-const app = express();
-
+const PORT = process.env.PORT || 3001;
 const NODE_ENV = process.env.NODE_ENV || "development";
-const IS_PRODUCTION = NODE_ENV === "production";
 
-configureSecurity(app);
+try {
+  await db.connect();
+  await runMigrations();
 
-app.use(configureSession());
-app.use(express.json({ limit: "10kb" }));
-app.use(express.urlencoded({ extended: true, limit: "10kb" }));
-app.use(cookieParser());
-app.use(methodOverride("_method"));
-app.use(requestLogger);
+  const { app, sessionMiddleware } = createApp();
+  const server = http.createServer(app);
+  initSocket(server, sessionMiddleware);
 
-app.use(
-  express.static(path.join(__dirname, "public"), {
-    index: false,
-    maxAge: IS_PRODUCTION ? "1d" : 0,
-    etag: true,
-  }),
-);
+  server.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(`Environment: ${NODE_ENV}`);
+  });
 
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
-app.set("trust proxy", 1);
-app.set("query parser", "extended");
+  // tells you at startup whether the Gmail login works (never blocks or crashes the server)
+  verifyMailer();
 
-app.use((req, res, next) => {
-  res.locals.user = req.session?.user || null;
-  res.locals.path = req.path;
-  next();
-});
-
-app.use("/auth", authRoutes);
-app.use("/invoices", checkAccountStatus, invoiceRoutes);
-app.use("/", pageRoutes);
-app.use("/admin", checkAccountStatus, adminRoutes);
-
-app.use(notFoundHandler);
-app.use(errorHandler);
-
-const startServer = async (PORT) => {
-  try {
-    await db.connect();
-    const server = app.listen(PORT, "0.0.0.0", () => {
-      console.log(`Server is running on http://localhost:${PORT}`);
-      console.log(`Environment: ${NODE_ENV || "development"}`);
-    });
-    return server;
-  } catch (error) {
-    console.error("Failed to start server:", error);
-    process.exit(1);
-  }
-};
-
-(async () => {
-  const PORT = process.env.PORT || 3001;
-  let server = await startServer(PORT);
+  const stopJobs = startJobs();
 
   setupGracefulShutdown(server, {
     timeout: 15000,
     exitOnUnhandled: true,
+    onShutdown: async () => {
+      stopJobs();
+      closeSocket();
+      closeMailer();
+    },
   });
-})();
+} catch (error) {
+  console.error("Failed to start server:", error);
+  process.exit(1);
+}

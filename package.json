@@ -1,7 +1,7 @@
 {
   "name": "faktorito",
   "version": "1.0.0",
-  "description": "Professional invoice management system for sports clubs, cafes and restaurants with auto-numbering, discounts, PNG export, and shareable links.",
+  "description": "Invoice and membership management for gyms: members, per-member invoices, expiry tracking, CSV export.",
   "homepage": "https://github.com/aydope/faktorito#readme",
   "bugs": {
     "url": "https://github.com/aydope/faktorito/issues"
@@ -12,32 +12,48 @@
   },
   "license": "MIT",
   "author": "Aydope",
-  "type": "commonjs",
+  "type": "module",
   "main": "app.js",
   "scripts": {
-    "start": "set NODE_ENV=production&&node app.js",
-    "dev": "set NODE_ENV=development&&nodemon app.js"
+    "start": "cross-env NODE_ENV=production node app.js",
+    "dev": "cross-env NODE_ENV=development nodemon app.js",
+    "test": "node --test",
+    "seed": "cross-env NODE_ENV=development node scripts/seed.js",
+    "backfill:public-ids": "node scripts/backfill-public-ids.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "compression": "^1.8.2",
     "connect-mongo": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
+    "cross-env": "^10.1.0",
     "dotenv": "^17.4.2",
     "ejs": "^6.0.1",
     "express": "^5.2.1",
     "express-rate-limit": "^8.5.2",
     "express-session": "^1.19.0",
     "helmet": "^8.2.0",
-    "html2canvas": "^1.4.1",
     "ioredis": "^6.0.0",
     "joi": "^18.2.3",
     "method-override": "^3.0.0",
     "mongoose": "^9.9.4",
-    "multer": "^2.2.0",
+    "nodemailer": "^10.0.13",
+    "qrcode": "^1.5.4",
+    "socket.io": "^4.8.4",
     "xss": "^1.0.15"
   },
   "devDependencies": {
-    "@faker-js/faker": "^10.6.0"
+    "@faker-js/faker": "^10.6.0",
+    "axe-core": "^4.14.0",
+    "jsdom": "^30.1.2",
+    "nodemon": "^3.1.14",
+    "socket.io-client": "^4.8.4"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "allowScripts": {
+    "bcrypt@6.0.0": true
   }
 }

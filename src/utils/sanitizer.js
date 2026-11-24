@@ -1,4 +1,4 @@
-const xss = require("xss");
+import xss from "xss";
 
 const sanitize = (data) => {
   if (typeof data === "string") return xss(data.trim());
@@ -17,4 +17,4 @@ const sanitizeBody = (req, res, next) => {
   next();
 };
 
-module.exports = { sanitize, sanitizeBody };
+export { sanitize, sanitizeBody };

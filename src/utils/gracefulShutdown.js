@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const setupGracefulShutdown = (server, options = {}) => {
   const {
@@ -107,4 +107,4 @@ const setupGracefulShutdown = (server, options = {}) => {
   };
 };
 
-module.exports = setupGracefulShutdown;
+export default setupGracefulShutdown;

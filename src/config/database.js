@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const IS_PRODUCTION = process.env.NODE_ENV === "production";
 const MAX_RETRIES = 5;
@@ -19,7 +19,7 @@ const getConnectionOptions = () => ({
 
 const setupConnectionListeners = () => {
   mongoose.connection.on("connected", () => {
-    const { host, port } = this.getConnection();
+    const { host, port } = mongoose.connection;
     console.log(`MongoDB connected: ${host}:${port}`);
   });
 
@@ -71,7 +71,7 @@ const connectWithRetry = async (retryCount = 0) => {
   }
 };
 
-exports.connect = async () => {
+export const connect = async () => {
   const uri = process.env.MONGODB_URI;
 
   if (!uri) {
@@ -92,9 +92,9 @@ exports.connect = async () => {
   await connectWithRetry();
 };
 
-exports.getConnection = () => mongoose.connection;
-exports.isConnected = () => mongoose.connection.readyState === 1;
-exports.getStatus = () => {
+export const getConnection = () => mongoose.connection;
+export const isConnected = () => mongoose.connection.readyState === 1;
+export const getStatus = () => {
   const states = {
     0: "disconnected",
     1: "connected",

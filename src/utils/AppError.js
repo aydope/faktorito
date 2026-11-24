@@ -31,7 +31,6 @@ class AppError extends Error {
       status: this.status,
       type: this.type,
       ...(this.details && { details: this.details }),
-      ...(process.env.NODE_ENV === "development" && { stack: this.stack }),
     };
   }
 
@@ -55,6 +54,10 @@ class AppError extends Error {
     return new AppError(message, 409, true);
   }
 
+  static tooMany(message = "تعداد درخواست‌ها بیش از حد مجاز است") {
+    return new AppError(message, 429, true);
+  }
+
   static internal(message = "خطای داخلی سرور") {
     return new AppError(message, 500, false);
   }
@@ -64,4 +67,4 @@ class AppError extends Error {
   }
 }
 
-module.exports = AppError;
+export default AppError;

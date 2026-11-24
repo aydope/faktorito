@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
-exports.clearUserSessions = async (userId, username) => {
+export const clearUserSessions = async (userId, username) => {
   try {
     const sessionCollection = mongoose.connection.db.collection("sessions");
     const result = await sessionCollection.deleteMany({

@@ -1,4 +1,4 @@
-const Redis = require("ioredis");
+import Redis from "ioredis";
 
 const redisClient = new Redis({
   host: process.env.REDIS_HOST || "localhost",
@@ -124,7 +124,7 @@ const cache = {
   },
 };
 
-module.exports = {
+export {
   redisClient,
   connectRedis,
   disconnectRedis,
