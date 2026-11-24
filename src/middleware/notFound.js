@@ -1,18 +1,8 @@
-const xss = require("xss");
+import AppError from "../utils/AppError.js";
 
+// The shared error handler renders the (redesigned) error page / JSON.
 const notFound = (req, res, next) => {
-  const safeUrl = xss(req.originalUrl, {
-    whiteList: [],
-    stripIgnoreTag: true,
-    stripIgnoreTagBody: ["script", "style"],
-  });
-
-  res.status(404).render("404.ejs", {
-    success: false,
-    message: `مسیر ${safeUrl} پیدا نشد`,
-    url: safeUrl,
-    statusCode: 404,
-  });
+  next(AppError.notFound(`مسیر ${req.path.slice(0, 120)} پیدا نشد`));
 };
 
-module.exports = notFound;
+export default notFound;

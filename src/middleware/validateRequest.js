@@ -1,17 +1,15 @@
-const AppError = require("../utils/AppError");
+import AppError from "../utils/AppError.js";
+import { JOI_OPTIONS, messageFor } from "../validators/messages.js";
 
 const validateRequest = (schema) => {
   return (req, res, next) => {
-    const { error, value } = schema.validate(req.body, {
-      abortEarly: false,
-      stripUnknown: true,
-    });
+    const { error, value } = schema.validate(req.body, JOI_OPTIONS);
 
     if (error) {
       const errors = {};
       error.details.forEach((detail) => {
         const key = detail.path.join(".");
-        errors[key] = detail.message;
+        errors[key] = messageFor(detail);
       });
 
       const appError = AppError.badRequest("داده‌های ارسالی نامعتبر هستند");
@@ -24,4 +22,4 @@ const validateRequest = (schema) => {
   };
 };
 
-module.exports = validateRequest;
+export default validateRequest;
