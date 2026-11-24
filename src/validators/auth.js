@@ -1,4 +1,4 @@
-const Joi = require("joi");
+import Joi from "joi";
 
 const registerSchema = Joi.object({
   username: Joi.string()
@@ -62,8 +62,11 @@ const registerSchema = Joi.object({
     "any.required": "تکرار رمز عبور الزامی است",
   }),
 
-  clubName: Joi.string().allow("", null).max(24).trim().messages({
-    "string.max": "نام باشگاه نباید بیشتر از 24 کاراکتر باشد",
+  // everybody accepts the general terms and the privacy policy
+  acceptTerms: Joi.boolean().valid(true).required().messages({
+    "any.only": "برای ثبت‌نام باید شرایط استفاده و حریم خصوصی را بپذیرید",
+    "any.required": "برای ثبت‌نام باید شرایط استفاده و حریم خصوصی را بپذیرید",
+    "boolean.base": "برای ثبت‌نام باید شرایط استفاده و حریم خصوصی را بپذیرید",
   }),
 }).unknown(false);
 
@@ -196,7 +199,68 @@ const changePasswordSchema = Joi.object({
     }),
 }).unknown(false);
 
-module.exports = {
+const emailField = Joi.string()
+  .required()
+  .email({ tlds: { allow: false } })
+  .trim()
+  .lowercase()
+  .max(254)
+  .messages({
+    "string.email": "ایمیل معتبر نیست (مثال: name@domain.com)",
+    "string.empty": "ایمیل الزامی است",
+    "any.required": "ایمیل الزامی است",
+  });
+
+const codeField = Joi.string()
+  .required()
+  .trim()
+  .pattern(/^\d{6}$/)
+  .messages({
+    "string.pattern.base": "کد باید 6 رقم باشد",
+    "string.empty": "کد را وارد کنید",
+    "any.required": "کد را وارد کنید",
+  });
+
+const passwordRules = Joi.string()
+  .required()
+  .min(8)
+  .max(128)
+  .pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/)
+  .messages({
+    "string.empty": "رمز عبور جدید را وارد کنید",
+    "any.required": "رمز عبور جدید الزامی است",
+    "string.min": "رمز عبور باید حداقل 8 کاراکتر باشد",
+    "string.pattern.base":
+      "رمز عبور باید شامل حروف بزرگ، کوچک، عدد و کاراکتر خاص باشد",
+  });
+
+const verifyCodeSchema = Joi.object({ code: codeField }).unknown(false);
+const emailOnlySchema = Joi.object({ email: emailField }).unknown(false);
+const loginOtpVerifySchema = Joi.object({
+  email: emailField,
+  code: codeField,
+}).unknown(false);
+const resetPasswordSchema = Joi.object({
+  email: emailField,
+  code: codeField,
+  newPassword: passwordRules,
+}).unknown(false);
+const deleteRequestSchema = Joi.object({
+  password: Joi.string()
+    .required()
+    .messages({
+      "any.required": "رمز عبور را وارد کنید",
+      "string.empty": "رمز عبور را وارد کنید",
+    }),
+  reason: Joi.string().trim().allow("", null).max(300),
+}).unknown(false);
+
+export {
+  verifyCodeSchema,
+  emailOnlySchema,
+  loginOtpVerifySchema,
+  resetPasswordSchema,
+  deleteRequestSchema,
   registerSchema,
   loginSchema,
   profileUpdateSchema,

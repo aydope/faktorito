@@ -1,4 +1,4 @@
-const Joi = require("joi");
+import Joi from "joi";
 
 const planSchema = Joi.object({
   name: Joi.string().required().min(2).max(24).messages({
@@ -20,6 +20,4 @@ const planSchema = Joi.object({
   }),
 }).unknown(false);
 
-module.exports = {
-  planSchema,
-};
+export { planSchema };

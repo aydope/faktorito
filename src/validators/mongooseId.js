@@ -1,16 +1,16 @@
-const mongoose = require("mongoose");
-const AppError = require("../utils/AppError");
+import AppError from "../utils/AppError.js";
 
-exports.validateID = (id, options = {}) => {
+// mongoose.Types.ObjectId.isValid() also accepts ANY 12-character string and
+// non-string values (e.g. objects coming from ?id[$ne]=x), so check strictly.
+const OBJECT_ID_RE = /^[a-fA-F0-9]{24}$/;
+
+export const isObjectId = (id) =>
+  typeof id === "string" && OBJECT_ID_RE.test(id);
+
+export const validateID = (id, options = {}) => {
   const { message = "شناسه نامعتبر است" } = options;
 
-  if (!id) {
-    throw AppError.badRequest(message);
-  }
-
-  const isValid = mongoose.Types.ObjectId.isValid(id);
-
-  if (!isValid) {
+  if (!isObjectId(typeof id === "object" && id !== null ? String(id) : id)) {
     throw AppError.badRequest(message);
   }
 };

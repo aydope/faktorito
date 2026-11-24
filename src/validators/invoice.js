@@ -1,12 +1,18 @@
-const Joi = require("joi");
+import Joi from "joi";
+import { normalizeDigits } from "../utils/query.js";
+import { PERIOD_CHOICES } from "../utils/period.js";
 
 // validation/invoiceValidation.js
 const invoiceSchema = Joi.object({
   memberName: Joi.string()
-    .required()
+    .when("memberRef", {
+      is: Joi.string().hex().length(24).required(),
+      then: Joi.optional().allow("", null),
+      otherwise: Joi.required(),
+    })
     .min(3)
     .max(32)
-    .pattern(/^[A-Za-zا-ی\s]+$/)
+    .pattern(/^[A-Za-zا-ی\u200c\s]+$/)
     .messages({
       "string.empty": "نام عضو الزامی است",
       "string.min": "نام عضو باید حداقل 3 کاراکتر باشد",
@@ -18,6 +24,7 @@ const invoiceSchema = Joi.object({
 
   memberPhone: Joi.string()
     .allow("", null)
+    .custom((value) => normalizeDigits(value))
     .pattern(/^09\d{9}$/)
     .messages({
       "string.pattern.base": "شماره تلفن باید با 09 شروع شده و 11 رقم باشد",
@@ -33,12 +40,24 @@ const invoiceSchema = Joi.object({
         "کد عضو فقط میتونه شامل حروف انگلیسی، اعداد و حروف فارسی باشه",
     }),
 
-  planId: Joi.string().required().messages({
-    "any.required": "انتخاب پلن الزامی است",
-    "string.empty": "انتخاب پلن الزامی است",
-  }),
+  // Optional: a sale made only of extra items (drinks, supplements ...) doesn't need a plan.
+  planId: Joi.string().allow("", null),
 
-  cafeItems: Joi.array()
+  // how many months paying this invoice extends the membership (0 = none)
+  periodMonths: Joi.number()
+    .valid(...PERIOD_CHOICES)
+    .messages({
+      "any.only": "دوره‌ی اشتراک معتبر نیست",
+      "number.base": "دوره‌ی اشتراک معتبر نیست",
+    }),
+
+  // Existing saved member. When present, name/phone/code come from the DB.
+  memberRef: Joi.string().hex().length(24).allow("", null),
+
+  // Save a walk-in customer as a new member while issuing the invoice.
+  saveAsMember: Joi.boolean().default(false),
+
+  items: Joi.array()
     .items(
       Joi.object({
         name: Joi.string().required().min(1).max(64).trim().messages({
@@ -47,17 +66,25 @@ const invoiceSchema = Joi.object({
           "string.max": "نام آیتم نباید بیشتر از 64 کاراکتر باشد",
           "any.required": "نام آیتم الزامی است",
         }),
-        price: Joi.number().integer().positive().required().messages({
-          "number.base": "قیمت آیتم باید عدد باشد",
-          "number.integer": "قیمت آیتم باید عدد صحیح باشد",
-          "number.positive": "قیمت آیتم باید بیشتر از 0 باشد",
-          "any.required": "قیمت آیتم الزامی است",
-        }),
+        price: Joi.number()
+          .integer()
+          .positive()
+          .max(100_000_000)
+          .required()
+          .messages({
+            "number.max": "قیمت آیتم نمی‌تواند بیشتر از 100 میلیون تومان باشد",
+            "number.base": "قیمت آیتم باید عدد باشد",
+            "number.integer": "قیمت آیتم باید عدد صحیح باشد",
+            "number.positive": "قیمت آیتم باید بیشتر از 0 باشد",
+            "any.required": "قیمت آیتم الزامی است",
+          }),
       }),
     )
+    .max(30)
     .default([])
     .messages({
       "array.base": "آیتم‌ها باید به صورت آرایه باشد",
+      "array.max": "حداکثر 30 آیتم مجاز است",
     }),
 
   discounts: Joi.array()
@@ -73,17 +100,31 @@ const invoiceSchema = Joi.object({
           "any.only": "نوع تخفیف باید مبلغ یا درصدی باشد",
           "any.required": "نوع تخفیف الزامی است",
         }),
-        value: Joi.number().integer().positive().required().messages({
-          "number.base": "مقدار تخفیف باید عدد باشد",
-          "number.integer": "مقدار تخفیف باید عدد صحیح باشد",
-          "number.positive": "مقدار تخفیف باید بیشتر از 0 باشد",
-          "any.required": "مقدار تخفیف الزامی است",
-        }),
+        value: Joi.number()
+          .integer()
+          .positive()
+          .max(100_000_000)
+          .required()
+          .when("type", {
+            is: "percent",
+            then: Joi.number().max(100).messages({
+              "number.max": "تخفیف درصدی نمی‌تواند بیشتر از 100 باشد",
+            }),
+          })
+          .messages({
+            "number.max": "مقدار تخفیف بیش از حد مجاز است",
+            "number.base": "مقدار تخفیف باید عدد باشد",
+            "number.integer": "مقدار تخفیف باید عدد صحیح باشد",
+            "number.positive": "مقدار تخفیف باید بیشتر از 0 باشد",
+            "any.required": "مقدار تخفیف الزامی است",
+          }),
       }),
     )
+    .max(5)
     .default([])
     .messages({
       "array.base": "تخفیف‌ها باید به صورت آرایه باشد",
+      "array.max": "حداکثر 5 تخفیف مجاز است",
     }),
 
   note: Joi.string().allow("", null).max(64).trim().messages({
@@ -96,7 +137,7 @@ const updateInvoiceSchema = Joi.object({
     .trim()
     .min(3)
     .max(32)
-    .pattern(/^[A-Za-zا-ی\s]+$/)
+    .pattern(/^[A-Za-zا-ی\u200c\s]+$/)
     .messages({
       "string.min": "نام عضو باید حداقل 3 کاراکتر باشد",
       "string.max": "نام عضو نباید بیشتر از 32 کاراکتر باشد",
@@ -107,6 +148,7 @@ const updateInvoiceSchema = Joi.object({
   memberPhone: Joi.string()
     .trim()
     .allow("", null)
+    .custom((value) => normalizeDigits(value))
     .pattern(/^09\d{9}$/)
     .messages({
       "string.pattern.base": "شماره تلفن باید با 09 شروع شده و 11 رقم باشد",
@@ -127,6 +169,14 @@ const updateInvoiceSchema = Joi.object({
     "string.empty": "شناسه پلن نمی‌تواند خالی باشد",
   }),
 
+  // how many months paying this invoice extends the membership (0 = none)
+  periodMonths: Joi.number()
+    .valid(...PERIOD_CHOICES)
+    .messages({
+      "any.only": "دوره‌ی اشتراک معتبر نیست",
+      "number.base": "دوره‌ی اشتراک معتبر نیست",
+    }),
+
   note: Joi.string().trim().allow("", null).max(64).messages({
     "string.max": "یادداشت نباید بیشتر از 64 کاراکتر باشد",
   }),
@@ -136,7 +186,4 @@ const updateInvoiceSchema = Joi.object({
   }),
 }).unknown(false);
 
-module.exports = {
-  invoiceSchema,
-  updateInvoiceSchema,
-};
+export { invoiceSchema, updateInvoiceSchema };

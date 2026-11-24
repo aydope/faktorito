@@ -1,4 +1,5 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
+import { generatePublicId, generateTrackingCode } from "../utils/crypto.js";
 
 const invoiceSchema = new mongoose.Schema(
   {
@@ -6,6 +7,22 @@ const invoiceSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: [true, "کاربر الزامی است"],
+      index: true,
+    },
+    // Unguessable id used in the shareable link (/i/<publicId>).
+    // (The ObjectId is guessable, so it is never used for public access.)
+    publicId: {
+      type: String,
+      default: generatePublicId,
+      unique: true,
+      sparse: true,
+    },
+    // Optional link to a saved member. `member` below stays a snapshot so old
+    // invoices keep their original name/phone even if the member is edited.
+    memberRef: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Member",
+      default: null,
       index: true,
     },
     invoiceNumber: {
@@ -35,6 +52,11 @@ const invoiceSchema = new mongoose.Schema(
       },
     },
     plan: {
+      planRef: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Plan",
+        default: null,
+      },
       name: {
         type: String,
         required: [true, "نام پلن الزامی است"],
@@ -48,14 +70,25 @@ const invoiceSchema = new mongoose.Schema(
         type: String,
         default: "",
       },
+      // Snapshot of the plan duration (none = does not extend a membership, e.g. a sale of extras only)
+      // (no defaults: invoices created before units existed only have durationDays)
+      durationUnit: { type: String, enum: ["none", "day", "month"] },
+      durationValue: { type: Number, min: 0 },
+      durationDays: {
+        type: Number,
+        default: 0,
+        min: 0,
+      },
     },
+    // true when an auto-issue rule created this invoice (shown in the member panel)
+    autoIssued: { type: Boolean, default: false },
     extraItems: [
       {
         type: {
           type: String,
           enum: {
-            values: ["cafe", "discount"],
-            message: "نوع آیتم باید cafe یا discount باشد",
+            values: ["item", "discount"],
+            message: "نوع آیتم باید item یا discount باشد",
           },
           required: true,
         },
@@ -113,7 +146,8 @@ const invoiceSchema = new mongoose.Schema(
 // Indexes
 invoiceSchema.index({ user: 1, createdAt: -1 });
 invoiceSchema.index({ user: 1, isPaid: 1 });
-invoiceSchema.index({ invoiceNumber: 1 });
+invoiceSchema.index({ user: 1, memberRef: 1, createdAt: -1 });
+invoiceSchema.index({ user: 1, paidAt: -1 });
 
 // Generate invoice number
 invoiceSchema.statics.generateInvoiceNumber = async function () {
@@ -150,10 +184,8 @@ invoiceSchema.statics.generateInvoiceNumber = async function () {
   return `F-${Date.now()}`;
 };
 
-// Generate tracking code
-invoiceSchema.statics.generateTrackingCode = function () {
-  return String(Math.floor(1000 + Math.random() * 9000));
-};
+// Generate tracking code (CSPRNG)
+invoiceSchema.statics.generateTrackingCode = generateTrackingCode;
 
 // Virtual: formatted total
 invoiceSchema.virtual("formattedTotal").get(function () {
@@ -180,4 +212,4 @@ invoiceSchema.methods.togglePayment = function () {
   return this.save();
 };
 
-module.exports = mongoose.model("Invoice", invoiceSchema);
+export default mongoose.model("Invoice", invoiceSchema);

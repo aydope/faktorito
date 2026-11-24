@@ -1,4 +1,4 @@
-const Joi = require("joi");
+import Joi from "joi";
 
 const settingsSchema = Joi.object({
   clubName: Joi.string().trim().min(1).max(24).messages({
@@ -51,4 +51,4 @@ const settingsSchema = Joi.object({
     }),
 }).unknown(false);
 
-module.exports = { settingsSchema };
+export { settingsSchema };

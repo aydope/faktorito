@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const planSchema = new mongoose.Schema(
   {
@@ -43,4 +43,4 @@ planSchema.virtual("formattedPrice").get(function () {
   return this.price.toLocaleString("fa-IR-u-nu-latn") + " تومان";
 });
 
-module.exports = mongoose.model("Plan", planSchema);
+export default mongoose.model("Plan", planSchema);
