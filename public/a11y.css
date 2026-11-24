@@ -1,0 +1,85 @@
+/* Shared accessibility layer, added to every page by src/utils/htmlEnhance.js */
+
+/* 1. A visible keyboard focus on everything that can be focused */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+summary:focus-visible,
+[role="button"]:focus-visible,
+[tabindex]:not([tabindex="-1"]):focus-visible {
+  outline: 2px solid #c4b5fd;
+  outline-offset: 2px;
+}
+main:focus {
+  outline: none;
+}
+
+/* 2. Skip link: hidden until it gets keyboard focus */
+.fx-skip {
+  position: fixed;
+  top: 8px;
+  right: 8px;
+  z-index: 2147483001;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #111827;
+  font:
+    700 14px/1.5 Sahel,
+    Vazirmatn,
+    Tahoma,
+    sans-serif;
+  text-decoration: none;
+  transform: translateY(-200%);
+}
+.fx-skip:focus {
+  transform: none;
+  outline: 2px solid #7c3aed;
+  outline-offset: 2px;
+}
+
+/* 3. Muted text that is readable: gray-500 measured 4.2:1 (cards 4.0:1) and gray-600 2.7:1 on the dark UI; AA needs 4.5:1 */
+html body .text-gray-500 {
+  color: #8b95a7;
+}
+html body .text-gray-600 {
+  color: #7d889b;
+}
+html body ::placeholder {
+  color: #7d889b;
+  opacity: 1;
+}
+
+/* 4. Type that is too small to read comfortably */
+html body .text-\[8px\],
+html body .text-\[9px\],
+html body .text-\[10px\] {
+  font-size: 11px;
+}
+
+/* 5. Bigger touch targets on touch screens */
+@media (pointer: coarse) {
+  .action-btn,
+  .bell-btn,
+  .link-btn,
+  .sidebar-link,
+  button.btn,
+  a.btn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+/* 6. Respect "reduce motion" */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
