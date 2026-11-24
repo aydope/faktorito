@@ -1,8 +1,19 @@
-const AppError = require("../utils/AppError");
-const User = require("../models/User");
+import AppError from "../utils/AppError.js";
+import User from "../models/User.js";
+import { validateID } from "../validators/mongooseId.js";
+import {
+  STAFF_ROLES,
+  BUSINESS_ROLES,
+  can,
+  outranks,
+  homeFor,
+} from "../config/permissions.js";
 
-const clearSession = (req, res) => {
-  return new Promise((resolve) => {
+export const ACCOUNT_FIELDS =
+  "role status username email emailVerified passwordChangedAt";
+
+const clearSession = (req, res) =>
+  new Promise((resolve) => {
     if (!req.session) return resolve();
     req.session.destroy((err) => {
       if (err) console.error("Session destroy error:", err);
@@ -10,312 +21,183 @@ const clearSession = (req, res) => {
       resolve();
     });
   });
+
+const STATUS_MESSAGES = {
+  suspended: "حساب کاربری شما تعلیق شده است",
+  disabled: "حساب کاربری شما غیرفعال شده است",
+  pending_deletion: "درخواست حذف حساب شما در حال بررسی است",
+  deleted: "این حساب حذف شده است",
 };
 
-const checkRole = (allowedRoles, errorMessage = "دسترسی غیرمجاز") => {
-  return async (req, res, next) => {
+const wantsHtml = (req) =>
+  req.method === "GET" &&
+  req.get("x-requested-with") !== "XMLHttpRequest" &&
+  req.accepts(["html", "json"]) === "html";
+
+/**
+ * Loads the *current* account once per request (role/status in the session can
+ * be stale, and checkAccountStatus may already have loaded it), rejects
+ * inactive accounts and sessions older than the last password change.
+ */
+export const loadActiveUser = async (req, res) => {
+  if (!req.session?.user) {
+    throw AppError.unauthorized("لطفا ابتدا وارد شوید");
+  }
+
+  let user = req.account;
+  if (!user || String(user._id) !== String(req.session.user.id)) {
+    user = await User.findById(req.session.user.id)
+      .select(ACCOUNT_FIELDS)
+      .lean();
+    req.account = user;
+  }
+
+  if (!user) {
+    await clearSession(req, res);
+    throw AppError.unauthorized("کاربر یافت نشد");
+  }
+
+  if (user.status !== "active") {
+    const message = STATUS_MESSAGES[user.status] || "حساب کاربری غیرفعال است";
+    await clearSession(req, res);
+    throw AppError.forbidden(message);
+  }
+
+  const authAt = req.session.authAt;
+  if (
+    authAt &&
+    user.passwordChangedAt &&
+    new Date(user.passwordChangedAt).getTime() > authAt + 1000
+  ) {
+    await clearSession(req, res);
+    throw AppError.unauthorized("رمز عبور تغییر کرده است. دوباره وارد شوید");
+  }
+
+  // keep the cached session copy in sync (menus, rate limits use it)
+  if (req.session.user.role !== user.role) req.session.user.role = user.role;
+
+  req.user = user;
+  return user;
+};
+
+export const authenticate = async (req, res, next) => {
+  try {
+    if (!req.session?.user && wantsHtml(req)) {
+      req.session.returnTo = req.originalUrl;
+      return res.redirect("/auth/login");
+    }
+    await loadActiveUser(req, res);
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const requireRole =
+  (roles, message = "دسترسی غیرمجاز") =>
+  async (req, res, next) => {
     try {
-      if (!req.session?.user) {
-        throw AppError.unauthorized("لطفا ابتدا وارد شوید");
+      const user = await loadActiveUser(req, res);
+      if (!roles.includes(user.role)) {
+        // a normal page visit by the wrong kind of account -> its own panel
+        if (wantsHtml(req)) return res.redirect(homeFor(user.role));
+        throw AppError.forbidden(message);
       }
-
-      const user = await User.findById(req.session.user.id)
-        .select("role status username")
-        .lean();
-
-      if (!user) {
-        await clearSession(req, res);
-        throw AppError.unauthorized("کاربر یافت نشد");
-      }
-
-      if (!allowedRoles.includes(user.role)) {
-        throw AppError.forbidden(errorMessage);
-      }
-
       next();
     } catch (error) {
       next(error);
     }
   };
-};
 
-exports.authenticate = async (req, res, next) => {
-  try {
-    if (!req.session?.user) {
-      throw AppError.unauthorized("لطفا ابتدا وارد شوید");
-    }
-
-    const user = await User.findById(req.session.user.id)
-      .select("role status username")
-      .lean();
-
-    if (!user) {
-      await clearSession(req, res);
-      throw AppError.unauthorized("کاربر یافت نشد");
-    }
-
-    if (user.status !== "active") {
-      const statusMessages = {
-        suspended: "حساب کاربری شما تعلیق شده است",
-        disabled: "حساب کاربری شما غیرفعال شده است",
-      };
-
-      const message = statusMessages[user.status] || "حساب کاربری غیرفعال است";
-
-      await clearSession(req, res);
-      throw AppError.forbidden(message);
-    }
-
-    next();
-  } catch (error) {
-    next(error);
-  }
-};
-
-exports.adminOnly = checkRole(
-  ["admin", "moderator"],
+/** Staff panel (admin + moderator). */
+export const adminOnly = requireRole(
+  STAFF_ROLES,
   "این بخش فقط برای مدیران قابل دسترسی است",
 );
-
-exports.moderatorOnly = checkRole(
-  ["moderator"],
-  "این عملیات فقط توسط مدیر ارشد قابل انجام است",
+/** Business panel (owner, and staff who run their own club). Members -> /me. */
+export const ownerArea = requireRole(
+  BUSINESS_ROLES,
+  "این بخش مخصوص کسب‌وکارهاست",
 );
+/** Member panel. */
+export const memberOnly = requireRole(["member"], "این بخش مخصوص اعضاست");
 
-exports.adminOnlyStrict = checkRole(
-  ["admin"],
-  "این عملیات فقط توسط ادمین قابل انجام است",
-);
-
-exports.checkPermission = (permissionTemplate) => async (req, res, next) => {
-  try {
-    const [requiredRole, endpointAction] = permissionTemplate.split("/");
-    const [endpoint, action] = endpointAction.split(":");
-
-    if (!requiredRole || !endpoint || !action) {
-      throw AppError.internal("فرمت مجوز نامعتبر است");
-    }
-
-    const { role: currentRole } = req.session.user;
-
-    const adminRoles =
-      requiredRole === "admin" ? ["admin", "moderator"] : ["user"];
-
-    if (!adminRoles.includes(currentRole)) {
-      if (action === "delete") {
-        return res.status(403).json({
-          success: false,
-          message: "شما دسترسی حذف کاربران را ندارید",
-        });
+export const requirePermission =
+  (permission, message) => async (req, res, next) => {
+    try {
+      const user = req.user || (await loadActiveUser(req, res));
+      if (!can(user.role, permission)) {
+        throw AppError.forbidden(
+          message || "شما دسترسی لازم برای این عملیات را ندارید",
+        );
       }
-      throw AppError.forbidden("شما دسترسی لازم برای این عملیات را ندارید");
+      next();
+    } catch (error) {
+      next(error);
+    }
+  };
+
+/**
+ * Permission + hierarchy check against `req.params.id`: the actor must hold the
+ * permission AND be strictly senior to the target (no acting on peers/seniors).
+ * The loaded target is exposed as `req.targetUser`.
+ */
+export const guardTarget = (permission) => async (req, res, next) => {
+  const isDelete = req.method === "DELETE";
+
+  const fail = (status, message) => {
+    if (isDelete) {
+      return res.status(status).json({ success: false, message });
+    }
+    throw new AppError(message, status);
+  };
+
+  try {
+    const actor = req.user || (await loadActiveUser(req, res));
+    if (!actor) return; // loadActiveUser خودش پاسخ داده است
+
+    if (!can(actor.role, permission)) {
+      return fail(403, "شما دسترسی لازم برای این عملیات را ندارید");
     }
 
-    switch (endpoint) {
-      case "users":
-        return handleUserActions(req, res, next, action, currentRole);
-
-      case "invoices":
-        return handleInvoiceActions(req, res, next, action, currentRole);
-
-      case "plans":
-        return handlePlanActions(req, res, next, action, currentRole);
-
-      default:
-        throw AppError.forbidden("اندپوینت نامعتبر است");
+    try {
+      validateID(req.params.id, { message: "شناسه کاربر نامعتبر است" });
+    } catch {
+      return fail(400, "شناسه کاربر نامعتبر است");
     }
+
+    const target = await User.findById(req.params.id)
+      .select("role status username email")
+      .lean();
+    if (!target) return fail(404, "کاربر پیدا نشد");
+
+    if (!outranks(actor.role, target.role)) {
+      return fail(
+        403,
+        "نمی‌توانید روی کاربری با رتبه برابر یا بالاتر عمل کنید",
+      );
+    }
+
+    req.targetUser = target;
+    next();
   } catch (error) {
+    if (isDelete) {
+      return res.status(500).json({
+        success: false,
+        message: "خطای سرور در اعتبارسنجی هدف",
+      });
+    }
     next(error);
   }
 };
 
-const ROLE_HIERARCHY = {
-  user: 1,
-  moderator: 2,
-  admin: 3,
-};
-
-async function handleUserActions(req, res, next, action, currentRole) {
-  const targetUser = await User.findById(req.params.id)
-    .select("role username")
-    .lean();
-
-  if (!targetUser) {
-    return res.status(404).json({
-      success: false,
-      message: "کاربر پیدا نشد",
-    });
+export const preventSelfModification = (msg) => (req, res, next) => {
+  if (String(req.session.user.id) === String(req.params.id)) {
+    return next(
+      AppError.badRequest(
+        msg || "نمی‌توانید روی حساب خود این عملیات را انجام دهید",
+      ),
+    );
   }
-
-  const { role: targetRole } = targetUser;
-
-  switch (action) {
-    case "status":
-      return handleUserStatus(req, res, next, currentRole, targetRole);
-
-    case "role":
-      return handleUserRole(req, res, next, currentRole, targetRole);
-
-    case "delete":
-      return handleUserDelete(req, res, next, currentRole, targetRole);
-
-    default:
-      throw AppError.forbidden("اکشن نامعتبر است");
-  }
-}
-
-async function handleUserStatus(req, res, next, currentRole, targetRole) {
-  const targetUserId = req.params.id;
-  const currentUserId = req.session.user._id;
-
-  if (currentRole === "admin") {
-    if (targetRole === "user") {
-      return next();
-    }
-    throw AppError.forbidden("شما دسترسی انجام این کار را ندارید");
-  }
-
-  if (currentRole === "moderator") {
-    if (targetUserId === currentUserId) {
-      throw AppError.forbidden("نمی‌توانید وضعیت خود را تغییر دهید");
-    }
-
-    if (targetRole === "moderator") {
-      throw AppError.forbidden("نمی‌توانید وضعیت هم‌رتبه خود را تغییر دهید");
-    }
-
-    if (["user", "admin"].includes(targetRole)) {
-      return next();
-    }
-  }
-
-  throw AppError.forbidden("شما دسترسی تغییر وضعیت این کاربر را ندارید");
-}
-
-async function handleUserRole(req, res, next, currentRole, targetRole) {
-  const newRole = req.body?.role;
-  const targetUserId = req.params.id;
-  const currentUserId = req.session.user._id;
-
-  if (!newRole || !ROLE_HIERARCHY[newRole]) {
-    throw AppError.badRequest("نقش جدید معتبر نیست");
-  }
-
-  if (currentRole === "admin") {
-    throw AppError.forbidden("شما دسترسی تغییر نقش کاربران را ندارید");
-  }
-
-  if (currentRole === "moderator") {
-    if (targetUserId === currentUserId) {
-      throw AppError.forbidden("نمی‌توانید نقش خود را تغییر دهید");
-    }
-
-    if (targetRole === "moderator") {
-      throw AppError.forbidden("نمی‌توانید نقش هم‌رتبه خود را تغییر دهید");
-    }
-
-    if (targetRole === "user" && newRole === "admin") {
-      return next();
-    }
-
-    if (targetRole === "admin" && newRole === "user") {
-      return next();
-    }
-
-    if (["user", "admin"].includes(targetRole) && newRole === "moderator") {
-      throw AppError.forbidden("شما دسترسی ارتقا کاربر را ندارید");
-    }
-  }
-
-  throw AppError.forbidden("شما دسترسی تغییر نقش را ندارید");
-}
-
-async function handleUserDelete(req, res, next, currentRole, targetRole) {
-  const targetUserId = req.params.id;
-  const currentUserId = req.session.user._id;
-
-  if (currentRole === "admin") {
-    return res.status(403).json({
-      success: false,
-      message: "شما دسترسی حذف کاربران را ندارید",
-    });
-  }
-
-  if (currentRole === "moderator") {
-    return res.status(403).json({
-      success: false,
-      message: "شما دسترسی حذف کاربران را ندارید",
-    });
-  }
-
-  return res.status(403).json({
-    success: false,
-    message: "شما دسترسی حذف کاربر را ندارید",
-  });
-}
-
-async function handleInvoiceActions(req, res, next, action, currentRole) {
-  switch (action) {
-    case "delete":
-      if (currentRole === "admin") {
-        return res.status(403).json({
-          success: false,
-          message: "شما دسترسی حذف فاکتور را ندارید",
-        });
-      }
-
-      if (currentRole === "moderator") {
-        return next();
-      }
-
-      return res.status(403).json({
-        success: false,
-        message: "شما دسترسی حذف فاکتور را ندارید",
-      });
-
-    default:
-      return res.status(403).json({
-        success: false,
-        message: "اکشن نامعتبر است",
-      });
-  }
-}
-
-async function handlePlanActions(req, res, next, action, currentRole) {
-  switch (action) {
-    case "delete":
-      if (currentRole === "admin") {
-        return res.status(403).json({
-          success: false,
-          message: "شما دسترسی مدیریت پلن‌ها را ندارید",
-        });
-      }
-
-      if (currentRole === "moderator") {
-        return next();
-      }
-
-      return res.status(403).json({
-        success: false,
-        message: "شما دسترسی مدیریت پلن‌ها را ندارید",
-      });
-
-    default:
-      return res.status(403).json({
-        success: false,
-        message: "اکشن نامعتبر است",
-      });
-  }
-}
-
-exports.preventSelfModification = (msg) => {
-  return (req, res, next) => {
-    if (req.session.user.id === req.params.id) {
-      return res.status(400).json({
-        success: false,
-        message: msg || "نمی‌توانید روی حساب خود این عملیات را انجام دهید",
-      });
-    }
-    next();
-  };
+  next();
 };
