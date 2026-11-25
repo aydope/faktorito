@@ -105,7 +105,10 @@ export const issueOtp = async (userId, purpose, { meta = "" } = {}) => {
  * Returns the stored `meta` on success; the code is consumed (single use).
  */
 export const verifyOtp = async (userId, purpose, code) => {
-  if (process.env.inRailway === "true") {
+  if (
+    process.env.inRailway === "true" &&
+    ["reset", "verify"].includes(purpose)
+  ) {
     const doc = await Otp.findOneAndDelete({
       user: userId,
       purpose,
