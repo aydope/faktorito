@@ -883,9 +883,73 @@
             color: #f6e7a8;
         }
     </style>
+
+    <style>
+        .railway-announcement {
+            position: relative;
+            z-index: 40;
+            max-width: 900px;
+            margin: 110px auto -90px;
+            padding: 0 16px;
+        }
+
+        .announcement-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 13px 18px;
+            border: 1px solid rgba(167, 139, 250, 0.2);
+            border-radius: 14px;
+            background: rgba(139, 92, 246, 0.09);
+            color: #c4b5fd;
+            font-size: 12px;
+            line-height: 1.9;
+            text-align: right;
+        }
+
+        .announcement-content i {
+            flex-shrink: 0;
+            font-size: 18px;
+            color: #a78bfa;
+        }
+
+        .announcement-content p {
+            margin: 0;
+        }
+
+        .announcement-content strong {
+            color: #fff;
+        }
+
+        @media (max-width: 640px) {
+            .railway-announcement {
+                margin-top: 100px;
+                margin-bottom: -80px;
+            }
+
+            .announcement-content {
+                align-items: flex-start;
+                font-size: 11px;
+                padding: 12px;
+            }
+        }
+    </style>
 </head>
 
 <body class="antialiased bg-[#050508] grid-bg">
+
+    <div id="railwayAnnouncement" class="railway-announcement hidden">
+        <div class="announcement-content">
+            <i class="bi bi-info-circle-fill"></i>
+
+            <p>
+                <strong>اطلاعیه:</strong>
+                به دلیل محدودیت ارسال ایمیل در Railway، کد OTP ارسال نمی‌شود.
+                برای تأیید، هر کد ۶ رقمی ای را که وارد کنید ایمیل شما تایید میشه.
+            </p>
+        </div>
+    </div>
 
     <nav class="fixed top-0 right-0 left-0 z-50 px-4 md:px-6 py-4">
         <div class="max-w-5xl mx-auto glass-nav rounded-2xl px-4 md:px-5 py-2.5 flex items-center justify-between">
@@ -1440,6 +1504,10 @@
                 });
             });
         })();
+
+        if (location.host.includes("railway.app")) {
+            document.getElementById("railwayAnnouncement")?.classList.remove("hidden");
+        }
     </script>
 </body>
 </html>
